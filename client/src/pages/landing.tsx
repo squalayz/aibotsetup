@@ -165,13 +165,12 @@ export default function Landing() {
             className="flex gap-4 justify-center items-center flex-wrap"
           >
             <div className="relative group" data-testid="button-vip-hero-wrapper">
-              <div className="absolute -inset-1 rounded-md bg-gradient-to-r from-amber-500 via-yellow-300 to-amber-500 opacity-70 blur-md group-hover:opacity-100 transition-opacity duration-500 animate-pulse" />
-              <div className="absolute -inset-1.5 rounded-lg bg-gradient-to-r from-amber-400 via-yellow-200 to-amber-400 opacity-30 blur-xl animate-[pulse_2s_ease-in-out_infinite]" />
+              <div className="absolute -inset-0.5 rounded-md bg-gradient-to-r from-amber-500/40 via-yellow-400/30 to-amber-500/40 blur-sm group-hover:from-amber-500/60 group-hover:via-yellow-400/50 group-hover:to-amber-500/60 transition-all duration-700" />
               <Button
                 size="lg"
                 onClick={() => navigate("/payment/vip")}
                 data-testid="button-vip-hero"
-                className="relative bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 border-amber-400/60 text-black font-extrabold shadow-2xl shadow-amber-500/40 tracking-wide"
+                className="relative bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 border-amber-500/40 text-amber-100 font-bold shadow-lg shadow-amber-500/15 tracking-wide"
               >
                 <Sparkles className="w-4 h-4 mr-2" /> Book 1-on-1 VIP &mdash; $799
               </Button>
@@ -311,13 +310,12 @@ export default function Landing() {
                 </p>
                 <div className="flex gap-4 justify-center items-center flex-wrap mb-6">
                   <div className="relative group">
-                    <div className="absolute -inset-1 rounded-md bg-gradient-to-r from-amber-500 via-yellow-300 to-amber-500 opacity-70 blur-md group-hover:opacity-100 transition-opacity duration-500 animate-pulse" />
-                    <div className="absolute -inset-1.5 rounded-lg bg-gradient-to-r from-amber-400 via-yellow-200 to-amber-400 opacity-30 blur-xl animate-[pulse_2s_ease-in-out_infinite]" />
+                    <div className="absolute -inset-0.5 rounded-md bg-gradient-to-r from-amber-500/40 via-yellow-400/30 to-amber-500/40 blur-sm group-hover:from-amber-500/60 group-hover:via-yellow-400/50 group-hover:to-amber-500/60 transition-all duration-700" />
                     <Button
                       size="lg"
                       onClick={() => navigate("/payment/vip")}
                       data-testid="button-vip-cta"
-                      className="relative bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 border-amber-400/60 text-black font-extrabold shadow-2xl shadow-amber-500/40 tracking-wide"
+                      className="relative bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 border-amber-500/40 text-amber-100 font-bold shadow-lg shadow-amber-500/15 tracking-wide"
                     >
                       <Sparkles className="w-4 h-4 mr-2" /> Book 1-on-1 VIP &mdash; $799
                     </Button>
