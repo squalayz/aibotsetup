@@ -115,9 +115,6 @@ export default function Landing() {
               <SiInstagram className="w-4 h-4" />
               <span>@{INSTAGRAM}</span>
             </a>
-            <Button variant="ghost" size="sm" onClick={() => navigate("/admin")} data-testid="button-admin-nav">
-              Admin
-            </Button>
           </div>
         </nav>
 
