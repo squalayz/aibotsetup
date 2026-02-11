@@ -308,14 +308,20 @@ export default function Landing() {
                     Self-Setup &mdash; $199
                   </Button>
                 </div>
+                <div className="flex items-center gap-3 my-5">
+                  <div className="flex-1 h-px bg-violet-500/15" />
+                  <span className="text-xs text-muted-foreground uppercase tracking-widest">or</span>
+                  <div className="flex-1 h-px bg-violet-500/15" />
+                </div>
                 <a
-                  href={`https://instagram.com/${INSTAGRAM}`}
+                  href="https://ig.me/m/squalayyy"
                   target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 text-violet-400 text-sm no-underline mt-2"
-                  data-testid="link-instagram-cta"
+                  rel="noopener noreferrer"
+                  data-testid="link-ig-dm-cta"
                 >
-                  <SiInstagram className="w-4 h-4" /> Follow @{INSTAGRAM} on Instagram
+                  <Button variant="outline" size="lg" className="border-pink-500/30 text-pink-400 gap-2">
+                    <SiInstagram className="w-5 h-5" /> DM @{INSTAGRAM} for Info
+                  </Button>
                 </a>
               </div>
             </Card>
