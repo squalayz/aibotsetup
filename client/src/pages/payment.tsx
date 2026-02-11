@@ -270,26 +270,7 @@ export default function PaymentPage() {
             </Card>
 
             <Card
-              className="p-6 bg-card/60 backdrop-blur-xl border-violet-500/10 hover-elevate cursor-pointer"
-              onClick={() => hasWallet ? setMethod("wallet") : toast({ title: "No Wallet Detected", description: "Install MetaMask to use direct payment.", variant: "destructive" })}
-              data-testid="card-wallet-pay"
-            >
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-md bg-violet-500/10 border border-violet-500/20 flex items-center justify-center shrink-0">
-                  <Zap className="w-7 h-7 text-violet-400" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-bold text-card-foreground mb-1">Pay with Wallet</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Connect MetaMask and pay with ETH directly. Automatic on-chain tracking.
-                  </p>
-                </div>
-                <ArrowRight className="w-5 h-5 text-violet-400 shrink-0" />
-              </div>
-            </Card>
-
-            <Card
-              className="p-6 bg-card/60 backdrop-blur-xl border-violet-500/10 hover-elevate cursor-pointer"
+              className="p-6 bg-card/60 backdrop-blur-xl border-cyan-500/10 hover-elevate cursor-pointer"
               onClick={() => setMethod("manual")}
               data-testid="card-manual-pay"
             >
@@ -298,14 +279,55 @@ export default function PaymentPage() {
                   <Copy className="w-7 h-7 text-cyan-400" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-bold text-card-foreground mb-1">Manual Crypto Payment</h3>
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
+                    <h3 className="font-bold text-card-foreground">Send ETH & Paste TX Hash</h3>
+                    <Badge variant="outline" className="border-cyan-500/30 text-cyan-400 bg-cyan-500/5 text-xs">Easiest</Badge>
+                  </div>
                   <p className="text-sm text-muted-foreground">
-                    Send ETH from any wallet or exchange, then paste your transaction hash.
+                    Works from any wallet or exchange (Coinbase, Trust Wallet, etc). Send ETH, then paste your transaction hash.
                   </p>
                 </div>
                 <ArrowRight className="w-5 h-5 text-cyan-400 shrink-0" />
               </div>
             </Card>
+
+            {hasWallet ? (
+              <Card
+                className="p-6 bg-card/60 backdrop-blur-xl border-violet-500/10 hover-elevate cursor-pointer"
+                onClick={() => setMethod("wallet")}
+                data-testid="card-wallet-pay"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-md bg-violet-500/10 border border-violet-500/20 flex items-center justify-center shrink-0">
+                    <Zap className="w-7 h-7 text-violet-400" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-card-foreground mb-1">Pay with MetaMask</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Connect your wallet and pay with ETH directly. Automatic on-chain tracking.
+                    </p>
+                  </div>
+                  <ArrowRight className="w-5 h-5 text-violet-400 shrink-0" />
+                </div>
+              </Card>
+            ) : (
+              <Card
+                className="p-5 bg-card/40 backdrop-blur-xl border-violet-500/5 opacity-60"
+                data-testid="card-wallet-unavailable"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-md bg-violet-500/5 border border-violet-500/10 flex items-center justify-center shrink-0">
+                    <Wallet className="w-7 h-7 text-violet-400/50" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-card-foreground/60 mb-1">Direct Wallet Pay</h3>
+                    <p className="text-xs text-muted-foreground">
+                      Requires MetaMask browser extension (desktop) or MetaMask in-app browser (mobile). Use the option above instead.
+                    </p>
+                  </div>
+                </div>
+              </Card>
+            )}
 
           </motion.div>
         ) : method === "wallet" ? (
