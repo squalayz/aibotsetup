@@ -1,6 +1,5 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
-import { createHmac } from "crypto";
 import { storage } from "./storage";
 import { insertPaymentSchema, insertBookingSchema } from "@shared/schema";
 import { z } from "zod";
@@ -268,52 +267,6 @@ export async function registerRoutes(
       res.json({ success: true });
     } catch {
       res.status(500).json({ message: "Failed to delete booking" });
-    }
-  });
-
-  app.post("/api/moonpay/url", async (req, res) => {
-    try {
-      const { tier } = req.body;
-      if (tier !== "self" && tier !== "vip") {
-        return res.status(400).json({ message: "Invalid tier" });
-      }
-
-      const apiKey = process.env.MOONPAY_API_KEY;
-      const secretKey = process.env.MOONPAY_SECRET_KEY;
-
-      if (!apiKey || !secretKey) {
-        return res.status(500).json({ message: "MoonPay is not configured yet. Please use the other payment methods." });
-      }
-
-      const amount = tier === "vip" ? 799 : 199;
-      const walletAddress = "0x00468c1B22451ed9Fabc9DA32E6aEa28DC03a216";
-
-      const isLive = apiKey.startsWith("pk_live");
-      const baseUrl = isLive ? "https://buy.moonpay.com" : "https://buy-sandbox.moonpay.com";
-
-      const params = new URLSearchParams({
-        apiKey,
-        currencyCode: "eth",
-        baseCurrencyCode: "usd",
-        baseCurrencyAmount: String(amount),
-        walletAddress,
-        theme: "dark",
-        colorCode: "#8b5cf6",
-        lockAmount: "true",
-      });
-
-      const urlWithoutSig = `${baseUrl}?${params.toString()}`;
-      const queryToSign = `?${params.toString()}`;
-      const signature = createHmac("sha256", secretKey)
-        .update(queryToSign)
-        .digest("base64");
-
-      const finalUrl = `${urlWithoutSig}&signature=${encodeURIComponent(signature)}`;
-
-      res.json({ url: finalUrl });
-    } catch (error: any) {
-      console.error("MoonPay URL error:", error);
-      res.status(500).json({ message: "Failed to generate MoonPay checkout URL" });
     }
   });
 

@@ -128,21 +128,6 @@ export default function PaymentPage() {
     },
   });
 
-  const moonpayCheckout = useMutation({
-    mutationFn: async () => {
-      const res = await apiRequest("POST", "/api/moonpay/url", { tier });
-      return res.json();
-    },
-    onSuccess: (data) => {
-      if (data.url) {
-        window.open(data.url, "_blank");
-      }
-    },
-    onError: (err: Error) => {
-      toast({ title: "MoonPay Error", description: err.message, variant: "destructive" });
-    },
-  });
-
   const connectAndPay = useCallback(async () => {
     if (!window.ethereum) {
       toast({
@@ -285,36 +270,28 @@ export default function PaymentPage() {
             </Card>
 
             <Card
-              className="p-6 bg-card/60 backdrop-blur-xl border-green-500/10 hover-elevate cursor-pointer"
-              onClick={() => moonpayCheckout.mutate()}
-              data-testid="card-moonpay"
+              className="p-5 bg-card/60 backdrop-blur-xl border-green-500/10 mb-2"
+              data-testid="card-moonpay-tip"
             >
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-md bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
-                  <CreditCard className="w-7 h-7 text-green-400" />
-                </div>
+              <div className="flex items-center gap-3">
+                <CreditCard className="w-5 h-5 text-green-400 shrink-0" />
                 <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    <h3 className="font-bold text-card-foreground">Buy ETH with Card</h3>
-                    <Badge variant="outline" className="border-green-500/30 text-green-400 bg-green-500/5 text-xs">Easiest</Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    Pay with credit or debit card via MoonPay. ETH is sent directly to us. No crypto wallet needed.
+                  <p className="text-sm text-card-foreground">
+                    Don't have ETH?{" "}
+                    <a
+                      href="https://www.moonpay.com/buy/eth"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-green-400 underline underline-offset-2"
+                      data-testid="link-moonpay"
+                    >
+                      Buy ETH with a card on MoonPay
+                    </a>
+                    , then come back and pay below.
                   </p>
                 </div>
-                {moonpayCheckout.isPending ? (
-                  <Loader2 className="w-5 h-5 text-green-400 shrink-0 animate-spin" />
-                ) : (
-                  <ArrowRight className="w-5 h-5 text-green-400 shrink-0" />
-                )}
               </div>
             </Card>
-
-            <div className="flex items-center gap-3 my-2">
-              <div className="flex-1 h-px bg-violet-500/15" />
-              <span className="text-xs text-muted-foreground uppercase tracking-widest">or pay with crypto</span>
-              <div className="flex-1 h-px bg-violet-500/15" />
-            </div>
 
             <Card
               className="p-6 bg-card/60 backdrop-blur-xl border-cyan-500/10 hover-elevate cursor-pointer"
