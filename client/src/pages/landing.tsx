@@ -175,9 +175,18 @@ export default function Landing() {
                 <Sparkles className="w-4 h-4 mr-2" /> Book 1-on-1 VIP &mdash; $799
               </Button>
             </div>
-            <Button size="lg" variant="outline" onClick={() => navigate("/payment/self")} data-testid="button-self-setup-hero" className="border-violet-500/30 text-violet-300">
-              Self-Setup &mdash; $199 <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
+            <div className="relative group">
+              <div className="absolute -inset-0.5 rounded-md bg-gradient-to-r from-cyan-500/30 via-violet-400/20 to-cyan-500/30 blur-sm group-hover:from-cyan-500/50 group-hover:via-violet-400/40 group-hover:to-cyan-500/50 transition-all duration-700" />
+              <Button
+                size="lg"
+                variant="outline"
+                onClick={() => navigate("/payment/self")}
+                data-testid="button-self-setup-hero"
+                className="relative border-cyan-500/30 text-cyan-200 bg-background/80 backdrop-blur-sm"
+              >
+                Self-Setup &mdash; $199 <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
           </motion.div>
 
           <motion.div
@@ -320,9 +329,18 @@ export default function Landing() {
                       <Sparkles className="w-4 h-4 mr-2" /> Book 1-on-1 VIP &mdash; $799
                     </Button>
                   </div>
-                  <Button size="lg" variant="outline" onClick={() => navigate("/payment/self")} data-testid="button-self-cta" className="border-violet-500/30 text-violet-300">
-                    Self-Setup &mdash; $199
-                  </Button>
+                  <div className="relative group">
+                    <div className="absolute -inset-0.5 rounded-md bg-gradient-to-r from-cyan-500/30 via-violet-400/20 to-cyan-500/30 blur-sm group-hover:from-cyan-500/50 group-hover:via-violet-400/40 group-hover:to-cyan-500/50 transition-all duration-700" />
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      onClick={() => navigate("/payment/self")}
+                      data-testid="button-self-cta"
+                      className="relative border-cyan-500/30 text-cyan-200 bg-background/80 backdrop-blur-sm"
+                    >
+                      Self-Setup &mdash; $199
+                    </Button>
+                  </div>
                 </div>
                 <div className="flex items-center gap-3 my-5">
                   <div className="flex-1 h-px bg-violet-500/15" />
