@@ -82,11 +82,11 @@ Preferred communication style: Simple, everyday language.
 - **Replit-specific**: `@replit/vite-plugin-runtime-error-modal`, `@replit/vite-plugin-cartographer`, `@replit/vite-plugin-dev-banner`
 
 ### Payment Integration
-- Cryptocurrency payments (Ethereum) — two payment methods:
+- Crypto-only payments (Ethereum) — two payment methods:
   1. **Direct Wallet Payment**: Users connect MetaMask, transaction is sent and tracked automatically
   2. **Manual TX Hash**: Users send ETH externally and paste their transaction hash
 - On-chain verification via public Ethereum RPC endpoints (Cloudflare, Ankr, LlamaRPC)
-- Demo mode: use code "DEMO2026" to preview the payment flow
+- No card/debit payments — crypto only
 - All payments go to wallet: `0x00468c1B22451ed9Fabc9DA32E6aEa28DC03a216`
 
 ### Social Media / SEO
@@ -96,6 +96,7 @@ Preferred communication style: Simple, everyday language.
 - Theme color: `#0a0a1a`
 
 ### Recent Changes
+- 2026-02-11: Removed all card/debit payment options (Stripe, Whop) — crypto payments only
 - 2026-02-11: Added automated crypto payment tracking with MetaMask wallet connection and on-chain verification via public Ethereum RPC
 - 2026-02-11: Added OG image and favicon for social media sharing (iMessage, Facebook, Telegram)
 - 2026-02-11: Added polling-based payment status checking for real blockchain transactions

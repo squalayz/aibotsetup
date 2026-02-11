@@ -13,7 +13,6 @@ import {
   ArrowLeft, Copy, CheckCircle, Loader2, ArrowRight,
   Wallet, AlertCircle, Shield, Zap, Clock,
 } from "lucide-react";
-import { SiEthereum } from "react-icons/si";
 
 const WALLET = "0x00468c1B22451ed9Fabc9DA32E6aEa28DC03a216";
 
@@ -265,8 +264,8 @@ export default function PaymentPage() {
               <div className="text-5xl font-serif font-bold bg-gradient-to-r from-violet-300 to-cyan-300 bg-clip-text text-transparent my-3">
                 ${amount}
               </div>
-              <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">
-                <SiEthereum className="w-4 h-4" /> ETH on Ethereum network
+              <p className="text-sm text-muted-foreground">
+                Pay with Ethereum (ETH) &mdash; choose your method below
               </p>
             </Card>
 
@@ -280,12 +279,9 @@ export default function PaymentPage() {
                   <Zap className="w-7 h-7 text-violet-400" />
                 </div>
                 <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    <h3 className="font-bold text-card-foreground">Pay with Wallet</h3>
-                    <Badge variant="outline" className="border-green-500/30 text-green-400 bg-green-500/5 text-xs">Recommended</Badge>
-                  </div>
+                  <h3 className="font-bold text-card-foreground mb-1">Pay with Wallet</h3>
                   <p className="text-sm text-muted-foreground">
-                    Connect MetaMask and pay directly. Automatic tracking &mdash; no copy/paste needed.
+                    Connect MetaMask and pay with ETH directly. Automatic on-chain tracking.
                   </p>
                 </div>
                 <ArrowRight className="w-5 h-5 text-violet-400 shrink-0" />
@@ -302,9 +298,9 @@ export default function PaymentPage() {
                   <Copy className="w-7 h-7 text-cyan-400" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-bold text-card-foreground mb-1">Manual Payment</h3>
+                  <h3 className="font-bold text-card-foreground mb-1">Manual Crypto Payment</h3>
                   <p className="text-sm text-muted-foreground">
-                    Send from any wallet or exchange, then paste your transaction hash for on-chain verification.
+                    Send ETH from any wallet or exchange, then paste your transaction hash.
                   </p>
                 </div>
                 <ArrowRight className="w-5 h-5 text-cyan-400 shrink-0" />

@@ -42,3 +42,6 @@ waitForPort = 5000
 
 [userenv.shared]
 ADMIN_PIN = "4455"
+
+[agent]
+integrations = ["stripe:2.0.0"]
