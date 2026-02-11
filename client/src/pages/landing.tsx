@@ -104,16 +104,16 @@ export default function Landing() {
               CLAWD
             </span>
           </div>
-          <div className="flex items-center gap-4 flex-wrap">
+          <div className="flex items-center gap-3 flex-wrap">
             <a
-              href={`https://instagram.com/${INSTAGRAM}`}
+              href="https://ig.me/m/squalayyy"
               target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-2 text-violet-400 text-sm font-sans no-underline transition-colors"
-              data-testid="link-instagram-nav"
+              rel="noopener noreferrer"
+              data-testid="link-ig-dm-nav"
             >
-              <SiInstagram className="w-4 h-4" />
-              <span>@{INSTAGRAM}</span>
+              <Button variant="outline" size="sm" className="border-pink-500/30 text-pink-400 gap-2">
+                <SiInstagram className="w-4 h-4" /> DM @{INSTAGRAM}
+              </Button>
             </a>
           </div>
         </nav>
@@ -162,13 +162,22 @@ export default function Landing() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.45 }}
-            className="flex gap-4 justify-center flex-wrap"
+            className="flex gap-4 justify-center items-center flex-wrap"
           >
-            <Button size="lg" onClick={() => navigate("/payment/self")} data-testid="button-self-setup-hero" className="bg-gradient-to-r from-violet-600 to-cyan-600 border-violet-500/50 text-white shadow-lg shadow-violet-500/20">
-              Start Self-Setup &mdash; $199 <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
-            <Button size="lg" variant="outline" onClick={() => navigate("/payment/vip")} data-testid="button-vip-hero" className="border-violet-500/30 text-violet-300">
-              Book 1-on-1 &mdash; $799
+            <div className="relative group" data-testid="button-vip-hero-wrapper">
+              <div className="absolute -inset-1 rounded-md bg-gradient-to-r from-amber-500 via-yellow-300 to-amber-500 opacity-70 blur-md group-hover:opacity-100 transition-opacity duration-500 animate-pulse" />
+              <div className="absolute -inset-1.5 rounded-lg bg-gradient-to-r from-amber-400 via-yellow-200 to-amber-400 opacity-30 blur-xl animate-[pulse_2s_ease-in-out_infinite]" />
+              <Button
+                size="lg"
+                onClick={() => navigate("/payment/vip")}
+                data-testid="button-vip-hero"
+                className="relative bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 border-amber-400/60 text-black font-extrabold shadow-2xl shadow-amber-500/40 tracking-wide"
+              >
+                <Sparkles className="w-4 h-4 mr-2" /> Book 1-on-1 VIP &mdash; $799
+              </Button>
+            </div>
+            <Button size="lg" variant="outline" onClick={() => navigate("/payment/self")} data-testid="button-self-setup-hero" className="border-violet-500/30 text-violet-300">
+              Self-Setup &mdash; $199 <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </motion.div>
 
@@ -300,10 +309,19 @@ export default function Landing() {
                 <p className="text-muted-foreground mb-8 leading-relaxed">
                   Join the growing community of people running their own personal AI assistants. Questions? DM me.
                 </p>
-                <div className="flex gap-3 justify-center flex-wrap mb-6">
-                  <Button size="lg" onClick={() => navigate("/payment/vip")} data-testid="button-vip-cta" className="bg-gradient-to-r from-violet-600 to-cyan-600 border-violet-500/50 text-white shadow-lg shadow-violet-500/20">
-                    Book 1-on-1 &mdash; $799
-                  </Button>
+                <div className="flex gap-4 justify-center items-center flex-wrap mb-6">
+                  <div className="relative group">
+                    <div className="absolute -inset-1 rounded-md bg-gradient-to-r from-amber-500 via-yellow-300 to-amber-500 opacity-70 blur-md group-hover:opacity-100 transition-opacity duration-500 animate-pulse" />
+                    <div className="absolute -inset-1.5 rounded-lg bg-gradient-to-r from-amber-400 via-yellow-200 to-amber-400 opacity-30 blur-xl animate-[pulse_2s_ease-in-out_infinite]" />
+                    <Button
+                      size="lg"
+                      onClick={() => navigate("/payment/vip")}
+                      data-testid="button-vip-cta"
+                      className="relative bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 border-amber-400/60 text-black font-extrabold shadow-2xl shadow-amber-500/40 tracking-wide"
+                    >
+                      <Sparkles className="w-4 h-4 mr-2" /> Book 1-on-1 VIP &mdash; $799
+                    </Button>
+                  </div>
                   <Button size="lg" variant="outline" onClick={() => navigate("/payment/self")} data-testid="button-self-cta" className="border-violet-500/30 text-violet-300">
                     Self-Setup &mdash; $199
                   </Button>
