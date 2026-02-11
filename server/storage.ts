@@ -15,6 +15,8 @@ export interface IStorage {
   createPayment(payment: InsertPayment): Promise<Payment>;
   getPayments(): Promise<Payment[]>;
   getPaymentByTxHash(txHash: string): Promise<Payment | undefined>;
+  getPaymentById(id: string): Promise<Payment | undefined>;
+  updatePaymentVerified(id: string, verified: boolean): Promise<Payment>;
 
   createBooking(booking: InsertBooking): Promise<Booking>;
   getBookings(): Promise<Booking[]>;
@@ -50,6 +52,16 @@ export class DatabaseStorage implements IStorage {
 
   async getPaymentByTxHash(txHash: string): Promise<Payment | undefined> {
     const [result] = await db.select().from(payments).where(eq(payments.txHash, txHash));
+    return result;
+  }
+
+  async getPaymentById(id: string): Promise<Payment | undefined> {
+    const [result] = await db.select().from(payments).where(eq(payments.id, id));
+    return result;
+  }
+
+  async updatePaymentVerified(id: string, verified: boolean): Promise<Payment> {
+    const [result] = await db.update(payments).set({ verified }).where(eq(payments.id, id)).returning();
     return result;
   }
 
