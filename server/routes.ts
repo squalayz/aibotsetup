@@ -5,7 +5,6 @@ import { insertPaymentSchema, insertBookingSchema } from "@shared/schema";
 import { z } from "zod";
 
 const ADMIN_PIN = process.env.ADMIN_PIN || "4455";
-const DEMO_CODE = "DEMO2026";
 const WALLET = "0x00468c1B22451ed9Fabc9DA32E6aEa28DC03a216".toLowerCase();
 const ETH_RPC_URLS = [
   "https://cloudflare-eth.com",
@@ -160,23 +159,13 @@ export async function registerRoutes(
         return res.status(400).json({ message: "Invalid amount for tier" });
       }
 
-      const isDemo = txHash.toUpperCase() === DEMO_CODE;
-
-      if (!isDemo) {
-        const existing = await storage.getPaymentByTxHash(txHash);
-        if (existing) {
-          return res.status(400).json({ message: "This transaction hash has already been used" });
-        }
+      const existing = await storage.getPaymentByTxHash(txHash);
+      if (existing) {
+        return res.status(400).json({ message: "This transaction hash has already been used" });
       }
 
-      let verified = false;
-
-      if (isDemo) {
-        verified = true;
-      } else {
-        const chainResult = await verifyTransactionOnChain(txHash, expectedAmount);
-        verified = chainResult.verified;
-      }
+      const chainResult = await verifyTransactionOnChain(txHash, expectedAmount);
+      const verified = chainResult.verified;
 
       const payment = await storage.createPayment({
         txHash,
@@ -202,10 +191,6 @@ export async function registerRoutes(
       }
 
       if (payment.verified) {
-        return res.json(payment);
-      }
-
-      if (payment.txHash.toUpperCase() === DEMO_CODE) {
         return res.json(payment);
       }
 

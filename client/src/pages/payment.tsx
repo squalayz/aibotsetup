@@ -311,12 +311,6 @@ export default function PaymentPage() {
               </div>
             </Card>
 
-            <div className="bg-violet-500/5 border border-dashed border-violet-500/20 rounded-md p-3 flex items-center gap-3">
-              <AlertCircle className="w-4 h-4 text-violet-400 shrink-0" />
-              <span className="text-xs text-violet-300">
-                Demo mode: use <code className="bg-background/60 px-2 py-0.5 rounded text-cyan-300">DEMO2026</code> as a transaction hash to preview the full flow
-              </span>
-            </div>
           </motion.div>
         ) : method === "wallet" ? (
           <motion.div
@@ -482,13 +476,6 @@ export default function PaymentPage() {
                   className="bg-background/60 border-violet-500/15 text-foreground font-mono text-sm"
                   data-testid="input-tx-hash"
                 />
-              </div>
-
-              <div className="bg-violet-500/5 border border-dashed border-violet-500/20 rounded-md p-3 mb-5 flex items-center gap-3">
-                <AlertCircle className="w-4 h-4 text-violet-400 shrink-0" />
-                <span className="text-xs text-violet-300">
-                  Demo mode: type <code className="bg-background/60 px-2 py-0.5 rounded text-cyan-300">DEMO2026</code> to preview
-                </span>
               </div>
 
               <AnimatePresence mode="wait">
