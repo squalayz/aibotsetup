@@ -572,21 +572,23 @@ export default function Landing() {
           <span className="text-xs text-muted-foreground font-sans">
             &copy; 2026 Clawd &middot; Built with OpenClaw, ClawHub & Moltbook
           </span>
-          <div className="flex gap-5">
+          <div className="flex gap-5 flex-wrap">
             {[
-              { label: "OpenClaw", url: "https://openclaw.ai" },
-              { label: "ClawHub", url: "https://clawhub.ai" },
-              { label: "Moltbook", url: "https://moltbook.com" },
+              { label: "OpenClaw", url: "https://openclaw.ai", external: true },
+              { label: "ClawHub", url: "https://clawhub.ai", external: true },
+              { label: "Moltbook", url: "https://moltbook.com", external: true },
+              { label: "Terms", url: "/terms-and-conditions", external: false },
+              { label: "Privacy", url: "/privacy", external: false },
+              { label: "Refund Policy", url: "/refund", external: false },
             ].map((l) => (
               <a
                 key={l.label}
                 href={l.url}
-                target="_blank"
-                rel="noreferrer"
+                {...(l.external ? { target: "_blank", rel: "noreferrer" } : {})}
                 className="text-xs text-muted-foreground no-underline flex items-center gap-1"
-                data-testid={`link-footer-${l.label.toLowerCase()}`}
+                data-testid={`link-footer-${l.label.toLowerCase().replace(/\s+/g, "-")}`}
               >
-                {l.label} <ExternalLink className="w-3 h-3" />
+                {l.label} {l.external && <ExternalLink className="w-3 h-3" />}
               </a>
             ))}
           </div>
