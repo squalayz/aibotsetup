@@ -159,7 +159,7 @@ export default function AdminPage() {
                   <table className="w-full text-sm">
                     <thead>
                       <tr>
-                        {["Name", "Email", "Instagram", "Phone", "Date", "Time", "Status", ""].map((h) => (
+                        {["Name", "Email", "Phone", "Date", "Time", "Status", ""].map((h) => (
                           <th key={h} className="text-left p-3 text-xs text-violet-400 uppercase tracking-widest border-b border-violet-500/10 font-semibold">{h}</th>
                         ))}
                       </tr>
@@ -169,7 +169,6 @@ export default function AdminPage() {
                         <tr key={b.id} className="border-b border-violet-500/5 last:border-0" data-testid={`row-booking-${b.id}`}>
                           <td className="p-3 text-foreground flex items-center gap-2"><User className="w-3.5 h-3.5 text-violet-400" />{b.name}</td>
                           <td className="p-3 text-muted-foreground">{b.email}</td>
-                          <td className="p-3 text-muted-foreground">{b.instagram || "\u2014"}</td>
                           <td className="p-3 text-muted-foreground">{b.phone || "\u2014"}</td>
                           <td className="p-3 text-cyan-300 font-mono text-xs">{b.date}</td>
                           <td className="p-3 text-violet-300 font-mono text-xs flex items-center gap-1"><Clock className="w-3 h-3" />{formatHour(b.hour)}</td>

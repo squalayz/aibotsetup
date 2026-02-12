@@ -14,9 +14,6 @@ import {
   ArrowLeft, CalendarCheck, Clock, User, Mail, Phone,
   CheckCircle, Loader2, ArrowRight,
 } from "lucide-react";
-import { SiInstagram } from "react-icons/si";
-
-const INSTAGRAM = "squalayyy";
 
 function formatHour(h: number) {
   const ampm = h >= 12 ? "PM" : "AM";
@@ -37,7 +34,6 @@ export default function BookingPage() {
   const [selectedHour, setSelectedHour] = useState<number | null>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [instagram, setInstagram] = useState("");
   const [phone, setPhone] = useState("");
   const [confirmed, setConfirmed] = useState(false);
   const { toast } = useToast();
@@ -70,7 +66,7 @@ export default function BookingPage() {
       const res = await apiRequest("POST", "/api/bookings", {
         name,
         email,
-        instagram: instagram || null,
+        instagram: null,
         phone: phone || null,
         date: selectedDate.toISOString().split("T")[0],
         hour: selectedHour,
@@ -112,10 +108,7 @@ export default function BookingPage() {
               at <strong className="text-violet-300">{selectedHour !== null ? formatHour(selectedHour) : ""}</strong>.
             </p>
             <p className="text-sm text-muted-foreground mt-4">
-              I'll reach out via email or Instagram before our session. &mdash;{" "}
-              <a href={`https://instagram.com/${INSTAGRAM}`} target="_blank" rel="noreferrer" className="text-violet-400 no-underline">
-                @{INSTAGRAM}
-              </a>
+              I'll reach out via email before our session.
             </p>
             <Button variant="outline" onClick={() => navigate("/")} className="mt-6 border-violet-500/30 text-violet-300" data-testid="button-back-home-confirmed">
               Back to Home
@@ -155,12 +148,6 @@ export default function BookingPage() {
                 <Mail className="w-3.5 h-3.5" /> Email
               </Label>
               <Input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="you@email.com" className="bg-background/60 border-violet-500/15" data-testid="input-booking-email" />
-            </div>
-            <div>
-              <Label className="text-xs text-violet-400 uppercase tracking-widest mb-2 flex items-center gap-2">
-                <SiInstagram className="w-3.5 h-3.5" /> Instagram
-              </Label>
-              <Input value={instagram} onChange={(e) => setInstagram(e.target.value)} placeholder="@yourhandle" className="bg-background/60 border-violet-500/15" data-testid="input-booking-instagram" />
             </div>
             <div>
               <Label className="text-xs text-violet-400 uppercase tracking-widest mb-2 flex items-center gap-2">

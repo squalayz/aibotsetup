@@ -10,9 +10,8 @@ import {
   ChevronRight, ExternalLink, Phone, Building2,
   HeadphonesIcon, Users, MessageSquare, Briefcase,
 } from "lucide-react";
-import { SiInstagram, SiEthereum } from "react-icons/si";
+import { SiEthereum } from "react-icons/si";
 
-const INSTAGRAM = "squalayyy";
 const WALLET = "0x00468c1B22451ed9Fabc9DA32E6aEa28DC03a216";
 
 function FadeInSection({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
@@ -215,7 +214,7 @@ const selfFeatures = [
   "Skill installation walkthrough",
   "Multi-platform connection guide",
   "Lifetime access to guide updates",
-  "Community support via Instagram",
+  "Community support included",
 ];
 
 const vipFeatures = [
@@ -278,16 +277,6 @@ export default function Landing() {
             </span>
           </div>
           <div className="flex items-center gap-3 flex-wrap">
-            <a
-              href="https://ig.me/m/squalayyy"
-              target="_blank"
-              rel="noopener noreferrer"
-              data-testid="link-ig-dm-nav"
-            >
-              <Button variant="outline" size="sm" className="border-pink-500/30 text-pink-400 gap-2">
-                <SiInstagram className="w-4 h-4" /> DM @{INSTAGRAM}
-              </Button>
-            </a>
           </div>
         </nav>
 
@@ -574,21 +563,6 @@ export default function Landing() {
                     </Button>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 my-5">
-                  <div className="flex-1 h-px bg-violet-500/15" />
-                  <span className="text-xs text-muted-foreground uppercase tracking-widest">or</span>
-                  <div className="flex-1 h-px bg-violet-500/15" />
-                </div>
-                <a
-                  href="https://ig.me/m/squalayyy"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  data-testid="link-ig-dm-cta"
-                >
-                  <Button variant="outline" size="lg" className="border-pink-500/30 text-pink-400 gap-2">
-                    <SiInstagram className="w-5 h-5" /> DM @{INSTAGRAM} for Info
-                  </Button>
-                </a>
               </div>
             </Card>
           </FadeInSection>
@@ -603,7 +577,6 @@ export default function Landing() {
               { label: "OpenClaw", url: "https://openclaw.ai" },
               { label: "ClawHub", url: "https://clawhub.ai" },
               { label: "Moltbook", url: "https://moltbook.com" },
-              { label: "Instagram", url: `https://instagram.com/${INSTAGRAM}` },
             ].map((l) => (
               <a
                 key={l.label}

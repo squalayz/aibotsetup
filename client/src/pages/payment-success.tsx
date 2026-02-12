@@ -80,7 +80,7 @@ export default function PaymentSuccessPage() {
             <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-6" />
             <h2 className="text-2xl font-bold text-red-400 mb-3" data-testid="text-error">Payment Issue</h2>
             <p className="text-muted-foreground mb-4">
-              We couldn't verify your payment. If you were charged, please contact @squalayyy on Instagram for support.
+              We couldn't verify your payment. If you were charged, please contact support for assistance.
             </p>
             <Button
               variant="outline"

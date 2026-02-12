@@ -9,9 +9,6 @@ import {
   ArrowLeft, ArrowRight, Check, ChevronLeft, ChevronRight,
   Key, Settings, Package, Bot, Puzzle, MessageSquare, Rocket, Trophy,
 } from "lucide-react";
-import { SiInstagram } from "react-icons/si";
-
-const INSTAGRAM = "squalayyy";
 
 const SETUP_STEPS = [
   {
@@ -234,11 +231,7 @@ export default function GuidePage() {
                   <Trophy className="w-12 h-12 text-cyan-400 mx-auto mb-4" />
                   <h3 className="font-serif text-xl font-bold text-cyan-300 mb-2">Setup Complete!</h3>
                   <p className="text-sm text-muted-foreground">
-                    Your Clawd Bot is ready. DM{" "}
-                    <a href={`https://instagram.com/${INSTAGRAM}`} target="_blank" rel="noreferrer" className="text-violet-400 no-underline">
-                      @{INSTAGRAM}
-                    </a>{" "}
-                    if you need any help!
+                    Your Clawd Bot is ready. Reach out if you need any help!
                   </p>
                 </Card>
               </motion.div>

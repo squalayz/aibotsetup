@@ -13,7 +13,6 @@ import {
   ArrowLeft, Copy, CheckCircle, Loader2, ArrowRight,
   Wallet, AlertCircle, Shield, Zap, Clock, CreditCard, MessageCircle,
 } from "lucide-react";
-import { SiInstagram } from "react-icons/si";
 
 const WALLET = "0x00468c1B22451ed9Fabc9DA32E6aEa28DC03a216";
 
@@ -69,7 +68,7 @@ export default function PaymentPage() {
       attempts++;
       if (attempts > maxAttempts) {
         if (pollingRef.current) clearInterval(pollingRef.current);
-        setPollMessage("Verification timed out. Your payment may still be processing on-chain. Check the admin dashboard or contact @squalayyy on Instagram.");
+        setPollMessage("Verification timed out. Your payment may still be processing on-chain. Please check back later or contact support.");
         return;
       }
 
@@ -353,35 +352,6 @@ export default function PaymentPage() {
               </Card>
             )}
 
-            <div className="flex items-center gap-3 my-3">
-              <div className="flex-1 h-px bg-violet-500/15" />
-              <span className="text-xs text-muted-foreground uppercase tracking-widest">need help?</span>
-              <div className="flex-1 h-px bg-violet-500/15" />
-            </div>
-
-            <Card className="p-6 bg-card/60 backdrop-blur-xl border-pink-500/10" data-testid="card-ig-dm">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-md bg-pink-500/10 border border-pink-500/20 flex items-center justify-center shrink-0">
-                  <SiInstagram className="w-7 h-7 text-pink-400" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-bold text-card-foreground mb-1">DM me on Instagram</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Questions? Want to pay a different way? Just message me directly.
-                  </p>
-                </div>
-                <a
-                  href="https://ig.me/m/squalayyy"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  data-testid="link-ig-dm"
-                >
-                  <Button variant="outline" size="sm" className="border-pink-500/30 text-pink-400 shrink-0">
-                    <MessageCircle className="w-4 h-4 mr-1.5" /> Message
-                  </Button>
-                </a>
-              </div>
-            </Card>
 
           </motion.div>
         ) : method === "wallet" ? (
