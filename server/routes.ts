@@ -1,7 +1,7 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertPaymentSchema, insertBookingSchema } from "@shared/schema";
+import { insertPaymentSchema, insertBookingSchema, insertSignupSchema } from "@shared/schema";
 import { z } from "zod";
 
 const ADMIN_PIN = process.env.ADMIN_PIN || "4455";
@@ -261,9 +261,58 @@ export async function registerRoutes(
     }
   });
 
+  app.post("/api/signups", async (req, res) => {
+    try {
+      const data = insertSignupSchema.parse(req.body);
+
+      const email = data.email.trim().toLowerCase();
+      const phone = data.phone.trim();
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.status(400).json({ message: "Please enter a valid email address" });
+      }
+      if (!phone || phone.length < 7) {
+        return res.status(400).json({ message: "Please enter a valid phone number" });
+      }
+
+      const existing = await storage.getSignupByEmail(email);
+      if (existing) {
+        return res.status(400).json({ message: "This email is already signed up" });
+      }
+
+      const signup = await storage.createSignup({ email, phone });
+      res.json(signup);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: error.errors[0].message });
+      }
+      res.status(500).json({ message: "Failed to create signup" });
+    }
+  });
+
+  app.get("/api/admin/signups", requireAdmin, async (_req, res) => {
+    try {
+      const allSignups = await storage.getSignups();
+      res.json(allSignups);
+    } catch {
+      res.status(500).json({ message: "Failed to fetch signups" });
+    }
+  });
+
+  app.delete("/api/admin/signups/:id", requireAdmin, async (req, res) => {
+    try {
+      const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+      await storage.deleteSignup(id);
+      res.json({ success: true });
+    } catch {
+      res.status(500).json({ message: "Failed to delete signup" });
+    }
+  });
+
   app.delete("/api/admin/bookings/:id", requireAdmin, async (req, res) => {
     try {
-      await storage.deleteBooking(req.params.id);
+      const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+      await storage.deleteBooking(id);
       res.json({ success: true });
     } catch {
       res.status(500).json({ message: "Failed to delete booking" });

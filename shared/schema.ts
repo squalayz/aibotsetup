@@ -57,5 +57,12 @@ export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type InsertPayment = z.infer<typeof insertPaymentSchema>;
 export type Payment = typeof payments.$inferSelect;
+export const insertSignupSchema = createInsertSchema(signups).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type InsertBooking = z.infer<typeof insertBookingSchema>;
 export type Booking = typeof bookings.$inferSelect;
+export type InsertSignup = z.infer<typeof insertSignupSchema>;
+export type Signup = typeof signups.$inferSelect;

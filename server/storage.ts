@@ -2,10 +2,11 @@ import {
   type User, type InsertUser,
   type Payment, type InsertPayment,
   type Booking, type InsertBooking,
-  users, payments, bookings,
+  type Signup, type InsertSignup,
+  users, payments, bookings, signups,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and } from "drizzle-orm";
+import { eq, and, desc } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -23,6 +24,11 @@ export interface IStorage {
   getBookingsByDate(date: string): Promise<Booking[]>;
   deleteBooking(id: string): Promise<void>;
   getBookingByDateAndHour(date: string, hour: number): Promise<Booking | undefined>;
+
+  createSignup(signup: InsertSignup): Promise<Signup>;
+  getSignups(): Promise<Signup[]>;
+  getSignupByEmail(email: string): Promise<Signup | undefined>;
+  deleteSignup(id: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -87,6 +93,24 @@ export class DatabaseStorage implements IStorage {
       and(eq(bookings.date, date), eq(bookings.hour, hour), eq(bookings.status, "confirmed"))
     );
     return result;
+  }
+
+  async createSignup(signup: InsertSignup): Promise<Signup> {
+    const [result] = await db.insert(signups).values(signup).returning();
+    return result;
+  }
+
+  async getSignups(): Promise<Signup[]> {
+    return db.select().from(signups).orderBy(desc(signups.createdAt));
+  }
+
+  async getSignupByEmail(email: string): Promise<Signup | undefined> {
+    const [result] = await db.select().from(signups).where(eq(signups.email, email));
+    return result;
+  }
+
+  async deleteSignup(id: string): Promise<void> {
+    await db.delete(signups).where(eq(signups.id, id));
   }
 }
 

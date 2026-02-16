@@ -10,10 +10,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient, getQueryFn } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import type { Booking, Payment } from "@shared/schema";
+import type { Booking, Payment, Signup } from "@shared/schema";
 import {
   ArrowLeft, Lock, CalendarCheck, Wallet, DollarSign,
-  Loader2, Trash2, Clock, User, Mail,
+  Loader2, Trash2, Clock, User, Mail, Phone, UserPlus,
 } from "lucide-react";
 
 function formatHour(h: number) {
@@ -53,6 +53,25 @@ export default function AdminPage() {
     queryKey: ["/api/admin/payments"],
     queryFn: getQueryFn<Payment[]>({ on401: "returnNull" }),
     enabled: authed,
+  });
+
+  const { data: signups = [], isLoading: loadingSignups } = useQuery<Signup[]>({
+    queryKey: ["/api/admin/signups"],
+    queryFn: getQueryFn<Signup[]>({ on401: "returnNull" }),
+    enabled: authed,
+  });
+
+  const deleteSignupMutation = useMutation({
+    mutationFn: async (id: string) => {
+      await apiRequest("DELETE", `/api/admin/signups/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/signups"] });
+      toast({ title: "Signup removed" });
+    },
+    onError: (err: Error) => {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    },
   });
 
   const cancelMutation = useMutation({
@@ -123,8 +142,9 @@ export default function AdminPage() {
         </h1>
       </motion.div>
 
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
         {[
+          { label: "Free Signups", value: signups.length, icon: UserPlus, color: "text-green-400" },
           { label: "Total Bookings", value: bookings.length, icon: CalendarCheck, color: "text-violet-400" },
           { label: "Payments", value: payments.length, icon: Wallet, color: "text-cyan-400" },
           { label: "Revenue", value: `$${totalRevenue}`, icon: DollarSign, color: "text-green-400" },
@@ -138,8 +158,11 @@ export default function AdminPage() {
       </motion.div>
 
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-        <Tabs defaultValue="bookings" className="w-full">
+        <Tabs defaultValue="signups" className="w-full">
           <TabsList className="bg-card/60 border border-violet-500/10 mb-4">
+            <TabsTrigger value="signups" className="data-[state=active]:bg-green-500/15" data-testid="tab-signups">
+              <UserPlus className="w-4 h-4 mr-2" /> Signups
+            </TabsTrigger>
             <TabsTrigger value="bookings" className="data-[state=active]:bg-violet-500/15" data-testid="tab-bookings">
               <CalendarCheck className="w-4 h-4 mr-2" /> Bookings
             </TabsTrigger>
@@ -147,6 +170,51 @@ export default function AdminPage() {
               <Wallet className="w-4 h-4 mr-2" /> Payments
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="signups">
+            <Card className="p-6 bg-card/60 backdrop-blur-xl border-green-500/10">
+              {loadingSignups ? (
+                <div className="text-center py-8"><Loader2 className="w-6 h-6 text-green-400 animate-spin mx-auto" /></div>
+              ) : signups.length === 0 ? (
+                <p className="text-muted-foreground text-center py-8 text-sm">No free signups yet</p>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr>
+                        {["Email", "Phone", "Signed Up", ""].map((h) => (
+                          <th key={h} className="text-left p-3 text-xs text-green-400 uppercase tracking-widest border-b border-green-500/10 font-semibold">{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {signups.map((s) => (
+                        <tr key={s.id} className="border-b border-green-500/5 last:border-0" data-testid={`row-signup-${s.id}`}>
+                          <td className="p-3 text-foreground flex items-center gap-2"><Mail className="w-3.5 h-3.5 text-green-400" />{s.email}</td>
+                          <td className="p-3 text-muted-foreground flex items-center gap-2"><Phone className="w-3.5 h-3.5 text-green-400" />{s.phone}</td>
+                          <td className="p-3 text-green-300 font-mono text-xs">
+                            {s.createdAt ? new Date(s.createdAt).toLocaleString() : "\u2014"}
+                          </td>
+                          <td className="p-3">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => deleteSignupMutation.mutate(s.id)}
+                              disabled={deleteSignupMutation.isPending}
+                              className="text-red-400"
+                              data-testid={`button-delete-signup-${s.id}`}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </Card>
+          </TabsContent>
 
           <TabsContent value="bookings">
             <Card className="p-6 bg-card/60 backdrop-blur-xl border-violet-500/10">

@@ -1,14 +1,20 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation } from "wouter";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import {
   Sparkles, Zap, Shield, Globe, Brain, Mail, Code,
   ArrowRight, Check, Wallet, CalendarCheck, Bot,
   ChevronRight, ExternalLink, Phone, Building2,
   HeadphonesIcon, Users, MessageSquare, Briefcase,
+  Video, X, CheckCircle, Loader2,
 } from "lucide-react";
 import { SiEthereum } from "react-icons/si";
 
@@ -243,6 +249,27 @@ const stats = [
 export default function Landing() {
   const [, navigate] = useLocation();
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [showSignup, setShowSignup] = useState(false);
+  const [signupEmail, setSignupEmail] = useState("");
+  const [signupPhone, setSignupPhone] = useState("");
+  const [signupSuccess, setSignupSuccess] = useState(false);
+  const { toast } = useToast();
+
+  const signupMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", "/api/signups", {
+        email: signupEmail,
+        phone: signupPhone,
+      });
+      return res.json();
+    },
+    onSuccess: () => {
+      setSignupSuccess(true);
+    },
+    onError: (err: Error) => {
+      toast({ title: "Signup Error", description: err.message, variant: "destructive" });
+    },
+  });
 
   useEffect(() => {
     const handle = (e: MouseEvent) => setMousePos({ x: e.clientX, y: e.clientY });
@@ -254,6 +281,177 @@ export default function Landing() {
     <div className="relative min-h-screen overflow-x-hidden">
       <GridBackground />
       <FloatingBots />
+
+      <AnimatePresence>
+        {showSignup && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            onClick={() => { if (!signupSuccess) setShowSignup(false); }}
+          >
+            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 30 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 30 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative w-full max-w-[480px]"
+            >
+              <div className="absolute -inset-1 rounded-md bg-gradient-to-r from-green-500/30 via-emerald-400/20 to-cyan-500/30 blur-lg" />
+              <Card className="relative p-8 bg-card/95 backdrop-blur-xl border-green-500/20">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => { setShowSignup(false); setSignupSuccess(false); setSignupEmail(""); setSignupPhone(""); }}
+                  className="absolute top-3 right-3 text-muted-foreground"
+                  data-testid="button-close-signup"
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+
+                <AnimatePresence mode="wait">
+                  {signupSuccess ? (
+                    <motion.div
+                      key="success"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="text-center py-4"
+                    >
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ type: "spring", damping: 15, stiffness: 200, delay: 0.1 }}
+                      >
+                        <CheckCircle className="w-16 h-16 text-green-400 mx-auto mb-5" />
+                      </motion.div>
+                      <h3 className="font-serif text-2xl font-bold text-green-300 mb-3" data-testid="text-signup-success">You're In!</h3>
+                      <p className="text-muted-foreground leading-relaxed mb-2">
+                        You've been signed up for the free Zoom class.
+                      </p>
+                      <p className="text-sm text-muted-foreground leading-relaxed mb-6">
+                        We'll text you the Zoom link to <strong className="text-green-300">{signupPhone}</strong> before the session. Keep an eye on your phone!
+                      </p>
+                      <div className="space-y-3">
+                        <Card className="p-4 bg-green-500/5 border-green-500/15">
+                          <div className="flex items-start gap-3">
+                            <Video className="w-5 h-5 text-green-400 shrink-0 mt-0.5" />
+                            <div className="text-left">
+                              <p className="text-sm font-semibold text-foreground mb-1">What happens next?</p>
+                              <ul className="text-xs text-muted-foreground space-y-1">
+                                <li className="flex items-center gap-2"><Check className="w-3 h-3 text-green-400" /> You'll receive a text with the Zoom link</li>
+                                <li className="flex items-center gap-2"><Check className="w-3 h-3 text-green-400" /> Join the live class at the scheduled time</li>
+                                <li className="flex items-center gap-2"><Check className="w-3 h-3 text-green-400" /> Learn how to build your own AI bot step-by-step</li>
+                                <li className="flex items-center gap-2"><Check className="w-3 h-3 text-green-400" /> Ask questions live and get real-time help</li>
+                              </ul>
+                            </div>
+                          </div>
+                        </Card>
+                      </div>
+                      <Button
+                        variant="outline"
+                        onClick={() => { setShowSignup(false); setSignupSuccess(false); setSignupEmail(""); setSignupPhone(""); }}
+                        className="mt-6 border-green-500/30 text-green-300"
+                        data-testid="button-signup-done"
+                      >
+                        Got it!
+                      </Button>
+                    </motion.div>
+                  ) : (
+                    <motion.div key="form" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+                      <div className="text-center mb-6">
+                        <motion.div
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ type: "spring", damping: 15, stiffness: 200 }}
+                          className="w-16 h-16 rounded-md bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/20 flex items-center justify-center mx-auto mb-4"
+                        >
+                          <Video className="w-8 h-8 text-green-400" />
+                        </motion.div>
+                        <h3 className="font-serif text-2xl font-bold text-foreground mb-2" data-testid="heading-signup-modal">Free Zoom Class</h3>
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          Join our live Zoom session where we walk you through building your own AI bot from scratch.
+                          Completely free — no strings attached.
+                        </p>
+                      </div>
+
+                      <Card className="p-4 bg-green-500/5 border-green-500/10 mb-6">
+                        <h4 className="text-xs font-semibold text-green-400 uppercase tracking-widest mb-3">What you'll learn</h4>
+                        <ul className="space-y-2">
+                          {[
+                            "How to set up your own AI bot from zero",
+                            "Connect your bot to 15+ platforms",
+                            "Install skills from ClawHub marketplace",
+                            "Automate your business with AI workflows",
+                            "Live Q&A — ask anything!",
+                          ].map((item) => (
+                            <li key={item} className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <Check className="w-3.5 h-3.5 text-green-400 shrink-0" />
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      </Card>
+
+                      <div className="space-y-4 mb-6">
+                        <div>
+                          <Label className="text-xs text-green-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                            <Mail className="w-3.5 h-3.5" /> Email Address
+                          </Label>
+                          <Input
+                            value={signupEmail}
+                            onChange={(e) => setSignupEmail(e.target.value)}
+                            type="email"
+                            placeholder="you@email.com"
+                            className="bg-background/60 border-green-500/15"
+                            data-testid="input-signup-email"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs text-green-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                            <Phone className="w-3.5 h-3.5" /> Phone Number
+                          </Label>
+                          <Input
+                            value={signupPhone}
+                            onChange={(e) => setSignupPhone(e.target.value)}
+                            type="tel"
+                            placeholder="+1 (555) 123-4567"
+                            className="bg-background/60 border-green-500/15"
+                            data-testid="input-signup-phone"
+                          />
+                          <p className="text-xs text-muted-foreground/70 mt-1.5 flex items-center gap-1">
+                            <Phone className="w-3 h-3" /> Required — we'll text you the Zoom link
+                          </p>
+                        </div>
+                      </div>
+
+                      <Button
+                        className="w-full bg-gradient-to-r from-green-600 via-emerald-500 to-green-600 border-green-400/40 text-white font-bold"
+                        onClick={() => signupMutation.mutate()}
+                        disabled={!signupEmail || !signupPhone || signupMutation.isPending}
+                        data-testid="button-submit-signup"
+                      >
+                        {signupMutation.isPending ? (
+                          <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                        ) : (
+                          <Video className="w-4 h-4 mr-2" />
+                        )}
+                        {signupMutation.isPending ? "Signing Up..." : "Sign Up — It's Free"}
+                      </Button>
+
+                      <p className="text-[11px] text-muted-foreground/60 text-center mt-3">
+                        No credit card needed. We'll only use your info to send the Zoom link.
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </Card>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <div
         className="fixed w-[600px] h-[600px] rounded-full pointer-events-none z-[2] transition-transform duration-700"
         style={{
@@ -335,30 +533,43 @@ export default function Landing() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.45 }}
-            className="flex gap-4 justify-center items-center flex-wrap"
+            className="flex flex-col items-center gap-5"
           >
-            <div className="relative group" data-testid="button-vip-hero-wrapper">
-              <div className="absolute -inset-0.5 rounded-md bg-gradient-to-r from-amber-500/40 via-yellow-400/30 to-amber-500/40 blur-sm group-hover:from-amber-500/60 group-hover:via-yellow-400/50 group-hover:to-amber-500/60 transition-all duration-700" />
+            <div className="relative group cursor-pointer" onClick={() => setShowSignup(true)} data-testid="button-free-signup-wrapper">
+              <div className="absolute -inset-1 rounded-md bg-gradient-to-r from-green-500/50 via-emerald-400/40 to-green-500/50 blur-md group-hover:from-green-500/70 group-hover:via-emerald-400/60 group-hover:to-green-500/70 transition-all duration-700 animate-pulse" />
               <Button
                 size="lg"
-                onClick={() => navigate("/payment/vip")}
-                data-testid="button-vip-hero"
-                className="relative bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 border-amber-500/40 text-amber-100 font-bold shadow-lg shadow-amber-500/15 tracking-wide"
+                data-testid="button-free-signup"
+                className="relative bg-gradient-to-r from-green-600 via-emerald-500 to-green-600 border-green-400/40 text-white font-bold shadow-lg shadow-green-500/20 tracking-wide"
               >
-                <Sparkles className="w-4 h-4 mr-2" /> Book 1-on-1 VIP &mdash; $799
+                <Video className="w-5 h-5 mr-2" /> Free Zoom Class — Sign Up Now
               </Button>
             </div>
-            <div className="relative group">
-              <div className="absolute -inset-0.5 rounded-md bg-gradient-to-r from-cyan-500/30 via-violet-400/20 to-cyan-500/30 blur-sm group-hover:from-cyan-500/50 group-hover:via-violet-400/40 group-hover:to-cyan-500/50 transition-all duration-700" />
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => navigate("/payment/self")}
-                data-testid="button-self-setup-hero"
-                className="relative border-cyan-500/30 text-cyan-200 bg-background/80 backdrop-blur-sm"
-              >
-                Self-Setup &mdash; $199 <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
+
+            <div className="flex gap-4 justify-center items-center flex-wrap">
+              <div className="relative group" data-testid="button-vip-hero-wrapper">
+                <div className="absolute -inset-0.5 rounded-md bg-gradient-to-r from-amber-500/40 via-yellow-400/30 to-amber-500/40 blur-sm group-hover:from-amber-500/60 group-hover:via-yellow-400/50 group-hover:to-amber-500/60 transition-all duration-700" />
+                <Button
+                  size="lg"
+                  onClick={() => navigate("/payment/vip")}
+                  data-testid="button-vip-hero"
+                  className="relative bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 border-amber-500/40 text-amber-100 font-bold shadow-lg shadow-amber-500/15 tracking-wide"
+                >
+                  <Sparkles className="w-4 h-4 mr-2" /> Book 1-on-1 VIP &mdash; $799
+                </Button>
+              </div>
+              <div className="relative group">
+                <div className="absolute -inset-0.5 rounded-md bg-gradient-to-r from-cyan-500/30 via-violet-400/20 to-cyan-500/30 blur-sm group-hover:from-cyan-500/50 group-hover:via-violet-400/40 group-hover:to-cyan-500/50 transition-all duration-700" />
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={() => navigate("/payment/self")}
+                  data-testid="button-self-setup-hero"
+                  className="relative border-cyan-500/30 text-cyan-200 bg-background/80 backdrop-blur-sm"
+                >
+                  Self-Setup &mdash; $199 <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </div>
             </div>
           </motion.div>
 
