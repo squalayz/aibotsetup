@@ -214,29 +214,10 @@ const useCases = [
   { icon: Zap, title: "Custom Anything", desc: "Whatever your business needs, we build it. If it can be automated with AI, we make it happen.", gradient: "from-violet-500/15 to-cyan-500/15" },
 ];
 
-const selfFeatures = [
-  "Step-by-step interactive guide",
-  "Full OpenClaw + ClawHub setup",
-  "Skill installation walkthrough",
-  "Multi-platform connection guide",
-  "Lifetime access to guide updates",
-  "Community support included",
-];
-
-const vipFeatures = [
-  "Everything in Self-Setup",
-  "1-hour live screen-share session",
-  "Custom bot personality setup",
-  "Advanced skill configuration",
-  "Troubleshooting & optimization",
-  "Priority DM support after",
-  "I do it all -- you just watch & learn",
-];
-
 const howItWorks = [
-  { icon: Wallet, title: "Pay with Crypto", desc: "Send ETH or USDT to our wallet. Paste your TX hash to verify.", step: "01" },
-  { icon: CalendarCheck, title: "Choose Your Path", desc: "Self-guided walkthrough or book a 1-on-1 live session.", step: "02" },
-  { icon: Bot, title: "Bot Goes Live", desc: "Your custom AI agent is running 24/7 for your business.", step: "03" },
+  { icon: Video, title: "Join Free Zoom Class", desc: "Sign up and attend our live training session — completely free.", step: "01" },
+  { icon: Bot, title: "Learn to Build Your Bot", desc: "Follow along step-by-step as we build a real AI bot live.", step: "02" },
+  { icon: Zap, title: "Bot Goes Live", desc: "Your custom AI agent is running 24/7 for your business.", step: "03" },
 ];
 
 const stats = [
@@ -546,32 +527,6 @@ export default function Landing() {
               </Button>
             </div>
 
-            <div className="flex gap-4 justify-center items-center flex-wrap">
-              <div className="relative group" data-testid="button-vip-hero-wrapper">
-                <div className="absolute -inset-0.5 rounded-md bg-gradient-to-r from-amber-500/40 via-yellow-400/30 to-amber-500/40 blur-sm group-hover:from-amber-500/60 group-hover:via-yellow-400/50 group-hover:to-amber-500/60 transition-all duration-700" />
-                <Button
-                  size="lg"
-                  onClick={() => navigate("/payment/vip")}
-                  data-testid="button-vip-hero"
-                  className="relative bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 border-amber-500/40 text-amber-100 font-bold shadow-lg shadow-amber-500/15 tracking-wide"
-                >
-                  <Sparkles className="w-4 h-4 mr-2" /> Book 1-on-1 VIP &mdash; $799
-                </Button>
-              </div>
-              <div className="relative group">
-                <div className="absolute -inset-0.5 rounded-md bg-gradient-to-r from-cyan-500/30 via-violet-400/20 to-cyan-500/30 blur-sm group-hover:from-cyan-500/50 group-hover:via-violet-400/40 group-hover:to-cyan-500/50 transition-all duration-700" />
-                <Button
-                  size="lg"
-                  variant="outline"
-                  onClick={() => navigate("/payment/self")}
-                  data-testid="button-self-setup-hero"
-                  className="relative border-cyan-500/30 text-cyan-200 bg-background/80 backdrop-blur-sm"
-                >
-                  Self-Setup &mdash; $199 <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </div>
-            </div>
-
             <a href="sms:+17542504912" data-testid="link-contact-text">
               <Button
                 size="lg"
@@ -663,63 +618,6 @@ export default function Landing() {
           </div>
         </section>
 
-        <section className="py-16" data-testid="section-pricing">
-          <FadeInSection>
-            <div className="text-center mb-12">
-              <h2 className="font-serif text-3xl md:text-4xl font-bold bg-gradient-to-r from-violet-300 via-cyan-300 to-violet-400 bg-clip-text text-transparent mb-3">
-                Pricing
-              </h2>
-              <p className="text-muted-foreground max-w-[500px] mx-auto">Choose the option that works best for you</p>
-            </div>
-          </FadeInSection>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-[850px] mx-auto">
-            <FadeInSection delay={0.1}>
-              <Card className="p-8 bg-card/60 backdrop-blur-xl border-violet-500/10 relative overflow-visible h-full">
-                <Badge variant="outline" className="border-cyan-500/30 text-cyan-400 bg-cyan-500/5 mb-5">Self-Setup</Badge>
-                <div className="text-5xl font-serif font-bold text-foreground mb-2">$199</div>
-                <p className="text-sm text-muted-foreground mb-6">Guided walkthrough at your own pace</p>
-                <div className="border-t border-violet-500/10 pt-5 mb-6 space-y-3">
-                  {selfFeatures.map((item) => (
-                    <div key={item} className="flex items-start gap-3">
-                      <Check className="w-4 h-4 text-cyan-400 mt-0.5 shrink-0" />
-                      <span className="text-sm text-card-foreground">{item}</span>
-                    </div>
-                  ))}
-                </div>
-                <Button variant="outline" className="w-full border-violet-500/30 text-violet-300" onClick={() => navigate("/payment/self")} data-testid="button-self-setup-pricing">
-                  Get Started <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </Card>
-            </FadeInSection>
-
-            <FadeInSection delay={0.2}>
-              <Card className="p-8 bg-card/60 backdrop-blur-xl border-violet-500/25 relative overflow-visible h-full">
-                <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 rounded-t-md" />
-                <div className="flex items-center gap-2 mb-5 flex-wrap">
-                  <Badge variant="outline" className="border-violet-500/30 text-violet-400 bg-violet-500/5">1-on-1 VIP</Badge>
-                  <Badge variant="outline" className="border-amber-500/30 text-amber-400 bg-amber-500/5">Most Popular</Badge>
-                </div>
-                <div className="text-5xl font-serif font-bold bg-gradient-to-r from-amber-300 to-amber-500 bg-clip-text text-transparent mb-2">$799</div>
-                <p className="text-sm text-muted-foreground mb-6">Personal 1-hour session with me</p>
-                <div className="border-t border-violet-500/10 pt-5 mb-6 space-y-3">
-                  {vipFeatures.map((item) => (
-                    <div key={item} className="flex items-start gap-3">
-                      <Check className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
-                      <span className="text-sm text-card-foreground">{item}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="relative group">
-                  <div className="absolute -inset-0.5 rounded-md bg-gradient-to-r from-amber-500/30 via-yellow-400/20 to-amber-500/30 blur-sm group-hover:from-amber-500/50 group-hover:via-yellow-400/40 group-hover:to-amber-500/50 transition-all duration-700" />
-                  <Button className="relative w-full bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 border-amber-500/40 text-amber-100 font-bold shadow-lg shadow-amber-500/15" onClick={() => navigate("/payment/vip")} data-testid="button-vip-pricing">
-                    Book Your Session <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                </div>
-              </Card>
-            </FadeInSection>
-          </div>
-        </section>
 
         <section className="py-16" data-testid="section-how-it-works">
           <FadeInSection>
@@ -759,30 +657,26 @@ export default function Landing() {
                   Whether you need a phone receptionist, sales bot, or a full AI-powered workflow --
                   we've got you covered. Let's build something incredible.
                 </p>
-                <div className="flex gap-4 justify-center items-center flex-wrap mb-6">
-                  <div className="relative group">
-                    <div className="absolute -inset-0.5 rounded-md bg-gradient-to-r from-amber-500/40 via-yellow-400/30 to-amber-500/40 blur-sm group-hover:from-amber-500/60 group-hover:via-yellow-400/50 group-hover:to-amber-500/60 transition-all duration-700" />
+                <div className="flex flex-col items-center gap-4 mb-6">
+                  <div className="relative group cursor-pointer" onClick={() => setShowSignup(true)}>
+                    <div className="absolute -inset-0.5 rounded-md bg-gradient-to-r from-green-500/40 via-emerald-400/30 to-green-500/40 blur-sm group-hover:from-green-500/60 group-hover:via-emerald-400/50 group-hover:to-green-500/60 transition-all duration-700" />
                     <Button
                       size="lg"
-                      onClick={() => navigate("/payment/vip")}
-                      data-testid="button-vip-cta"
-                      className="relative bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 border-amber-500/40 text-amber-100 font-bold shadow-lg shadow-amber-500/15 tracking-wide"
+                      data-testid="button-free-signup-cta"
+                      className="relative bg-gradient-to-r from-green-600 via-emerald-500 to-green-600 border-green-400/40 text-white font-bold shadow-lg shadow-green-500/20 tracking-wide"
                     >
-                      <Sparkles className="w-4 h-4 mr-2" /> Book 1-on-1 VIP &mdash; $799
+                      <Video className="w-4 h-4 mr-2" /> Free Zoom Class — Sign Up Now
                     </Button>
                   </div>
-                  <div className="relative group">
-                    <div className="absolute -inset-0.5 rounded-md bg-gradient-to-r from-cyan-500/30 via-violet-400/20 to-cyan-500/30 blur-sm group-hover:from-cyan-500/50 group-hover:via-violet-400/40 group-hover:to-cyan-500/50 transition-all duration-700" />
+                  <a href="sms:+17542504912" data-testid="link-contact-text-cta">
                     <Button
                       size="lg"
                       variant="outline"
-                      onClick={() => navigate("/payment/self")}
-                      data-testid="button-self-cta"
-                      className="relative border-cyan-500/30 text-cyan-200 bg-background/80 backdrop-blur-sm"
+                      className="border-violet-500/20 text-muted-foreground bg-background/40 backdrop-blur-sm"
                     >
-                      Self-Setup &mdash; $199
+                      <MessageSquare className="w-4 h-4 mr-2 text-violet-400" /> Questions? Text (754) 250-4912
                     </Button>
-                  </div>
+                  </a>
                 </div>
               </div>
             </Card>
