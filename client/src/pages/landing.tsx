@@ -572,13 +572,13 @@ export default function Landing() {
               </div>
             </div>
 
-            <a href="tel:+17542504912" data-testid="link-contact-phone">
+            <a href="sms:+17542504912" data-testid="link-contact-text">
               <Button
                 size="lg"
                 variant="outline"
                 className="border-violet-500/20 text-muted-foreground bg-background/40 backdrop-blur-sm"
               >
-                <Phone className="w-4 h-4 mr-2 text-violet-400" /> Questions? Call (754) 250-4912
+                <MessageSquare className="w-4 h-4 mr-2 text-violet-400" /> Questions? Text (754) 250-4912
               </Button>
             </a>
           </motion.div>
