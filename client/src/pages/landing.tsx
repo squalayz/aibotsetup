@@ -206,12 +206,11 @@ const features = [
 ];
 
 const useCases = [
-  { icon: Building2, title: "Real Estate", desc: "AI agents that answer property questions, schedule showings, and follow up with leads automatically.", gradient: "from-violet-500/15 to-cyan-500/15" },
-  { icon: HeadphonesIcon, title: "Receptionist", desc: "Never miss a call again. AI answers phones, takes messages, books appointments, and routes calls.", gradient: "from-cyan-500/15 to-violet-500/15" },
-  { icon: Users, title: "Customer Support", desc: "Handle tickets, answer FAQs, resolve issues, and escalate when needed -- all without human agents.", gradient: "from-violet-500/15 to-amber-500/15" },
-  { icon: MessageSquare, title: "Social Media", desc: "Automate DMs, respond to comments, schedule posts, and grow your brand on autopilot.", gradient: "from-cyan-500/15 to-amber-500/15" },
-  { icon: Briefcase, title: "Sales & Outreach", desc: "AI cold outreach, lead qualification, CRM updates, and follow-up sequences that close deals.", gradient: "from-amber-500/15 to-violet-500/15" },
-  { icon: Zap, title: "Custom Anything", desc: "Whatever your business needs, we build it. If it can be automated with AI, we make it happen.", gradient: "from-violet-500/15 to-cyan-500/15" },
+  { icon: Phone, title: "AI Receptionists", desc: "Answer every call, book appointments, and route inquiries -- automatically, around the clock.", gradient: "from-violet-500/15 to-cyan-500/15" },
+  { icon: Briefcase, title: "Sales Agents", desc: "Qualify leads, send follow-ups, and close deals -- your AI never forgets a prospect.", gradient: "from-cyan-500/15 to-violet-500/15" },
+  { icon: HeadphonesIcon, title: "Support Bots", desc: "Resolve tickets without scripts. Your AI reads context, finds answers, and handles real issues.", gradient: "from-violet-500/15 to-amber-500/15" },
+  { icon: MessageSquare, title: "Social Media Managers", desc: "Create content, schedule posts, and engage your audience -- all on autopilot.", gradient: "from-cyan-500/15 to-amber-500/15" },
+  { icon: Zap, title: "Custom Workflows", desc: "Replace entire manual processes. If a human does it repeatedly, an AI agent can do it better.", gradient: "from-amber-500/15 to-violet-500/15" },
 ];
 
 const howItWorks = [
@@ -478,11 +477,11 @@ export default function Landing() {
             style={{ fontSize: "clamp(2.5rem, 7vw, 5rem)" }}
           >
             <span className="bg-gradient-to-r from-white via-violet-200 to-cyan-200 bg-clip-text text-transparent">
-              We Build AI Bots
+              We Build AI Agents
             </span>
             <br />
             <span className="bg-gradient-to-r from-violet-300 via-cyan-300 to-violet-400 bg-clip-text text-transparent">
-              For Your Business
+              That Run Your Business
             </span>
           </motion.h1>
 
@@ -490,24 +489,14 @@ export default function Landing() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.3 }}
-            className="text-muted-foreground max-w-[700px] mx-auto mb-5 leading-relaxed"
+            className="text-muted-foreground max-w-[700px] mx-auto mb-10 leading-relaxed"
             style={{ fontSize: "clamp(1rem, 2.5vw, 1.2rem)" }}
           >
-            Phone receptionists, real estate agents, customer support, sales bots, social media managers
-            -- <strong className="text-violet-300">if it can be done with AI, we build it for you</strong>.
-            Full AI agency services powered by{" "}
-            <strong className="text-cyan-300">OpenClaw</strong>,{" "}
-            <strong className="text-violet-300">ClawHub</strong> &{" "}
-            <strong className="text-cyan-300">Moltbook</strong>.
-          </motion.p>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="text-sm text-muted-foreground/80 max-w-[500px] mx-auto mb-10"
-          >
-            Personal assistants, business automation, custom AI workflows -- we do it all.
+            Our AI agents don't just chat — they <strong className="text-violet-300">think, decide, and act</strong>.
+            They answer your phones, book your appointments, follow up with leads, post your content,
+            and close your sales — <strong className="text-cyan-300">24/7, with zero burnout</strong>.
+            Each agent is trained on your business data, plugged into your tools, and designed to handle
+            real workflows end-to-end.
           </motion.p>
 
           <motion.div
@@ -544,10 +533,10 @@ export default function Landing() {
             transition={{ duration: 1, delay: 0.8 }}
             className="mt-12 flex justify-center gap-8 text-xs text-muted-foreground uppercase tracking-widest flex-wrap"
           >
-            <span className="flex items-center gap-2"><SiEthereum className="w-3.5 h-3.5 text-violet-400" /> Pay with Crypto</span>
+            <span className="flex items-center gap-2"><Bot className="w-3.5 h-3.5 text-violet-400" /> Custom AI Agents</span>
             <span className="flex items-center gap-2"><Shield className="w-3.5 h-3.5 text-cyan-400" /> Any Industry</span>
             <span className="flex items-center gap-2"><Zap className="w-3.5 h-3.5 text-violet-400" /> 24/7 Uptime</span>
-            <span className="flex items-center gap-2"><Bot className="w-3.5 h-3.5 text-cyan-400" /> Custom AI Bots</span>
+            <span className="flex items-center gap-2"><Globe className="w-3.5 h-3.5 text-cyan-400" /> Multi-Platform</span>
           </motion.div>
         </section>
 
@@ -568,15 +557,15 @@ export default function Landing() {
           <FadeInSection>
             <div className="text-center mb-12">
               <h2 className="font-serif text-3xl md:text-4xl font-bold bg-gradient-to-r from-violet-300 via-cyan-300 to-violet-400 bg-clip-text text-transparent mb-3">
-                AI Bots For Every Industry
+                What Our Agents Do
               </h2>
-              <p className="text-muted-foreground max-w-[550px] mx-auto">
-                We don't just build one type of bot. Tell us what you need and we make it happen.
+              <p className="text-muted-foreground max-w-[600px] mx-auto">
+                We connect large language models to your existing systems — your CRM, calendar, phone line, socials, and more — so your AI agent doesn't just respond, it operates.
               </p>
             </div>
           </FadeInSection>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-[1000px] mx-auto">
             {useCases.map((uc, i) => (
               <FadeInSection key={uc.title} delay={i * 0.08}>
                 <Card className="p-6 bg-card/60 backdrop-blur-xl border-violet-500/10 group relative overflow-visible hover-elevate" data-testid={`card-usecase-${uc.title.toLowerCase().replace(/\s+/g, "-")}`}>
@@ -625,7 +614,7 @@ export default function Landing() {
               <h2 className="font-serif text-3xl md:text-4xl font-bold bg-gradient-to-r from-violet-300 via-cyan-300 to-violet-400 bg-clip-text text-transparent mb-3">
                 How It Works
               </h2>
-              <p className="text-muted-foreground max-w-[500px] mx-auto">From payment to your own AI agent in hours</p>
+              <p className="text-muted-foreground max-w-[500px] mx-auto">From signup to a live AI agent running your business</p>
             </div>
           </FadeInSection>
 
@@ -651,11 +640,11 @@ export default function Landing() {
               <GlowOrb className="w-[400px] h-[400px] bg-violet-600/8 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
               <div className="relative">
                 <h2 className="font-serif text-2xl md:text-3xl font-bold bg-gradient-to-r from-violet-300 to-cyan-300 bg-clip-text text-transparent mb-3">
-                  Ready to Automate Your Business?
+                  Tell Us the Job. We'll Build the Agent.
                 </h2>
                 <p className="text-muted-foreground mb-8 leading-relaxed">
-                  Whether you need a phone receptionist, sales bot, or a full AI-powered workflow --
-                  we've got you covered. Let's build something incredible.
+                  Whatever your business needs automated — phones, sales, support, socials, or something
+                  entirely custom — we'll build an AI agent that handles it end-to-end.
                 </p>
                 <div className="flex flex-col items-center gap-4 mb-6">
                   <div className="relative group cursor-pointer" onClick={() => setShowSignup(true)}>
