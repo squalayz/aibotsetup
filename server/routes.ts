@@ -3,8 +3,56 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertPaymentSchema, insertBookingSchema, insertSignupSchema } from "@shared/schema";
 import { z } from "zod";
+import nodemailer from "nodemailer";
 
 const ADMIN_PIN = process.env.ADMIN_PIN || "4455";
+const NOTIFY_EMAIL = "diamondautob@gmail.com";
+
+const gmailTransport = process.env.GMAIL_APP_PASSWORD
+  ? nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: NOTIFY_EMAIL,
+        pass: process.env.GMAIL_APP_PASSWORD,
+      },
+    })
+  : null;
+
+async function sendSignupNotification(email: string, phone: string) {
+  if (!gmailTransport) return;
+  try {
+    await gmailTransport.sendMail({
+      from: `"CLAWD Bot" <${NOTIFY_EMAIL}>`,
+      to: NOTIFY_EMAIL,
+      subject: `New Free Zoom Class Signup: ${email}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; background: #0a0a1a; color: #e0e0e0; border-radius: 8px;">
+          <h2 style="color: #4ade80; margin-top: 0;">New Free Zoom Class Signup</h2>
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+              <td style="padding: 8px 0; color: #888; width: 80px;">Email:</td>
+              <td style="padding: 8px 0; color: #fff; font-weight: bold;">${email}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; color: #888;">Phone:</td>
+              <td style="padding: 8px 0; color: #fff; font-weight: bold;">${phone}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; color: #888;">Time:</td>
+              <td style="padding: 8px 0; color: #aaa;">${new Date().toLocaleString("en-US", { timeZone: "America/New_York" })}</td>
+            </tr>
+          </table>
+          <p style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #222; color: #666; font-size: 12px;">
+            Sent from your CLAWD website
+          </p>
+        </div>
+      `,
+    });
+    console.log(`Signup notification sent for ${email}`);
+  } catch (err) {
+    console.error("Failed to send signup notification:", err);
+  }
+}
 const WALLET = "0x00468c1B22451ed9Fabc9DA32E6aEa28DC03a216".toLowerCase();
 const ETH_RPC_URLS = [
   "https://cloudflare-eth.com",
@@ -281,6 +329,9 @@ export async function registerRoutes(
       }
 
       const signup = await storage.createSignup({ email, phone });
+
+      sendSignupNotification(email, phone);
+
       res.json(signup);
     } catch (error) {
       if (error instanceof z.ZodError) {
