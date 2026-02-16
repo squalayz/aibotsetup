@@ -14,7 +14,8 @@ import {
   ArrowRight, Check, Wallet, CalendarCheck, Bot,
   ChevronRight, ExternalLink, Phone, Building2,
   HeadphonesIcon, Users, MessageSquare, Briefcase,
-  Video, X, CheckCircle, Loader2,
+  Video, X, CheckCircle, Loader2, Eye, Link,
+  BarChart3, Cpu,
 } from "lucide-react";
 import { SiEthereum } from "react-icons/si";
 
@@ -362,7 +363,7 @@ export default function Landing() {
                         <ul className="space-y-2">
                           {[
                             "How to set up your own AI bot from zero",
-                            "Connect your bot to 15+ platforms",
+                            "Connect your bot to thousands of platforms",
                             "Install skills from ClawHub marketplace",
                             "Automate your business with AI workflows",
                             "Live Q&A — ask anything!",
@@ -581,6 +582,60 @@ export default function Landing() {
               </FadeInSection>
             ))}
           </div>
+        </section>
+
+        <section className="py-16" data-testid="section-ai-landscape">
+          <FadeInSection>
+            <div className="text-center mb-12">
+              <h2 className="font-serif text-3xl md:text-4xl font-bold bg-gradient-to-r from-violet-300 via-cyan-300 to-violet-400 bg-clip-text text-transparent mb-3">
+                The AI Landscape Has Changed
+              </h2>
+              <p className="text-muted-foreground max-w-[550px] mx-auto">Here's what's now possible for your business</p>
+            </div>
+          </FadeInSection>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-[1000px] mx-auto">
+            {[
+              { icon: Brain, title: "Language Models (LLMs)", desc: "AI that understands context, writes content, answers customer questions, negotiates, and makes decisions like a trained employee.", gradient: "from-violet-500/15 to-cyan-500/15" },
+              { icon: Phone, title: "Voice AI", desc: "Agents that answer your phone, sound human, handle objections, book appointments, and transfer calls -- 24/7 in any language.", gradient: "from-cyan-500/15 to-violet-500/15" },
+              { icon: Eye, title: "Vision AI", desc: "Bots that read documents, scan receipts, analyze images, process invoices, and extract data from anything visual.", gradient: "from-violet-500/15 to-amber-500/15" },
+              { icon: Link, title: "Tool Integration", desc: "Connect AI to your CRM, calendar, Stripe, Shopify, Google Workspace, social platforms, phone systems, email, spreadsheets -- over 15,000+ apps.", gradient: "from-cyan-500/15 to-amber-500/15" },
+              { icon: Cpu, title: "Multi-Agent Systems", desc: "Multiple AI agents working together: one handles calls, another manages socials, another follows up with leads -- all running simultaneously.", gradient: "from-amber-500/15 to-violet-500/15" },
+              { icon: BarChart3, title: "Real-Time Learning", desc: "Agents trained on YOUR business data: your pricing, your FAQs, your tone of voice, your processes, your customer history.", gradient: "from-violet-500/15 to-cyan-500/15" },
+            ].map((item, i) => (
+              <FadeInSection key={item.title} delay={i * 0.08}>
+                <Card className="p-6 bg-card/60 backdrop-blur-xl border-violet-500/10 group relative overflow-visible hover-elevate h-full" data-testid={`card-ai-${item.title.toLowerCase().replace(/\s+/g, "-")}`}>
+                  <div className={`absolute inset-0 rounded-md bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`} />
+                  <div className="relative">
+                    <div className="w-12 h-12 rounded-md bg-gradient-to-br from-violet-500/15 to-cyan-500/15 flex items-center justify-center mb-4 border border-violet-500/10">
+                      <item.icon className="w-6 h-6 text-violet-300" />
+                    </div>
+                    <h3 className="font-serif text-lg font-semibold text-foreground mb-2">{item.title}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+                  </div>
+                </Card>
+              </FadeInSection>
+            ))}
+          </div>
+        </section>
+
+        <section className="py-16" data-testid="section-industries">
+          <FadeInSection>
+            <Card className="max-w-[900px] mx-auto p-10 md:p-12 bg-card/60 backdrop-blur-xl border-violet-500/15 text-center relative overflow-visible">
+              <GlowOrb className="w-[500px] h-[500px] bg-cyan-600/5 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+              <div className="relative">
+                <h2 className="font-serif text-2xl md:text-3xl font-bold bg-gradient-to-r from-violet-300 via-cyan-300 to-violet-400 bg-clip-text text-transparent mb-4">
+                  This Works for Every Industry
+                </h2>
+                <p className="text-muted-foreground leading-relaxed max-w-[700px] mx-auto mb-6">
+                  Real estate, law firms, dental offices, med spas, restaurants, e-commerce, insurance, fitness studios, contractors, salons, marketing agencies, car dealerships, property management, coaching businesses, nonprofits --
+                </p>
+                <p className="text-lg font-semibold text-foreground">
+                  If your business talks to customers, <span className="bg-gradient-to-r from-violet-300 to-cyan-300 bg-clip-text text-transparent">AI can handle it.</span>
+                </p>
+              </div>
+            </Card>
+          </FadeInSection>
         </section>
 
         <section className="py-16" data-testid="section-features">
