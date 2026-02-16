@@ -223,7 +223,7 @@ const howItWorks = [
 const stats = [
   { value: "3,000+", label: "Available Skills" },
   { value: "24/7", label: "Always Online" },
-  { value: "15+", label: "Platforms Supported" },
+  { value: "1,000+", label: "Platforms Supported" },
   { value: "$0", label: "Monthly Bot Fees" },
 ];
 
