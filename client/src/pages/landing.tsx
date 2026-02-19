@@ -15,6 +15,7 @@ import {
   MessageSquare, Users, X, CheckCircle, Loader2, Calendar,
   Briefcase, Link, Zap, Shield, Globe, Sparkles, Star,
 } from "lucide-react";
+import robotImgSrc from "@assets/liftapp_(10)_1771462069765.png";
 
 const GLITCH_CHARS = "░▒▓█╔╗║═01∆Ωλ@#$%&*<>{}[]";
 const COLORS = {
@@ -40,466 +41,290 @@ function useReducedMotion() {
   return reduced;
 }
 
-function AIEntityHumanoid({ reactToCTA = false, className = "" }: { reactToCTA?: boolean; className?: string }) {
+function RobotHero() {
+  const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
   const mouseRef = useRef({ x: 0.5, y: 0.5 });
-  const lastMoveRef = useRef(Date.now());
+  const eyePosRef = useRef({ lx: 0, ly: 0, rx: 0, ry: 0 });
   const animRef = useRef(0);
-  const blinkRef = useRef({ active: false, progress: 0, nextBlink: 3000 + Math.random() * 5000 });
-  const tiltRef = useRef(0);
-  const glitchRef = useRef({ active: false, timer: 15000 + Math.random() * 5000 });
-  const breathRef = useRef(0);
-  const surgeRef = useRef({ active: false, timer: 8000 + Math.random() * 4000, progress: 0 });
-  const engageRef = useRef(0);
-  const embersRef = useRef<{ x: number; y: number; life: number; speed: number; size: number }[]>([]);
+  const visibleRef = useRef(true);
+  const isMobile = useRef(typeof window !== "undefined" && window.innerWidth < 768);
+
+  type Particle = { x: number; y: number; life: number; speed: number; size: number; drift: number };
+  const particlesRef = useRef<Particle[]>([]);
+  const scanRef = useRef({ timer: 12000, active: false, y: 0 });
+  const glitchRef = useRef({ timer: 18000 + Math.random() * 7000 });
+  const sonarRef = useRef({ timer: 10000, active: false, progress: 0 });
+
+  type EnergyDot = { path: number; t: number; speed: number };
+  const energyDotsRef = useRef<EnergyDot[]>([]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    const container = containerRef.current;
+    if (!canvas || !container) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio, 2);
-      const rect = canvas.getBoundingClientRect();
+      const rect = container.getBoundingClientRect();
       canvas.width = rect.width * dpr;
       canvas.height = rect.height * dpr;
-      ctx.scale(dpr, dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      isMobile.current = window.innerWidth < 768;
     };
     resize();
 
     const onMouse = (e: MouseEvent) => {
       mouseRef.current = { x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight };
-      lastMoveRef.current = Date.now();
     };
     window.addEventListener("mousemove", onMouse);
     window.addEventListener("resize", resize);
 
-    let paused = false;
-    const onVis = () => { paused = document.hidden; };
-    document.addEventListener("visibilitychange", onVis);
+    const observer = new IntersectionObserver(([entry]) => { visibleRef.current = entry.isIntersecting; }, { threshold: 0.05 });
+    observer.observe(container);
+
+    const maxParticles = isMobile.current ? 10 : 25;
+    for (let i = 0; i < maxParticles; i++) {
+      particlesRef.current.push({
+        x: 0.35 + Math.random() * 0.3,
+        y: 0.25 + Math.random() * 0.5,
+        life: Math.random(),
+        speed: 0.3 + Math.random() * 0.5,
+        size: 1 + Math.random(),
+        drift: Math.random() * Math.PI * 2,
+      });
+    }
+
+    const energyPaths: [number, number, number, number][] = [
+      [0.50, 0.22, 0.42, 0.50],
+      [0.50, 0.22, 0.58, 0.50],
+      [0.50, 0.35, 0.50, 0.75],
+      [0.44, 0.28, 0.38, 0.55],
+      [0.56, 0.28, 0.62, 0.55],
+      [0.50, 0.40, 0.44, 0.60],
+    ];
+    for (let i = 0; i < energyPaths.length; i++) {
+      energyDotsRef.current.push({ path: i, t: Math.random(), speed: 0.15 + Math.random() * 0.2 });
+    }
 
     let elapsed = 0;
     let lastTime = performance.now();
 
-    const drawLine = (x1: number, y1: number, x2: number, y2: number) => {
-      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
-    };
-
-    const drawBody = (w: number, h: number, dt: number) => {
-      elapsed += dt;
-      breathRef.current += dt * 0.0008;
-      const breath = Math.sin(breathRef.current * Math.PI * 2) * 0.015 + 1;
-      const mx = mouseRef.current.x;
-      const my = mouseRef.current.y;
-      const cx = w * 0.5;
-      const cy = h * 0.38;
-      const s = Math.min(w, h) * 0.0024 * breath;
-      const idleTime = Date.now() - lastMoveRef.current;
-
-      if (idleTime > 3000) {
-        tiltRef.current += (Math.sin(elapsed * 0.0003) * 0.04 - tiltRef.current) * 0.02;
-      } else {
-        tiltRef.current *= 0.95;
-      }
-
-      const targetEngage = reactToCTA ? 1 : 0;
-      engageRef.current += (targetEngage - engageRef.current) * 0.05;
-      const engage = engageRef.current;
-
-      blinkRef.current.nextBlink -= dt;
-      if (blinkRef.current.nextBlink <= 0) {
-        blinkRef.current.active = true;
-        blinkRef.current.progress = 0;
-        blinkRef.current.nextBlink = 3000 + Math.random() * 5000;
-      }
-      if (blinkRef.current.active) {
-        blinkRef.current.progress += dt * 0.008;
-        if (blinkRef.current.progress >= 1) blinkRef.current.active = false;
-      }
-      const blinkAmount = blinkRef.current.active ? Math.sin(blinkRef.current.progress * Math.PI) : 0;
-
-      glitchRef.current.timer -= dt;
-      let glitchOff = 0;
-      if (glitchRef.current.timer <= 0) {
-        glitchRef.current.active = true;
-        glitchRef.current.timer = 15000 + Math.random() * 5000;
-        setTimeout(() => { glitchRef.current.active = false; }, 80 + Math.random() * 120);
-      }
-      if (glitchRef.current.active) glitchOff = (Math.random() - 0.5) * 10;
-
-      surgeRef.current.timer -= dt;
-      if (surgeRef.current.timer <= 0) {
-        surgeRef.current.active = true;
-        surgeRef.current.progress = 0;
-        surgeRef.current.timer = 8000 + Math.random() * 4000;
-      }
-      if (surgeRef.current.active) {
-        surgeRef.current.progress += dt * 0.002;
-        if (surgeRef.current.progress >= 1) surgeRef.current.active = false;
-      }
-
-      if (Math.random() < 0.03) {
-        embersRef.current.push({ x: cx + (Math.random() - 0.5) * 80 * s, y: cy + 40 * s, life: 1, speed: 0.5 + Math.random() * 0.8, size: 1 + Math.random() * 2 });
-      }
-      embersRef.current = embersRef.current.filter(e => {
-        e.life -= dt * 0.001 * e.speed;
-        e.y -= dt * 0.03 * e.speed;
-        e.x += Math.sin(elapsed * 0.002 + e.y * 0.01) * 0.3;
-        return e.life > 0;
-      });
-
-      ctx.save();
-      ctx.translate(cx + glitchOff, cy + engage * -8);
-      ctx.rotate(tiltRef.current);
-
-      const glow = 0.35 + Math.sin(breathRef.current * Math.PI * 4) * 0.12 + engage * 0.25;
-      const surgeGlow = surgeRef.current.active ? Math.sin(surgeRef.current.progress * Math.PI) * 0.5 : 0;
-
-      ctx.shadowColor = COLORS.cyan;
-      ctx.shadowBlur = 8 + engage * 12 + surgeGlow * 20;
-      ctx.strokeStyle = `rgba(0, 229, 255, ${glow + surgeGlow * 0.3})`;
-      ctx.lineWidth = 1;
-
-      const headW = 55 * s;
-      const headH = 70 * s;
-      const shoulderW = 130 * s;
-      const shoulderY = headH * 0.95;
-      const chestH = 110 * s;
-      const armW = 40 * s;
-
-      ctx.beginPath();
-      ctx.moveTo(-headW * 0.3, -headH);
-      ctx.lineTo(-headW * 0.7, -headH * 0.9);
-      ctx.lineTo(-headW, -headH * 0.55);
-      ctx.lineTo(-headW * 1.05, -headH * 0.15);
-      ctx.lineTo(-headW * 0.9, headH * 0.1);
-      ctx.lineTo(-headW * 0.55, headH * 0.45);
-      ctx.lineTo(-headW * 0.2, headH * 0.6);
-      ctx.lineTo(0, headH * 0.65);
-      ctx.lineTo(headW * 0.2, headH * 0.6);
-      ctx.lineTo(headW * 0.55, headH * 0.45);
-      ctx.lineTo(headW * 0.9, headH * 0.1);
-      ctx.lineTo(headW * 1.05, -headH * 0.15);
-      ctx.lineTo(headW, -headH * 0.55);
-      ctx.lineTo(headW * 0.7, -headH * 0.9);
-      ctx.lineTo(headW * 0.3, -headH);
-      ctx.closePath();
-      ctx.stroke();
-
-      ctx.lineWidth = 0.5;
-      ctx.strokeStyle = `rgba(0, 229, 255, ${glow * 0.25})`;
-      const headDetails: [number, number, number, number][] = [
-        [-headW * 0.8, -headH * 0.5, headW * 0.8, -headH * 0.5],
-        [-headW * 0.9, -headH * 0.1, headW * 0.9, -headH * 0.1],
-        [-headW * 0.6, headH * 0.25, headW * 0.6, headH * 0.25],
-        [0, -headH * 0.95, 0, headH * 0.6],
-        [-headW * 0.3, -headH * 0.85, -headW * 0.3, headH * 0.55],
-        [headW * 0.3, -headH * 0.85, headW * 0.3, headH * 0.55],
-      ];
-      headDetails.forEach(([x1, y1, x2, y2]) => drawLine(x1, y1, x2, y2));
-
-      ctx.strokeStyle = `rgba(168, 85, 247, ${glow * 0.2})`;
-      ctx.lineWidth = 0.4;
-      for (let i = 0; i < 5; i++) {
-        const y = -headH * 0.8 + i * headH * 0.35;
-        drawLine(-headW * 0.6, y, -headW * 0.2, y + headH * 0.1);
-        drawLine(headW * 0.6, y, headW * 0.2, y + headH * 0.1);
-      }
-
-      const eyeY = -headH * 0.18;
-      const eyeSpacing = headW * 0.48;
-      const eyeW = headW * 0.3;
-      const eyeH = headH * 0.13 * (1 - blinkAmount * 0.9);
-      const lookX = (mx - 0.5) * eyeW * 0.45;
-      const lookY = (my - 0.5) * eyeH * 0.35;
-      const eyeGlow = 0.8 + engage * 0.2 + Math.sin(breathRef.current * Math.PI * 6) * 0.05;
-
-      ctx.strokeStyle = `rgba(0, 229, 255, ${eyeGlow})`;
-      ctx.lineWidth = 1.5;
-      ctx.shadowBlur = 15 + engage * 15;
-
-      [-1, 1].forEach(side => {
-        const ex = side * eyeSpacing;
-        ctx.beginPath();
-        ctx.moveTo(ex - eyeW, eyeY);
-        ctx.lineTo(ex - eyeW * 0.4, eyeY - eyeH);
-        ctx.lineTo(ex + eyeW * 0.4, eyeY - eyeH);
-        ctx.lineTo(ex + eyeW, eyeY);
-        ctx.lineTo(ex + eyeW * 0.4, eyeY + eyeH);
-        ctx.lineTo(ex - eyeW * 0.4, eyeY + eyeH);
-        ctx.closePath();
-        ctx.stroke();
-
-        ctx.fillStyle = `rgba(0, 229, 255, ${eyeGlow})`;
-        ctx.shadowBlur = 20 + engage * 20;
-        ctx.beginPath();
-        ctx.arc(ex + lookX, eyeY + lookY, eyeH * 0.35, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.fillStyle = `rgba(255, 255, 255, ${eyeGlow * 0.6})`;
-        ctx.shadowBlur = 8;
-        ctx.beginPath();
-        ctx.arc(ex + lookX - eyeH * 0.1, eyeY + lookY - eyeH * 0.1, eyeH * 0.12, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      ctx.lineWidth = 0.6;
-      ctx.strokeStyle = `rgba(0, 229, 255, ${glow * 0.35})`;
-      ctx.shadowBlur = 6;
-      drawLine(-headW * 0.2, headH * 0.35, headW * 0.2, headH * 0.35);
-
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = `rgba(0, 229, 255, ${glow})`;
-      ctx.shadowBlur = 8 + surgeGlow * 15;
-
-      const neckW = headW * 0.35;
-      drawLine(-neckW, headH * 0.65, -neckW * 1.2, shoulderY);
-      drawLine(neckW, headH * 0.65, neckW * 1.2, shoulderY);
-
-      ctx.beginPath();
-      ctx.moveTo(-neckW * 1.2, shoulderY);
-      ctx.lineTo(-shoulderW * 0.5, shoulderY + 5 * s);
-      ctx.lineTo(-shoulderW * 0.7, shoulderY + 10 * s);
-      ctx.lineTo(-shoulderW * 0.85, shoulderY + 15 * s);
-      ctx.lineTo(-shoulderW, shoulderY + 25 * s);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(neckW * 1.2, shoulderY);
-      ctx.lineTo(shoulderW * 0.5, shoulderY + 5 * s);
-      ctx.lineTo(shoulderW * 0.7, shoulderY + 10 * s);
-      ctx.lineTo(shoulderW * 0.85, shoulderY + 15 * s);
-      ctx.lineTo(shoulderW, shoulderY + 25 * s);
-      ctx.stroke();
-
-      ctx.lineWidth = 0.5;
-      ctx.strokeStyle = `rgba(0, 229, 255, ${glow * 0.3})`;
-      for (let i = 0; i < 4; i++) {
-        const y = shoulderY + 5 * s + i * 6 * s;
-        drawLine(-shoulderW * (0.5 + i * 0.12), y, -shoulderW * (0.5 + i * 0.12) - 12 * s, y + 8 * s);
-        drawLine(shoulderW * (0.5 + i * 0.12), y, shoulderW * (0.5 + i * 0.12) + 12 * s, y + 8 * s);
-      }
-
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = `rgba(0, 229, 255, ${glow})`;
-      const chestTop = shoulderY + 25 * s;
-      ctx.beginPath();
-      ctx.moveTo(-shoulderW, chestTop);
-      ctx.lineTo(-shoulderW * 0.9, chestTop + chestH * 0.3);
-      ctx.lineTo(-shoulderW * 0.75, chestTop + chestH * 0.6);
-      ctx.lineTo(-shoulderW * 0.55, chestTop + chestH * 0.85);
-      ctx.lineTo(-shoulderW * 0.3, chestTop + chestH);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(shoulderW, chestTop);
-      ctx.lineTo(shoulderW * 0.9, chestTop + chestH * 0.3);
-      ctx.lineTo(shoulderW * 0.75, chestTop + chestH * 0.6);
-      ctx.lineTo(shoulderW * 0.55, chestTop + chestH * 0.85);
-      ctx.lineTo(shoulderW * 0.3, chestTop + chestH);
-      ctx.stroke();
-
-      drawLine(-shoulderW * 0.3, chestTop + chestH, shoulderW * 0.3, chestTop + chestH);
-
-      ctx.lineWidth = 0.4;
-      ctx.strokeStyle = `rgba(0, 229, 255, ${glow * 0.2})`;
-      for (let i = 0; i < 6; i++) {
-        const ribY = chestTop + chestH * (0.15 + i * 0.13);
-        const ribW = shoulderW * (0.85 - i * 0.08);
-        drawLine(-ribW, ribY, -ribW * 0.15, ribY + 4 * s);
-        drawLine(ribW, ribY, ribW * 0.15, ribY + 4 * s);
-      }
-
-      const coreY = chestTop + chestH * 0.4;
-      const coreR = 18 * s;
-      const corePulse = 0.6 + Math.sin(breathRef.current * Math.PI * 4) * 0.3 + surgeGlow * 0.5 + engage * 0.2;
-
-      ctx.fillStyle = `rgba(0, 229, 255, ${corePulse * 0.08})`;
-      ctx.shadowColor = COLORS.cyan;
-      ctx.shadowBlur = 40 + surgeGlow * 40;
-      ctx.beginPath();
-      ctx.arc(0, coreY, coreR * 2.5, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = `rgba(0, 229, 255, ${corePulse * 0.15})`;
-      ctx.shadowBlur = 30;
-      ctx.beginPath();
-      ctx.arc(0, coreY, coreR * 1.5, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.strokeStyle = `rgba(0, 229, 255, ${corePulse})`;
-      ctx.lineWidth = 1.5;
-      ctx.shadowBlur = 25 + surgeGlow * 30;
-      ctx.beginPath();
-      for (let i = 0; i < 6; i++) {
-        const angle = (i / 6) * Math.PI * 2 + elapsed * 0.001;
-        const px = Math.cos(angle) * coreR;
-        const py = Math.sin(angle) * coreR + coreY;
-        if (i === 0) ctx.moveTo(px, py);
-        else ctx.lineTo(px, py);
-      }
-      ctx.closePath();
-      ctx.stroke();
-
-      ctx.fillStyle = `rgba(255, 255, 255, ${corePulse * 0.9})`;
-      ctx.shadowColor = "#ffffff";
-      ctx.shadowBlur = 15;
-      ctx.beginPath();
-      ctx.arc(0, coreY, coreR * 0.3, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.strokeStyle = `rgba(168, 85, 247, ${glow * 0.25})`;
-      ctx.shadowColor = COLORS.purple;
-      ctx.shadowBlur = 8;
-      ctx.lineWidth = 0.6;
-
-      const circuitPaths: [number, number, number, number][] = [
-        [0, coreY - coreR, 0, shoulderY + 10 * s],
-        [0, coreY + coreR, 0, chestTop + chestH * 0.8],
-        [-coreR, coreY, -shoulderW * 0.7, chestTop + chestH * 0.3],
-        [coreR, coreY, shoulderW * 0.7, chestTop + chestH * 0.3],
-        [-shoulderW * 0.6, chestTop + chestH * 0.5, -shoulderW * 0.8, chestTop + chestH * 0.7],
-        [shoulderW * 0.6, chestTop + chestH * 0.5, shoulderW * 0.8, chestTop + chestH * 0.7],
-      ];
-      circuitPaths.forEach(([x1, y1, x2, y2]) => drawLine(x1, y1, x2, y2));
-
-      const flowSpeed = elapsed * 0.003;
-      ctx.fillStyle = `rgba(0, 229, 255, ${0.5 + surgeGlow * 0.5})`;
-      ctx.shadowColor = COLORS.cyan;
-      ctx.shadowBlur = 6;
-      circuitPaths.forEach(([x1, y1, x2, y2], idx) => {
-        const t = ((flowSpeed + idx * 0.3) % 1);
-        const fx = x1 + (x2 - x1) * t;
-        const fy = y1 + (y2 - y1) * t;
-        ctx.beginPath();
-        ctx.arc(fx, fy, 1.5 * s, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      ctx.strokeStyle = `rgba(0, 229, 255, ${glow * 0.6})`;
-      ctx.lineWidth = 0.8;
-      ctx.shadowBlur = 5;
-      const armTopL = chestTop;
-      const armTopR = chestTop;
-
-      ctx.beginPath();
-      ctx.moveTo(-shoulderW, armTopL);
-      ctx.lineTo(-shoulderW - armW * 0.3, armTopL + chestH * 0.25);
-      ctx.lineTo(-shoulderW - armW * 0.5, armTopL + chestH * 0.5);
-      ctx.lineTo(-shoulderW - armW * 0.4, armTopL + chestH * 0.75);
-      ctx.lineTo(-shoulderW - armW * 0.2, armTopL + chestH * 0.95);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(shoulderW, armTopR);
-      ctx.lineTo(shoulderW + armW * 0.3, armTopR + chestH * 0.25);
-      ctx.lineTo(shoulderW + armW * 0.5, armTopR + chestH * 0.5);
-      ctx.lineTo(shoulderW + armW * 0.4, armTopR + chestH * 0.75);
-      ctx.lineTo(shoulderW + armW * 0.2, armTopR + chestH * 0.95);
-      ctx.stroke();
-
-      ctx.lineWidth = 0.4;
-      ctx.strokeStyle = `rgba(168, 85, 247, ${glow * 0.15})`;
-      for (let i = 0; i < 4; i++) {
-        const ay = armTopL + chestH * (0.2 + i * 0.2);
-        const ax = -shoulderW - armW * (0.2 + Math.sin(i * 0.8) * 0.3);
-        ctx.beginPath();
-        ctx.arc(ax, ay, 4 * s, 0, Math.PI * 2);
-        ctx.stroke();
-      }
-      for (let i = 0; i < 4; i++) {
-        const ay = armTopR + chestH * (0.2 + i * 0.2);
-        const ax = shoulderW + armW * (0.2 + Math.sin(i * 0.8) * 0.3);
-        ctx.beginPath();
-        ctx.arc(ax, ay, 4 * s, 0, Math.PI * 2);
-        ctx.stroke();
-      }
-
-      const handY = armTopL + chestH * 0.95;
-      ctx.strokeStyle = `rgba(0, 229, 255, ${glow * 0.4})`;
-      ctx.lineWidth = 0.6;
-      for (let f = 0; f < 4; f++) {
-        const fx = -shoulderW - armW * 0.2 + (f - 1.5) * 4 * s;
-        drawLine(fx, handY, fx + (f - 1.5) * 2 * s, handY + 10 * s);
-      }
-      for (let f = 0; f < 4; f++) {
-        const fx = shoulderW + armW * 0.2 + (f - 1.5) * 4 * s;
-        drawLine(fx, handY, fx + (f - 1.5) * 2 * s, handY + 10 * s);
-      }
-
-      ctx.strokeStyle = `rgba(0, 229, 255, ${glow * 0.15})`;
-      ctx.lineWidth = 0.5;
-      const hexSize = 8 * s;
-      const hexPositions: [number, number][] = [
-        [-shoulderW * 0.5, chestTop + chestH * 0.2],
-        [shoulderW * 0.5, chestTop + chestH * 0.2],
-        [-shoulderW * 0.35, chestTop + chestH * 0.55],
-        [shoulderW * 0.35, chestTop + chestH * 0.55],
-        [-shoulderW * 0.7, chestTop + chestH * 0.45],
-        [shoulderW * 0.7, chestTop + chestH * 0.45],
-      ];
-      hexPositions.forEach(([hx, hy]) => {
-        ctx.beginPath();
-        for (let i = 0; i < 6; i++) {
-          const angle = (i / 6) * Math.PI * 2 - Math.PI / 6;
-          const px = hx + Math.cos(angle) * hexSize;
-          const py = hy + Math.sin(angle) * hexSize;
-          if (i === 0) ctx.moveTo(px, py);
-          else ctx.lineTo(px, py);
-        }
-        ctx.closePath();
-        ctx.stroke();
-      });
-
-      ctx.restore();
-
-      ctx.shadowColor = COLORS.cyan;
-      ctx.shadowBlur = 4;
-      embersRef.current.forEach(e => {
-        ctx.fillStyle = `rgba(0, 229, 255, ${e.life * 0.6})`;
-        ctx.beginPath();
-        ctx.arc(e.x, e.y, e.size, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      if (surgeRef.current.active) {
-        const surgeProgress = surgeRef.current.progress;
-        const surgeRadius = surgeProgress * Math.max(w, h) * 0.6;
-        const chestTopAbs = cy + shoulderY + 25 * s;
-        const coreYAbs = chestTopAbs + chestH * 0.4;
-        ctx.strokeStyle = `rgba(0, 229, 255, ${(1 - surgeProgress) * 0.12})`;
-        ctx.lineWidth = 2;
-        ctx.shadowColor = COLORS.cyan;
-        ctx.shadowBlur = 20;
-        ctx.beginPath();
-        ctx.arc(cx, coreYAbs, surgeRadius, 0, Math.PI * 2);
-        ctx.stroke();
-      }
-    };
-
     const draw = () => {
-      if (paused) { animRef.current = requestAnimationFrame(draw); return; }
+      if (!visibleRef.current) { animRef.current = requestAnimationFrame(draw); return; }
       const now = performance.now();
       const dt = Math.min(now - lastTime, 50);
       lastTime = now;
-      const rect = canvas.getBoundingClientRect();
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawBody(rect.width, rect.height, dt);
+      elapsed += dt;
+
+      const rect = container.getBoundingClientRect();
+      const w = rect.width;
+      const h = rect.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const mx = mouseRef.current.x;
+      const my = mouseRef.current.y;
+      const lerp = 0.05;
+
+      if (!isMobile.current) {
+        const leftEyeX = w * 0.47;
+        const leftEyeY = h * 0.14;
+        const rightEyeX = w * 0.53;
+        const rightEyeY = h * 0.14;
+        const maxDisp = 6;
+
+        const targetLX = leftEyeX + (mx - 0.5) * maxDisp * 2;
+        const targetLY = leftEyeY + (my - 0.5) * maxDisp * 2;
+        const targetRX = rightEyeX + (mx - 0.5) * maxDisp * 2;
+        const targetRY = rightEyeY + (my - 0.5) * maxDisp * 2;
+
+        eyePosRef.current.lx += (targetLX - eyePosRef.current.lx) * lerp;
+        eyePosRef.current.ly += (targetLY - eyePosRef.current.ly) * lerp;
+        eyePosRef.current.rx += (targetRX - eyePosRef.current.rx) * lerp;
+        eyePosRef.current.ry += (targetRY - eyePosRef.current.ry) * lerp;
+
+        const drawEye = (ex: number, ey: number) => {
+          const outerGrad = ctx.createRadialGradient(ex, ey, 0, ex, ey, 25);
+          outerGrad.addColorStop(0, "rgba(0, 150, 255, 0.06)");
+          outerGrad.addColorStop(1, "transparent");
+          ctx.fillStyle = outerGrad;
+          ctx.beginPath();
+          ctx.arc(ex, ey, 25, 0, Math.PI * 2);
+          ctx.fill();
+
+          const grad = ctx.createRadialGradient(ex, ey, 0, ex, ey, 8);
+          grad.addColorStop(0, "rgba(255, 255, 255, 0.9)");
+          grad.addColorStop(0.4, "rgba(0, 150, 255, 0.7)");
+          grad.addColorStop(1, "transparent");
+          ctx.fillStyle = grad;
+          ctx.shadowColor = "#0096ff";
+          ctx.shadowBlur = 15;
+          ctx.beginPath();
+          ctx.arc(ex, ey, 7, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        };
+        drawEye(eyePosRef.current.lx, eyePosRef.current.ly);
+        drawEye(eyePosRef.current.rx, eyePosRef.current.ry);
+      }
+
+      ctx.shadowBlur = 0;
+      energyPaths.forEach(([x1, y1, x2, y2]) => {
+        ctx.strokeStyle = "rgba(0, 150, 255, 0.06)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(x1 * w, y1 * h);
+        ctx.lineTo(x2 * w, y2 * h);
+        ctx.stroke();
+      });
+
+      energyDotsRef.current.forEach(dot => {
+        dot.t += dt * 0.001 * dot.speed;
+        if (dot.t > 1) dot.t -= 1;
+        const p = energyPaths[dot.path];
+        const dx = p[0] + (p[2] - p[0]) * dot.t;
+        const dy = p[1] + (p[3] - p[1]) * dot.t;
+        ctx.fillStyle = "rgba(0, 200, 255, 0.7)";
+        ctx.shadowColor = "#0096ff";
+        ctx.shadowBlur = 6;
+        ctx.beginPath();
+        ctx.arc(dx * w, dy * h, 2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      });
+
+      particlesRef.current.forEach(p => {
+        p.life -= dt * 0.0004 * p.speed;
+        p.y -= dt * 0.00003 * p.speed;
+        p.x += Math.sin(elapsed * 0.001 + p.drift) * 0.0003;
+        if (p.life <= 0) {
+          p.x = 0.35 + Math.random() * 0.3;
+          p.y = 0.30 + Math.random() * 0.35;
+          p.life = 0.8 + Math.random() * 0.2;
+          p.speed = 0.3 + Math.random() * 0.5;
+          p.drift = Math.random() * Math.PI * 2;
+        }
+        ctx.fillStyle = `rgba(0, 180, 255, ${p.life * 0.4})`;
+        ctx.beginPath();
+        ctx.arc(p.x * w, p.y * h, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      scanRef.current.timer -= dt;
+      if (scanRef.current.timer <= 0) {
+        scanRef.current.active = true;
+        scanRef.current.y = 0;
+        scanRef.current.timer = 12000;
+      }
+      if (scanRef.current.active) {
+        scanRef.current.y += dt * 0.0005 * h;
+        if (scanRef.current.y > h) {
+          scanRef.current.active = false;
+        } else {
+          const sy = scanRef.current.y;
+          ctx.fillStyle = "rgba(0, 200, 255, 0.04)";
+          ctx.fillRect(0, sy - 10, w, 20);
+          ctx.strokeStyle = "rgba(0, 200, 255, 0.5)";
+          ctx.lineWidth = 2;
+          ctx.shadowColor = "#0096ff";
+          ctx.shadowBlur = 12;
+          ctx.beginPath();
+          ctx.moveTo(0, sy);
+          ctx.lineTo(w, sy);
+          ctx.stroke();
+          ctx.shadowBlur = 0;
+        }
+      }
+
+      const chestX = w * 0.50;
+      const chestY = h * 0.35;
+      const breathScale = 0.8 + Math.sin(elapsed * 0.0008 * Math.PI * 2) * 0.2;
+      const chestR = 35 * breathScale;
+      const chestGrad = ctx.createRadialGradient(chestX, chestY, 0, chestX, chestY, chestR);
+      chestGrad.addColorStop(0, "rgba(0, 150, 255, 0.15)");
+      chestGrad.addColorStop(1, "transparent");
+      ctx.fillStyle = chestGrad;
+      ctx.beginPath();
+      ctx.arc(chestX, chestY, chestR, 0, Math.PI * 2);
+      ctx.fill();
+
+      sonarRef.current.timer -= dt;
+      if (sonarRef.current.timer <= 0) {
+        sonarRef.current.active = true;
+        sonarRef.current.progress = 0;
+        sonarRef.current.timer = 10000;
+      }
+      if (sonarRef.current.active) {
+        sonarRef.current.progress += dt * 0.0008;
+        if (sonarRef.current.progress >= 1) {
+          sonarRef.current.active = false;
+        } else {
+          const sp = sonarRef.current.progress;
+          const sr = sp * Math.max(w, h) * 0.5;
+          ctx.strokeStyle = `rgba(0, 150, 255, ${(1 - sp) * 0.15})`;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(chestX, chestY, sr, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+      }
+
       animRef.current = requestAnimationFrame(draw);
     };
+
+    if (eyePosRef.current.lx === 0) {
+      const rect2 = container.getBoundingClientRect();
+      eyePosRef.current = { lx: rect2.width * 0.47, ly: rect2.height * 0.14, rx: rect2.width * 0.53, ry: rect2.height * 0.14 };
+    }
+
     draw();
+
+    const glitchLoop = () => {
+      if (!visibleRef.current || !imgRef.current) {
+        glitchRef.current.timer = 18000 + Math.random() * 7000;
+        setTimeout(glitchLoop, glitchRef.current.timer);
+        return;
+      }
+      const img = imgRef.current;
+      img.classList.add("robot-glitch-1");
+      setTimeout(() => {
+        img.classList.remove("robot-glitch-1");
+        img.classList.add("robot-glitch-2");
+        setTimeout(() => {
+          img.classList.remove("robot-glitch-2");
+        }, 60);
+      }, 80);
+      glitchRef.current.timer = 18000 + Math.random() * 7000;
+      setTimeout(glitchLoop, glitchRef.current.timer);
+    };
+    const glitchTimeout = setTimeout(glitchLoop, glitchRef.current.timer);
 
     return () => {
       window.removeEventListener("mousemove", onMouse);
       window.removeEventListener("resize", resize);
-      document.removeEventListener("visibilitychange", onVis);
+      observer.disconnect();
       cancelAnimationFrame(animRef.current);
+      clearTimeout(glitchTimeout);
     };
-  }, [reactToCTA]);
+  }, []);
 
-  return <canvas ref={canvasRef} className={`w-full h-full ${className}`} />;
+  return (
+    <div ref={containerRef} className="hero-robot-container" data-testid="robot-hero-container">
+      <div className="robot-glow-bg" />
+      <img
+        ref={imgRef}
+        src={robotImgSrc}
+        alt="CLAWD AI Agent"
+        className="robot-image"
+        draggable={false}
+      />
+      <canvas ref={canvasRef} className="robot-fx-canvas" />
+    </div>
+  );
 }
 
 function MiniAIBust({ color, size = 64 }: { color: string; size?: number }) {
@@ -854,13 +679,15 @@ export default function Landing() {
   const [signupMessage, setSignupMessage] = useState("");
   const [signupSuccess, setSignupSuccess] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [ctaHover, setCtaHover] = useState(false);
+  const [isMobileView, setIsMobileView] = useState(typeof window !== "undefined" && window.innerWidth < 768);
   const { toast } = useToast();
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 50);
+    const resizeHandler = () => setIsMobileView(window.innerWidth < 768);
     window.addEventListener("scroll", handler);
-    return () => window.removeEventListener("scroll", handler);
+    window.addEventListener("resize", resizeHandler);
+    return () => { window.removeEventListener("scroll", handler); window.removeEventListener("resize", resizeHandler); };
   }, []);
 
   const resetForm = () => {
@@ -1086,8 +913,6 @@ export default function Landing() {
               <div
                 className="relative group cursor-pointer"
                 onClick={() => setShowSignup(true)}
-                onMouseEnter={() => setCtaHover(true)}
-                onMouseLeave={() => setCtaHover(false)}
                 data-testid="button-free-signup-wrapper"
               >
                 <div className="absolute -inset-3 rounded-md opacity-40 group-hover:opacity-80 transition-all duration-500" style={{
@@ -1128,13 +953,9 @@ export default function Landing() {
             </motion.div>
           </div>
 
-          <div className="w-full md:w-[55%] relative" style={{ minHeight: "500px", height: "70vh", maxHeight: "750px" }}>
-            <div className="absolute inset-0 md:-left-[10%]" style={{
-              background: `radial-gradient(ellipse at center bottom, rgba(0,229,255,0.05) 0%, transparent 60%)`,
-            }}>
-              <AIEntityHumanoid reactToCTA={ctaHover} />
-            </div>
-            <div className="absolute bottom-0 left-0 right-0 h-32" style={{
+          <div className="w-full md:w-[55%] relative" style={{ minHeight: isMobileView ? "40vh" : "500px", height: isMobileView ? "40vh" : "70vh", maxHeight: isMobileView ? "400px" : "750px" }}>
+            <RobotHero />
+            <div className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none" style={{
               background: `linear-gradient(to top, ${COLORS.bg}, transparent)`,
             }} />
           </div>
@@ -1440,10 +1261,8 @@ export default function Landing() {
       </section>
 
       <section className="py-24 px-5 relative" data-testid="section-cta">
-        <div className="absolute inset-0 overflow-hidden flex items-center justify-center opacity-20 pointer-events-none">
-          <div className="w-[200px] h-[200px]">
-            <AIEntityHumanoid />
-          </div>
+        <div className="absolute inset-0 overflow-hidden flex items-center justify-center opacity-10 pointer-events-none">
+          <img src={robotImgSrc} alt="" className="h-[300px] object-contain" style={{ filter: "drop-shadow(0 0 40px rgba(0,150,255,0.3))", mixBlendMode: "lighten" }} />
         </div>
         <div className="relative z-10 max-w-[700px] mx-auto text-center">
           <RevealSection>

@@ -1,0 +1,135 @@
+ have a robot image file called liftapp__10_.png that I want to use as the main visual in my hero section. It's a blue metallic humanoid robot on a pure black background, full body, front-facing. Here's exactly what I need you to do:
+1. REPLACE THE CURRENT CANVAS-DRAWN ROBOT
+Delete all the Canvas code that tries to draw a wireframe robot. We're using the real image now.
+2. HERO LAYOUT
+Keep the split layout:
+
+Left 45%: all the text content (headline, subtext, CTA button, etc) — left-aligned
+Right 55%: the robot image with interactive effects layered on top
+
+Structure it like this:
+html<div class="hero-robot-container">
+  <div class="robot-glow-bg"></div>
+  <img src="liftapp__10_.png" class="robot-image" draggable="false" />
+  <canvas id="robotFX" class="robot-fx-canvas"></canvas>
+</div>
+3. ROBOT IMAGE STYLING
+css.hero-robot-container {
+  position: relative;
+  width: 55%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.robot-image {
+  position: relative;
+  max-height: 90vh;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  z-index: 2;
+  user-select: none;
+  filter: drop-shadow(0 0 40px rgba(0, 150, 255, 0.4)) drop-shadow(0 0 80px rgba(0, 150, 255, 0.15));
+}
+
+.robot-glow-bg {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 150, 255, 0.12) 0%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  animation: glowPulse 4s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+  50% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+}
+
+.robot-fx-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  pointer-events: none;
+}
+4. INTERACTIVE CANVAS EFFECTS (render on the canvas layer over the image)
+Build a single requestAnimationFrame render loop on the #robotFX canvas that draws ALL of the following effects every frame. Track the user's mouse position globally.
+Effect A: EYE GLOW TRACKING
+The robot's eyes are located at approximately:
+
+Left eye: 47% from left, 14% from top of the image
+Right eye: 53% from left, 14% from top of the image
+
+At each eye position:
+
+Draw a bright glowing dot (radial gradient: white center → cyan #0096ff middle → transparent edge)
+Radius: about 6-10px base
+The dots should MOVE slightly toward the cursor direction (max 6px displacement from center, use smooth linear interpolation with a lerp factor of 0.05 so it feels organic, not instant)
+Add a secondary larger, softer glow behind each eye (radius 25px, very low opacity cyan)
+This creates the illusion the robot is watching you
+
+Effect B: BODY ENERGY LINES
+
+Draw 4-6 very faint glowing lines that run along the robot's body contours (down the arms, across the shoulders, down the torso center, down the legs)
+These lines should be barely visible (strokeStyle with alpha 0.08)
+Animate small bright dots (radius 2px, bright cyan) traveling along these lines at different speeds
+When a dot reaches the end of its line, it loops back to the start
+
+Effect C: FLOATING PARTICLES
+
+20-30 tiny particles that spawn near the robot's body area and float UPWARD slowly
+Each particle: radius 1-2px, cyan or light blue, starts with opacity 0.4 and fades to 0 as it rises
+Particles should have slight horizontal drift (subtle sine wave movement)
+When a particle fades out, respawn it at a random position near the robot's torso/shoulders area
+
+Effect D: SCAN LINE
+
+Every 12 seconds, animate a horizontal bright line (2px height, full canvas width) that sweeps from top to bottom over 2 seconds
+The line should be bright cyan with a white core and soft glow (use shadowBlur)
+As the line passes, draw a semi-transparent bright band (height ~20px, very low opacity) that briefly brightens the area
+
+Effect E: HOLOGRAPHIC GLITCH (apply to the IMAGE element, not the canvas)
+
+Every 18-25 seconds (randomized), trigger a glitch:
+
+Apply a CSS class to the robot image that does: transform: translateX(5px); filter: hue-rotate(30deg); for 80ms
+Then switch to: transform: translateX(-3px); filter: hue-rotate(-20deg); for 60ms
+Then remove the class (back to normal)
+Also briefly show 2-3 horizontal "slice" divs over the image that are offset copies (clip-path slices) — OR just do the CSS shift, that's enough
+
+
+
+Effect F: CHEST ENERGY PULSE
+
+The robot's chest center is at approximately 50% from left, 35% from top
+Draw a soft pulsing glow there: radial gradient from bright cyan (alpha 0.15) to transparent
+Pulse it with a breathing animation (scale 0.8 to 1.2 over 4 seconds)
+Every 10 seconds, emit an expanding ring from the chest that grows outward and fades (like a sonar ping)
+
+5. RESPONSIVE
+
+On screens under 768px: stack the layout vertically, robot on top (smaller, max-height 40vh), text below
+On mobile: disable eye tracking (no cursor), keep particles and pulse effects, reduce particle count to 10
+
+6. PERFORMANCE
+
+Use requestAnimationFrame for the canvas render loop
+Only render effects when the hero section is in the viewport (use IntersectionObserver to pause when scrolled away)
+Use canvas shadowBlur sparingly (it's expensive) — only on the eye glows and scan line
+
+7. IMPORTANT
+
+Do NOT remove or change any of the existing text content, headline styles, CTA button, or other sections
+Only replace the old canvas-drawn robot with this new image + effects system
+Make sure the robot image loads properly — if the path needs adjusting for your file structure, fix it
+The black background of the robot image will blend seamlessly with the site's dark background (#07070f) — they're close enough that no background removal is needed, but if there's a visible seam, add mix-blend-mode: lighten to the robot image to make the black parts transparent
