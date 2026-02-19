@@ -1,0 +1,253 @@
+CLAWD Website — Complete Redesign Prompt for Replit
+THE VISION
+Rebuild the CLAWD website (aibotsetup.com) into an absolutely jaw-dropping, interactive, animated experience that feels like stepping into a living AI command center. This should NOT look like a typical SaaS landing page. It should feel like a sci-fi interface crossed with an art installation — the kind of site people screenshot and share because they've never seen anything like it.
+The site is for CLAWD — a business that builds custom AI agents for companies. The brand colors are deep dark navy/black backgrounds with cyan/teal, purple/violet, and green accents.
+
+GLOBAL EFFECTS (Apply across the ENTIRE page)
+1. AI Cursor Companions
+
+Spawn 3 small floating AI "eye" orbs (glowing cyan/purple) that follow the user's cursor around the page with smooth spring physics (slight delay, organic movement)
+Each orb has a different size and color (teal, purple, green — matching brand)
+They should have a subtle "blink" animation every few seconds
+When the cursor stops moving, the orbs slowly orbit around the cursor position
+When the cursor moves fast, they trail behind with a particle trail effect
+On click anywhere, the orbs briefly scatter outward then regroup
+
+2. Neural Network Background
+
+The entire page background should have an animated neural network mesh — interconnected nodes with glowing lines between them
+Nodes should pulse and glow randomly, with data packets (small light dots) traveling along the connection lines
+The network should subtly react to scroll position — nodes near the viewport center glow brighter
+Use a dark navy (#0a0a1a) base with the network rendered on a canvas layer
+
+3. Custom Cursor
+
+Replace the default cursor with a glowing crosshair/ring that pulses
+On hover over interactive elements, the ring expands and changes color
+Leave a brief fading trail of small dots behind the cursor as it moves
+
+4. Scroll-Triggered Reveals
+
+Every section should animate in with staggered, cinematic reveals — not basic fade-ins
+Use combinations of: scale from 0, blur-to-sharp, glitch effects, typewriter text, counter animations
+Parallax layers at different scroll speeds for depth
+
+5. Floating Particles
+
+Ambient floating particles across the whole page (tiny glowing dots drifting upward slowly)
+These particles should part/scatter away from the cursor as it moves through them (magnetic repulsion effect)
+
+
+SECTION-BY-SECTION BREAKDOWN
+SECTION 1: HERO
+Layout: Full viewport height, centered content
+Content:
+
+Small pill badge at top: "✨ AI AGENTS FOR ANY BUSINESS"
+Main headline: "We Build AI Agents That Run Your Business"
+
+The words "AI Agents" should have an animated gradient text effect cycling through cyan → purple → green
+Each word should typewrite in on page load with a blinking cursor, then the gradient kicks in
+
+
+Subheadline: "Our AI agents don't just chat — they think, decide, and act. They answer your phones, book your appointments, follow up with leads, post your content, and close your sales — 24/7, with zero burnout. Each agent is trained on your business data, plugged into your tools, and designed to handle real workflows end-to-end."
+
+The bold phrases should glow/pulse subtly
+
+
+CTA Button: "Free Zoom Class — Sign Up Now" — green button with a ripple effect on hover, slight float animation, and glowing edge aura
+Below CTA: "Questions? Text (754) 250-4912"
+Trust bar at bottom of hero: "CUSTOM AI AGENTS • ANY INDUSTRY • 24/7 UPTIME • MULTI-PLATFORM" — each item slides in from below with stagger
+
+Special Effects:
+
+Behind the headline, render a large, slowly rotating 3D holographic brain or neural sphere using Three.js or CSS 3D transforms — wireframe style, glowing cyan
+The sphere should react to mouse position (slight tilt/rotation following cursor)
+Add scan lines that sweep across the hero periodically (like a HUD overlay)
+
+
+SECTION 2: "WHAT CAN YOUR AI AGENT DO?" — Interactive Capability Showcase
+Layout: Full-width section with a 3D rotating carousel or interactive grid
+Content — 6 Capability Cards:
+
+📞 Answer Calls — "Your AI picks up the phone 24/7, qualifies leads, and books appointments in real-time."
+📅 Book Appointments — "Syncs with your calendar, handles scheduling, reschedules, and sends confirmations automatically."
+📩 Follow Up With Leads — "Sends personalized follow-ups via text, email, or DM — no lead slips through the cracks."
+📱 Post Your Content — "Generates and publishes social media content on autopilot across all your platforms."
+💰 Close Sales — "Handles objections, sends proposals, and guides prospects through your sales pipeline."
+🔗 Integrate Everything — "Plugs into your CRM, calendar, email, socials, and 100+ other tools seamlessly."
+
+Interactions:
+
+Cards arranged in a hexagonal honeycomb grid or 3D card flip carousel
+On hover, each card flips or expands to reveal more detail with a holographic shimmer effect
+When a card is active, the AI cursor companions should fly to that card and orbit around it
+Each card has a glowing border animation (light traveling around the border like a circuit)
+Background of each card: frosted glass / glassmorphism with subtle noise texture
+
+
+SECTION 3: "MEET YOUR AI WORKFORCE" — Animated AI Agent Profiles
+Layout: Horizontal scrolling showcase or staggered grid
+Concept: Show 3-4 animated AI agent avatars — each one is a stylized robot/AI face rendered with CSS/SVG that blinks, looks around, and reacts to the cursor
+Agents:
+
+"LUNA" — The Receptionist — Handles calls & scheduling (teal themed)
+"ATLAS" — The Closer — Sales & follow-ups (purple themed)
+"NOVA" — The Creator — Content & social media (green themed)
+"SENTINEL" — The Integrator — Systems & workflows (orange themed)
+
+Each Agent Card Has:
+
+An animated SVG/CSS face that tracks the user's mouse (eyes follow cursor)
+A "status" indicator showing "ONLINE" with a pulsing green dot
+A live typing animation showing a sample message the agent might send
+On hover: the agent "wakes up" — eyes glow brighter, a speech bubble appears with a witty message
+Subtle breathing animation (gentle scale pulse) when idle
+
+
+SECTION 4: HOW IT WORKS — Animated Timeline
+Layout: Vertical or horizontal animated step-by-step timeline
+Steps:
+
+Book a Free Zoom Class — "Join our live session and see AI agents in action"
+Tell Us About Your Business — "We learn your workflows, tools, and goals"
+We Build Your Custom Agent — "Trained on your data, integrated with your stack"
+Launch & Scale — "Your agent goes live and starts working immediately"
+
+Animations:
+
+Each step is a node on a glowing circuit board path
+As the user scrolls, a light/energy pulse travels along the path from step to step, illuminating each node as it arrives
+Each step card materializes with a glitch/digital effect (brief scrambled text that resolves)
+Numbers count up with a slot machine / ticker animation
+Connection lines between steps should have flowing data particles
+
+
+SECTION 5: PRICING — Interactive Tier Cards
+Layout: 3 cards side by side with the middle one elevated/featured
+Tiers:
+STARTER — $199/month
+
+1 Custom AI Agent
+Basic phone/text handling
+Calendar integration
+Email support
+Best for: Solopreneurs
+
+GROWTH — $499/month ⭐ MOST POPULAR
+
+Up to 3 AI Agents
+Advanced call handling + lead follow-up
+CRM integration
+Social media posting
+Priority support
+Best for: Growing businesses
+
+ENTERPRISE — $799/month
+
+Unlimited AI Agents
+Full workflow automation
+Custom integrations
+Dedicated account manager
+White-glove setup
+Best for: Agencies & teams
+
+Interactions:
+
+Cards should have a 3D tilt effect on hover (perspective transform following mouse position)
+The "MOST POPULAR" card has an animated gradient border and floats slightly higher
+Price numbers should count up from $0 when they scroll into view
+Each feature item has a checkmark that draws itself (SVG line animation)
+CTA buttons have magnetic pull — they slightly move toward the cursor when nearby
+Hovering a card triggers a holographic shimmer across its surface
+
+
+SECTION 6: RESULTS / SOCIAL PROOF
+Layout: Scrolling ticker or animated stats section
+Stats (animate with counting effect):
+
+"500+ AI Agents Deployed"
+"50+ Industries Served"
+"24/7/365 Uptime"
+"10x Faster Response Times"
+
+Testimonial Cards:
+
+Auto-rotating carousel with 3D flip transitions
+Each card has a glassmorphism background
+Star ratings that fill in with a gold shimmer animation
+Quote marks that glow
+
+
+SECTION 7: FAQ — Interactive Accordion
+
+Questions expand with a smooth spring animation
+The "+" icon morphs into "−" with a rotation animation
+When expanded, text types in with a typewriter effect as if the AI is responding
+A small AI avatar next to each answer that "speaks" (animated mouth) while the text types
+
+
+SECTION 8: FINAL CTA — Full Impact
+Layout: Full viewport, centered, maximum impact
+Content:
+
+Headline: "Ready to Put AI to Work?" — large, animated gradient text
+Subtext: "Join hundreds of businesses already running on autopilot"
+Massive glowing CTA button with particle effects emanating from it
+The button should have a heartbeat pulse animation and glow intensely on hover
+Background: intensified neural network animation converging toward the CTA button
+
+
+SECTION 9: FOOTER
+
+Dark, clean footer with CLAWD logo
+Links: Home, Services, Pricing, FAQ, Contact
+Social icons with hover glow effects
+"Questions? Text (754) 250-4912"
+Small animated tagline: "Built with 🤖 by CLAWD" with a typing loop
+
+
+TECHNICAL REQUIREMENTS
+Libraries/Frameworks to Use:
+
+GSAP (GreenSock) — for all scroll-triggered animations, timelines, and complex tweens
+Three.js — for the 3D neural sphere in the hero and any 3D elements
+Canvas API — for the neural network background and particle systems
+Framer Motion (if using React) — for component animations
+Intersection Observer — for scroll-triggered reveals
+CSS Custom Properties — for dynamic theming and cursor position variables
+
+Performance:
+
+Use will-change and GPU-accelerated properties (transform, opacity) for all animations
+Implement requestAnimationFrame for canvas animations
+Lazy load sections below the fold
+Use prefers-reduced-motion media query to disable heavy animations for accessibility
+Target 60fps on all animations
+
+Responsive:
+
+All animations should gracefully degrade on mobile
+AI cursor companions should be disabled on touch devices (no cursor)
+Neural network background should reduce node count on mobile
+Cards should stack vertically on mobile with simplified animations
+
+Color Palette:
+
+Background: #0a0a1a (deep navy/black)
+Primary: #00e5ff (cyan/teal)
+Secondary: #a855f7 (purple/violet)
+Accent: #22c55e (green)
+Text: #ffffff (white) and #94a3b8 (muted gray)
+Card backgrounds: rgba(255, 255, 255, 0.05) with backdrop-blur
+
+Typography:
+
+Headlines: Bold, modern sans-serif (Inter, Space Grotesk, or similar)
+Body: Clean, readable sans-serif
+Code/status text: Monospace font for that techy feel
+
+
+THE VIBE CHECK
+This website should make someone say "holy shit" when they land on it. It should feel alive — like the AI agents are already watching and ready to work. Every scroll, every hover, every click should trigger something delightful and unexpected. The animations should be smooth, purposeful, and layered — not chaotic. Think: Stripe's homepage meets a sci-fi movie interface meets an interactive art piece.
+The site should instantly communicate: "These people are at the cutting edge of AI — if their website is this advanced, imagine what their AI agents can do."

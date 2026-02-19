@@ -33,8 +33,10 @@ export const bookings = pgTable("bookings", {
 
 export const signups = pgTable("signups", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
   email: text("email").notNull(),
   phone: text("phone").notNull(),
+  message: text("message"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

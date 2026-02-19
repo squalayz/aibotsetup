@@ -18,25 +18,33 @@ const gmailTransport = process.env.GMAIL_APP_PASSWORD
     })
   : null;
 
-async function sendSignupNotification(email: string, phone: string) {
+async function sendSignupNotification(name: string, email: string, phone: string, message?: string | null) {
   if (!gmailTransport) return;
   try {
     await gmailTransport.sendMail({
       from: `"CLAWD Bot" <${NOTIFY_EMAIL}>`,
       to: NOTIFY_EMAIL,
-      subject: `New Free Zoom Class Signup: ${email}`,
+      subject: `New AI Agent Inquiry: ${name}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; background: #0a0a1a; color: #e0e0e0; border-radius: 8px;">
-          <h2 style="color: #4ade80; margin-top: 0;">New Free Zoom Class Signup</h2>
+          <h2 style="color: #4ade80; margin-top: 0;">New AI Agent Inquiry</h2>
           <table style="width: 100%; border-collapse: collapse;">
             <tr>
-              <td style="padding: 8px 0; color: #888; width: 80px;">Email:</td>
+              <td style="padding: 8px 0; color: #888; width: 80px;">Name:</td>
+              <td style="padding: 8px 0; color: #fff; font-weight: bold;">${name}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; color: #888;">Email:</td>
               <td style="padding: 8px 0; color: #fff; font-weight: bold;">${email}</td>
             </tr>
             <tr>
               <td style="padding: 8px 0; color: #888;">Phone:</td>
               <td style="padding: 8px 0; color: #fff; font-weight: bold;">${phone}</td>
             </tr>
+            ${message ? `<tr>
+              <td style="padding: 8px 0; color: #888; vertical-align: top;">Message:</td>
+              <td style="padding: 8px 0; color: #fff;">${message}</td>
+            </tr>` : ""}
             <tr>
               <td style="padding: 8px 0; color: #888;">Time:</td>
               <td style="padding: 8px 0; color: #aaa;">${new Date().toLocaleString("en-US", { timeZone: "America/New_York" })}</td>
@@ -48,9 +56,9 @@ async function sendSignupNotification(email: string, phone: string) {
         </div>
       `,
     });
-    console.log(`Signup notification sent for ${email}`);
+    console.log(`Inquiry notification sent for ${email}`);
   } catch (err) {
-    console.error("Failed to send signup notification:", err);
+    console.error("Failed to send inquiry notification:", err);
   }
 }
 const WALLET = "0x00468c1B22451ed9Fabc9DA32E6aEa28DC03a216".toLowerCase();
@@ -313,9 +321,14 @@ export async function registerRoutes(
     try {
       const data = insertSignupSchema.parse(req.body);
 
+      const name = data.name.trim();
       const email = data.email.trim().toLowerCase();
       const phone = data.phone.trim();
+      const message = data.message?.trim() || null;
 
+      if (!name || name.length < 2) {
+        return res.status(400).json({ message: "Please enter your name" });
+      }
       if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         return res.status(400).json({ message: "Please enter a valid email address" });
       }
@@ -323,21 +336,16 @@ export async function registerRoutes(
         return res.status(400).json({ message: "Please enter a valid phone number" });
       }
 
-      const existing = await storage.getSignupByEmail(email);
-      if (existing) {
-        return res.status(400).json({ message: "This email is already signed up" });
-      }
+      const signup = await storage.createSignup({ name, email, phone, message });
 
-      const signup = await storage.createSignup({ email, phone });
-
-      sendSignupNotification(email, phone);
+      sendSignupNotification(name, email, phone, message);
 
       res.json(signup);
     } catch (error) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ message: error.errors[0].message });
       }
-      res.status(500).json({ message: "Failed to create signup" });
+      res.status(500).json({ message: "Failed to submit inquiry" });
     }
   });
 
