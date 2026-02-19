@@ -102,8 +102,8 @@
   filter: drop-shadow(0 0 40px rgba(0, 150, 255, 0.4)) drop-shadow(0 0 80px rgba(0, 150, 255, 0.15));
   mix-blend-mode: lighten;
   transform: scale(1.5);
-  -webkit-mask-image: linear-gradient(to bottom, white 50%, transparent 95%);
-  mask-image: linear-gradient(to bottom, white 50%, transparent 95%);
+  -webkit-mask-image: linear-gradient(to bottom, white 40%, transparent 78%);
+  mask-image: linear-gradient(to bottom, white 40%, transparent 78%);
 }
 
 .robot-glow-bg {
