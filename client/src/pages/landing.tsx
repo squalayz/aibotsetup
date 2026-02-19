@@ -15,7 +15,7 @@ import {
   ArrowRight, Check, Bot, ChevronRight, ExternalLink,
   Phone, HeadphonesIcon, Users, MessageSquare, Briefcase,
   X, CheckCircle, Loader2, Eye, Link, BarChart3, Cpu,
-  Calendar, Star, ChevronDown, Rocket, Settings,
+  Calendar, ChevronDown, Rocket, Settings,
 } from "lucide-react";
 
 function RevealSection({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
@@ -1019,92 +1019,6 @@ export default function Landing() {
         </section>
 
         {/* ═══════════ SECTION 5: PRICING ═══════════ */}
-        <section className="py-20" data-testid="section-pricing">
-          <RevealSection>
-            <div className="text-center mb-14">
-              <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-300 via-violet-300 to-cyan-400 bg-clip-text text-transparent mb-4">
-                Simple, Transparent Pricing
-              </h2>
-              <p className="text-slate-400 max-w-[500px] mx-auto">Choose the plan that fits your business. Scale anytime.</p>
-            </div>
-          </RevealSection>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-[1000px] mx-auto items-start">
-            {[
-              {
-                name: "STARTER",
-                price: 199,
-                desc: "Best for solopreneurs",
-                featured: false,
-                features: ["1 Custom AI Agent", "Basic phone/text handling", "Calendar integration", "Email support"],
-              },
-              {
-                name: "GROWTH",
-                price: 499,
-                desc: "Best for growing businesses",
-                featured: true,
-                features: ["Up to 3 AI Agents", "Advanced call handling + lead follow-up", "CRM integration", "Social media posting", "Priority support"],
-              },
-              {
-                name: "ENTERPRISE",
-                price: 799,
-                desc: "Best for agencies & teams",
-                featured: false,
-                features: ["Unlimited AI Agents", "Full workflow automation", "Custom integrations", "Dedicated account manager", "White-glove setup"],
-              },
-            ].map((tier, i) => (
-              <RevealSection key={tier.name} delay={i * 0.1}>
-                <Card
-                  className={`p-7 backdrop-blur-xl relative overflow-visible ${
-                    tier.featured
-                      ? "bg-gradient-to-b from-violet-500/10 to-cyan-500/5 border-violet-500/30 md:-mt-4 md:mb-4"
-                      : "bg-white/[0.03] border-white/[0.06]"
-                  }`}
-                  data-testid={`card-pricing-${tier.name.toLowerCase()}`}
-                >
-                  {tier.featured && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                      <Badge className="bg-gradient-to-r from-violet-500 to-cyan-500 text-white border-0 font-mono text-[10px] tracking-widest px-3">
-                        <Star className="w-3 h-3 mr-1" /> MOST POPULAR
-                      </Badge>
-                    </div>
-                  )}
-
-                  <div className="text-center mb-6 pt-2">
-                    <span className="text-xs font-mono text-slate-500 tracking-widest">{tier.name}</span>
-                    <div className="text-4xl font-bold text-white mt-2 mb-1">
-                      $<CountUp target={tier.price} />
-                      <span className="text-lg text-slate-500 font-normal">/mo</span>
-                    </div>
-                    <p className="text-xs text-slate-500">{tier.desc}</p>
-                  </div>
-
-                  <div className="space-y-3 mb-6">
-                    {tier.features.map(f => (
-                      <div key={f} className="flex items-center gap-3 text-sm text-slate-300">
-                        <Check className="w-4 h-4 text-green-400 shrink-0" />
-                        {f}
-                      </div>
-                    ))}
-                  </div>
-
-                  <Button
-                    className={`w-full font-semibold ${
-                      tier.featured
-                        ? "bg-gradient-to-r from-violet-600 to-cyan-600 text-white border-violet-400/40"
-                        : "bg-white/[0.05] text-white border-white/10"
-                    }`}
-                    onClick={() => setShowSignup(true)}
-                    data-testid={`button-pricing-${tier.name.toLowerCase()}`}
-                  >
-                    Get Started <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                </Card>
-              </RevealSection>
-            ))}
-          </div>
-        </section>
-
         {/* ═══════════ SECTION 6: SOCIAL PROOF / STATS ═══════════ */}
         <section className="py-20" data-testid="section-stats">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5 max-w-[900px] mx-auto mb-16">
