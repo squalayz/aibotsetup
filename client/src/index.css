@@ -12,6 +12,21 @@
   animation: gradient-shift 4s ease infinite;
 }
 
+@keyframes circuit-trace {
+  0% { left: -80px; top: 0; }
+  25% { left: calc(100% + 80px); top: 0; }
+  25.01% { left: calc(100%); top: 0; }
+  50% { left: calc(100%); top: calc(100%); }
+  50.01% { left: calc(100% + 80px); top: calc(100%); }
+  75% { left: -80px; top: calc(100%); }
+  75.01% { left: 0; top: calc(100%); }
+  100% { left: 0; top: 0; }
+}
+
+.animate-circuit-trace {
+  animation: circuit-trace 4s linear infinite;
+}
+
 /* LIGHT MODE */
 :root {
   --button-outline: rgba(0,0,0, .10);
