@@ -1,0 +1,216 @@
+CLAWD Website — Replit Rebuild Prompt V3
+CRITICAL LAYOUT CHANGE FROM CURRENT VERSION
+The current site has text centered on top of the AI bot, hiding it. FIX THIS. The hero must use a split layout — text on the LEFT side, AI entity on the RIGHT side — so both are fully visible and neither blocks the other. Think of it like a movie poster: the hero (AI bot) gets its own space.
+
+THE AI ENTITY — Make It INTIMIDATING and IMPRESSIVE
+The current bot looks like a weak geometric shape. Completely redo it. This needs to be a detailed, powerful, humanoid AI figure that commands attention.
+What to Build:
+
+A full upper-body humanoid AI robot (head, shoulders, chest, arms visible) — NOT just a floating head or simple geometric shape
+Style: Think Ultron from Marvel, or the robots from Ex Machina, or a high-end mech from Ghost in the Shell — sleek, powerful, detailed
+Rendered as a glowing wireframe/holographic projection with multiple layers of detail:
+
+Outer wireframe shell — the main body shape in cyan (#00e5ff) lines
+Inner skeleton/circuit layer — visible through the wireframe, showing glowing circuit pathways and energy lines in purple (#a855f7)
+Core energy source in the chest — a bright pulsing orb (like an arc reactor) that glows and pulses with a breathing rhythm
+Eyes — two intense, bright glowing points that are clearly visible and piercing
+
+
+The figure should feel massive and powerful — it takes up the entire right 50-60% of the hero viewport
+It should have visible detail and complexity — not just simple lines. Layer multiple geometric patterns, hexagonal plates, circuit traces running along the arms and shoulders, small data readouts floating near the body
+
+AI Entity Behaviors:
+
+Eyes track the user's cursor with smooth interpolation (slight delay for organic feel)
+Head tilts slightly to follow cursor (subtle, max ~5 degrees)
+Breathing animation — the chest core pulses, wireframe lines glow brighter/dimmer in a slow rhythm (4 second cycle)
+Ambient energy particles float upward from the body (very few, like embers rising from the figure)
+Every 8-12 seconds: a power surge effect — a bright pulse of light ripples across the entire wireframe from the chest outward, like a heartbeat through the body
+When cursor hovers near the bot: the eyes glow much brighter and the figure shifts posture slightly (leans forward just a tiny bit, as if engaging)
+Holographic glitch every 15-20 seconds — the entire figure briefly distorts (horizontal slice displacement) then snaps back
+The wireframe lines should have a subtle flowing energy effect — bright points traveling along the lines like data moving through circuits
+
+Technical Approach:
+
+Use Canvas 2D for rendering the entity
+Build the figure from predefined vertex/line data forming the humanoid shape — NOT a 3D model, but a carefully constructed 2D wireframe that LOOKS 3D through perspective and layering
+Use multiple canvas layers for depth: background glow layer → inner circuit layer → outer wireframe layer → particle/effect layer
+Apply glow effects with canvas shadowBlur and multiple stroke passes at different opacities
+The figure should be pre-designed to look good — spend time making the vertex data create a convincing, detailed humanoid shape. Include:
+
+Angular head with defined jaw, forehead ridge, eye sockets
+Broad shoulders with segmented armor plates
+Chest with visible rib-cage-like structure and central core
+Arms at sides or one arm slightly raised (relaxed but ready)
+Detailed hands with articulated fingers if visible
+Hexagonal/geometric texture patterns across the surface
+
+
+
+
+TEXT & TYPOGRAPHY — 3D, Bold, Clear
+The current text is flat and basic. Make it feel DIMENSIONAL and powerful:
+Hero Headline Style:
+
+Use a heavy, ultra-bold font — something like Space Grotesk Black, Orbitron Bold, or Exo 2 Black (import from Google Fonts)
+Text should have a 3D depth effect built with CSS:
+
+Multiple text-shadow layers creating a 3D extrusion effect downward/backward (4-6 shadow layers, each offset by 1-2px, going from the text color to darker shades)
+A front-face glow — subtle cyan/white text-shadow at 0 offset for luminosity
+The combined effect: text looks like it's extruded metal floating in space, lit from the front
+
+
+"AI Agents" should have an animated gradient fill (cycling cyan → purple → cyan) using background-clip: text
+All text should be crisp white (#ffffff) with the 3D shadows in darker teal/navy shades
+
+3D Text CSS Example (give this to the AI to implement):
+css.hero-headline {
+  font-family: 'Orbitron', 'Space Grotesk', sans-serif;
+  font-weight: 900;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  color: #ffffff;
+  text-shadow:
+    0 0 20px rgba(0, 229, 255, 0.3),
+    0 0 40px rgba(0, 229, 255, 0.1),
+    1px 1px 0 #0d3d4a,
+    2px 2px 0 #0a2f3a,
+    3px 3px 0 #07222b,
+    4px 4px 0 #05181f,
+    5px 5px 10px rgba(0, 0, 0, 0.5);
+  letter-spacing: -0.02em;
+}
+AI Text Decode Animation (on scroll-in):
+
+Headlines start as scrambled symbols (░ ▒ ▓ ╔ ═ 01 ∆ Ω λ)
+Characters rapidly cycle then resolve left-to-right (~1.5 seconds total)
+Each character flashes cyan briefly as it locks in
+After resolved: occasional subtle single-character glitches every 5-8 seconds
+
+Key Phrase Glitch Effect:
+
+"AI Agents" / "think, decide, and act" / "24/7, with zero burnout" have a persistent chromatic aberration glitch — CSS pseudo-elements offset by 2px in red and cyan that briefly flash every 4-6 seconds
+
+
+HERO SECTION LAYOUT — SPLIT DESIGN
+┌──────────────────────────────────────────────────┐
+│  CLAWD                              Get Started  │  ← Navbar
+├──────────────────────┬───────────────────────────┤
+│                      │                           │
+│  ✨ AI AGENTS FOR    │                           │
+│     ANY BUSINESS     │                           │
+│                      │      ┌─────────────┐      │
+│  We Build            │      │             │      │
+│  AI Agents           │      │  MASSIVE    │      │
+│  That Run            │      │  AI ROBOT   │      │
+│  Your Business       │      │  ENTITY     │      │
+│                      │      │             │      │
+│  [subtext paragraph] │      │  (eyes      │      │
+│                      │      │   follow    │      │
+│  [GET YOUR AI AGENT] │      │   cursor)   │      │
+│                      │      │             │      │
+│  Questions? Text...  │      └─────────────┘      │
+│                      │                           │
+│  CUSTOM AI • 24/7 • MULTI-PLATFORM              │
+└──────────────────────────────────────────────────┘
+
+Left 45%: All text content, left-aligned (NOT centered), stacked vertically
+Right 55%: The AI entity, centered in this space, fully visible and unobstructed
+On mobile: stack vertically — AI entity on top (smaller), text below
+The AI entity should slightly overlap into the text area by maybe 5-10% to create depth (the wireframe lines extend past the midpoint, fading out)
+Add a very subtle gradient fog/mist at the base of the entity, fading into the dark background
+
+
+REST OF THE PAGE (Keep from V2, but update text styling)
+Section 2: Capabilities Grid
+
+Same 6 cards (Answer Calls, Book Appointments, Follow Up Leads, Post Content, Close Sales, Integrate Everything)
+Card titles use the 3D text effect (smaller scale)
+Cards have circuit-trace border animation on hover
+Section headline uses AI text decode animation on scroll
+
+Section 3: AI Team (Luna, Atlas, Nova, Sentinel)
+
+Make these mini versions of the main AI entity style — small wireframe busts/heads with tracking eyes
+NOT cute or cartoonish — they should look like different units of the same AI system
+Each has a distinct color accent and typing chat bubble
+Their eyes all track the cursor independently
+
+Section 4: How It Works (4 steps, energy pulse timeline)
+
+Step titles use 3D text
+Glowing connection line with traveling energy pulse on scroll
+Step numbers use slot-machine counter animation
+
+Section 5: Pricing (3 tiers: $199 / $499 / $799)
+
+Price numbers count up with the 3D text style
+"MOST POPULAR" card has animated gradient border
+Feature checkmarks draw in with SVG animation
+3D tilt on hover
+
+Section 6: Stats (500+ Agents, 50+ Industries, 24/7/365, 10x Faster)
+
+Big numbers with rapid counter + 3D text
+Brief glitch flash when counters land
+
+Section 7: FAQ Accordion
+
+Answers type in with typewriter effect
+Blinking cyan cursor
+
+Section 8: Final CTA
+
+"Ready to Put AI to Work?" in large 3D glitch-decode text
+The AI entity's eyes appear in the background (just the eyes, glowing, watching)
+Massive glowing CTA button
+
+Footer
+
+Minimal, CLAWD logo with glow, links, phone number
+
+
+WHAT MAKES THIS DIFFERENT FROM A "BASIC LANDING PAGE"
+
+The AI robot is a CHARACTER — it's not a decoration, it's a presence. It watches you. It reacts. It feels alive.
+Text feels AI-generated — the decode/scramble animations make every headline feel like it's being transmitted from an intelligence
+3D typography — headlines have physical depth and weight, not flat text on a dark background
+Split hero layout — breaks the typical centered-text-over-background pattern completely
+The whole page tells a story — you encounter the AI, learn what it does, meet its team, see how it works, then decide to get one. It's a journey, not a brochure.
+
+
+TECHNICAL REQUIREMENTS
+Libraries:
+
+GSAP + ScrollTrigger (from CDN) — all animations
+Canvas 2D — AI entity rendering
+Google Fonts — Orbitron or Space Grotesk for headlines
+
+Performance:
+
+60fps target on all animations
+Use requestAnimationFrame for canvas
+GPU-accelerated CSS (transform, opacity only)
+prefers-reduced-motion support
+Lazy render canvas when not in viewport
+
+Colors:
+
+BG: #07070f
+Primary: #00e5ff (cyan)
+Secondary: #a855f7 (purple)
+Accent: #22c55e (green)
+3D shadow: #0d3d4a → #05181f (gradient of dark teals)
+Glitch: #ff0040 (red chromatic aberration)
+Text: #ffffff / #94a3b8
+
+DO NOT:
+
+❌ Put text on top of the AI entity (they need separate space)
+❌ Make the AI bot a simple geometric shape (it must be a detailed humanoid)
+❌ Use flat, thin, basic fonts (must be bold, heavy, 3D)
+❌ Center everything — left-align the hero text
+❌ Add excessive background particles/noise (keep backgrounds clean)
+❌ Make it look like a template
+
+THE STANDARD:
+When someone lands on this page, the AI robot should make them stop scrolling. They should move their mouse around just to watch its eyes follow. The 3D text should feel like it was carved from light. The whole experience should make them think: "If this is their WEBSITE, their actual AI agents must be incredible."
