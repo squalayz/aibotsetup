@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import {
   ArrowRight, Check, Bot, ChevronDown, Phone, Mail,
   MessageSquare, Users, X, CheckCircle, Loader2, Calendar,
-  Briefcase, Link, Zap, Shield, Globe, Sparkles, Star,
+  Briefcase, Link, Zap, Shield, Globe, Sparkles,
 } from "lucide-react";
 import robotImgSrc from "@assets/liftapp_(10)_1771462069765.png";
 
@@ -1116,101 +1116,6 @@ export default function Landing() {
         </div>
       </section>
 
-      <section className="py-20 px-5" data-testid="section-pricing">
-        <div className="max-w-[1000px] mx-auto">
-          <RevealSection>
-            <div className="text-center mb-14">
-              <h2 className="hero-headline-sm text-3xl md:text-4xl mb-4">
-                <DecodeText text="Choose Your Plan" as="span" delay={0} />
-              </h2>
-              <p className="text-slate-400 max-w-[550px] mx-auto">
-                Flexible pricing for businesses of every size
-              </p>
-            </div>
-          </RevealSection>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              {
-                name: "Starter",
-                price: 199,
-                desc: "Perfect for solo businesses needing one focused AI agent",
-                features: ["1 Custom AI Agent", "Phone or Chat Support", "Basic Integration (1 tool)", "Email Notifications", "5-Day Setup"],
-                popular: false,
-              },
-              {
-                name: "Growth",
-                price: 499,
-                desc: "For growing businesses that need multiple capabilities",
-                features: ["2 Custom AI Agents", "Phone, Chat & Email Support", "Full CRM Integration", "Lead Tracking Dashboard", "Priority 3-Day Setup", "Monthly Optimization"],
-                popular: true,
-              },
-              {
-                name: "Enterprise",
-                price: 799,
-                desc: "Complete AI workforce for established businesses",
-                features: ["4 Custom AI Agents", "Omnichannel Support", "Unlimited Integrations", "Advanced Analytics", "1-on-1 Strategy Session", "48-Hour Setup", "Dedicated Account Manager"],
-                popular: false,
-              },
-            ].map((tier, i) => (
-              <RevealSection key={tier.name} delay={i * 0.12}>
-                <Card
-                  className={`relative p-6 bg-white/[0.02] border-white/[0.06] overflow-visible hover-elevate h-full flex flex-col ${tier.popular ? "md:-mt-4 md:mb-4" : ""}`}
-                  data-testid={`card-pricing-${tier.name.toLowerCase()}`}
-                >
-                  {tier.popular && (
-                    <>
-                      <div className="absolute -inset-[2px] rounded-md overflow-hidden pointer-events-none">
-                        <motion.div
-                          className="absolute inset-0"
-                          style={{
-                            background: `linear-gradient(90deg, ${COLORS.cyan}40, ${COLORS.purple}40, ${COLORS.green}40, ${COLORS.cyan}40)`,
-                            backgroundSize: "300% 100%",
-                          }}
-                          animate={{ backgroundPosition: ["0% 0%", "100% 0%", "0% 0%"] }}
-                          transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-                        />
-                      </div>
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
-                        <Badge className="bg-gradient-to-r from-cyan-500 to-purple-500 text-white border-0 px-4 text-xs uppercase tracking-widest" style={{ fontFamily: "'Orbitron', sans-serif" }}>
-                          <Star className="w-3 h-3 mr-1" /> Most Popular
-                        </Badge>
-                      </div>
-                    </>
-                  )}
-
-                  <div className="relative flex flex-col h-full">
-                    <p className="text-sm font-semibold mb-2" style={{ color: COLORS.cyan, fontFamily: "'Orbitron', sans-serif" }}>{tier.name}</p>
-                    <div className="hero-headline mb-3" style={{ fontSize: "clamp(2rem, 4vw, 2.8rem)", lineHeight: 1.1 }}>
-                      $<CountUp target={tier.price} />
-                    </div>
-                    <p className="text-sm text-slate-400 mb-6 leading-relaxed">{tier.desc}</p>
-
-                    <ul className="space-y-2.5 mb-8 flex-1">
-                      {tier.features.map((f) => (
-                        <li key={f} className="flex items-center gap-2.5 text-sm text-slate-300">
-                          <Check className="w-4 h-4 shrink-0" style={{ color: COLORS.green }} />
-                          {f}
-                        </li>
-                      ))}
-                    </ul>
-
-                    <Button
-                      className={`w-full font-bold ${tier.popular ? "text-white" : "text-white border-white/10"}`}
-                      variant={tier.popular ? "default" : "outline"}
-                      style={tier.popular ? { background: `linear-gradient(90deg, #16a34a, #10b981, #16a34a)`, borderColor: "rgba(34,197,94,0.4)" } : {}}
-                      onClick={() => setShowSignup(true)}
-                      data-testid={`button-pricing-${tier.name.toLowerCase()}`}
-                    >
-                      Get Started <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
-                  </div>
-                </Card>
-              </RevealSection>
-            ))}
-          </div>
-        </div>
-      </section>
 
       <section className="py-20 px-5" data-testid="section-stats">
         <div className="max-w-[900px] mx-auto">
