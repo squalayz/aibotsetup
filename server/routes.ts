@@ -18,16 +18,22 @@ const gmailTransport = process.env.GMAIL_APP_PASSWORD
     })
   : null;
 
-async function sendSignupNotification(name: string, email: string, phone: string, message?: string | null) {
+async function sendSignupNotification(name: string, email: string, phone: string, type: string, message?: string | null) {
   if (!gmailTransport) return;
+  const typeLabels: Record<string, { label: string; color: string }> = {
+    general: { label: "AI Agent Inquiry", color: "#00f0ff" },
+    trading: { label: "AI Trading Agent Inquiry", color: "#22ff88" },
+    team: { label: "Team / Commission Application", color: "#c026d3" },
+  };
+  const info = typeLabels[type] || typeLabels.general;
   try {
     await gmailTransport.sendMail({
-      from: `"CLAWD Bot" <${NOTIFY_EMAIL}>`,
+      from: `"AI Bot Setup" <${NOTIFY_EMAIL}>`,
       to: NOTIFY_EMAIL,
-      subject: `New AI Agent Inquiry: ${name}`,
+      subject: `${info.label}: ${name}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; background: #0a0a1a; color: #e0e0e0; border-radius: 8px;">
-          <h2 style="color: #4ade80; margin-top: 0;">New AI Agent Inquiry</h2>
+          <h2 style="color: ${info.color}; margin-top: 0;">${info.label}</h2>
           <table style="width: 100%; border-collapse: collapse;">
             <tr>
               <td style="padding: 8px 0; color: #888; width: 80px;">Name:</td>
@@ -41,8 +47,12 @@ async function sendSignupNotification(name: string, email: string, phone: string
               <td style="padding: 8px 0; color: #888;">Phone:</td>
               <td style="padding: 8px 0; color: #fff; font-weight: bold;">${phone}</td>
             </tr>
+            <tr>
+              <td style="padding: 8px 0; color: #888;">Type:</td>
+              <td style="padding: 8px 0; color: ${info.color}; font-weight: bold;">${info.label}</td>
+            </tr>
             ${message ? `<tr>
-              <td style="padding: 8px 0; color: #888; vertical-align: top;">Message:</td>
+              <td style="padding: 8px 0; color: #888; vertical-align: top;">Details:</td>
               <td style="padding: 8px 0; color: #fff;">${message}</td>
             </tr>` : ""}
             <tr>
@@ -51,12 +61,12 @@ async function sendSignupNotification(name: string, email: string, phone: string
             </tr>
           </table>
           <p style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #222; color: #666; font-size: 12px;">
-            Sent from your CLAWD website
+            Sent from aibotsetup.com
           </p>
         </div>
       `,
     });
-    console.log(`Inquiry notification sent for ${email}`);
+    console.log(`${info.label} notification sent for ${email}`);
   } catch (err) {
     console.error("Failed to send inquiry notification:", err);
   }
@@ -173,22 +183,22 @@ export async function registerRoutes(
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<title>CLAWD - Build Your Own AI Agent | Setup Service</title>
-<meta name="description" content="Learn how to build your own AI agent with Clawd Bot. Professional setup service with guided walkthrough or 1-on-1 VIP sessions. Powered by OpenClaw, ClawHub, and the Moltbook ecosystem."/>
+<title>AI Bot Setup - Custom AI Agents Built in 30 Minutes</title>
+<meta name="description" content="We build custom AI agents that answer calls, book appointments, close sales, trade crypto & stocks, and scale your business — built in under 30 minutes."/>
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="${baseUrl}/"/>
-<meta property="og:title" content="CLAWD - Build Your Own AI Agent"/>
-<meta property="og:description" content="We teach you how to build a powerful AI agent from scratch. Self-setup guide ($199) or 1-on-1 VIP session ($799). Your personal AI assistant, fully configured and ready to go."/>
+<meta property="og:title" content="AI Bot Setup - AI Agents That Run Your Empire"/>
+<meta property="og:description" content="Custom AI agents built in 30 minutes. Answer calls, book appointments, close sales, trade crypto & stocks — 24/7 with zero burnout."/>
 <meta property="og:image" content="${baseUrl}/og-image.png"/>
 <meta property="og:image:width" content="1024"/>
 <meta property="og:image:height" content="576"/>
-<meta property="og:image:alt" content="CLAWD - Build Your Own AI Agent with professional setup services"/>
-<meta property="og:site_name" content="Clawd Bot Setup"/>
+<meta property="og:image:alt" content="AI Bot Setup - Custom AI Agents Built in 30 Minutes"/>
+<meta property="og:site_name" content="AI Bot Setup"/>
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="CLAWD - Build Your Own AI Agent"/>
-<meta name="twitter:description" content="We teach you how to build a powerful AI agent from scratch. Self-setup guide or 1-on-1 VIP session available."/>
+<meta name="twitter:title" content="AI Bot Setup - AI Agents That Run Your Empire"/>
+<meta name="twitter:description" content="Custom AI agents built in 30 minutes. Answer calls, close sales, trade crypto — 24/7 with zero burnout."/>
 <meta name="twitter:image" content="${baseUrl}/og-image.png"/>
-<meta name="theme-color" content="#0a0a1a"/>
+<meta name="theme-color" content="#050510"/>
 <link rel="icon" type="image/png" href="${baseUrl}/favicon-new.png"/>
 </head>
 <body></body>
@@ -336,9 +346,13 @@ export async function registerRoutes(
         return res.status(400).json({ message: "Please enter a valid phone number" });
       }
 
-      const signup = await storage.createSignup({ name, email, phone, message });
+      const type = (data as any).type || "general";
+      const validTypes = ["general", "trading", "team"];
+      const signupType = validTypes.includes(type) ? type : "general";
 
-      sendSignupNotification(name, email, phone, message);
+      const signup = await storage.createSignup({ name, email, phone, message, type: signupType });
+
+      sendSignupNotification(name, email, phone, signupType, message);
 
       res.json(signup);
     } catch (error) {
