@@ -396,24 +396,31 @@ function LiveChart() {
     };
     resize();
     const points: number[] = [];
-    const maxPoints = 100;
-    let value = 50;
+    const maxPoints = 120;
+    let value = 25;
     for (let i = 0; i < maxPoints; i++) {
-      value += (Math.random() - 0.45) * 3;
-      value = Math.max(10, Math.min(90, value));
+      const progress = i / maxPoints;
+      const trend = 0.35 + progress * 0.15;
+      value += (Math.random() - trend) * 1.8;
+      value = Math.max(5, Math.min(92, value));
       points.push(value);
     }
     let frame = 0;
+    let tick = 0;
     const draw = () => {
+      tick++;
       const rect = canvas.parentElement?.getBoundingClientRect();
       if (!rect) { frame = requestAnimationFrame(draw); return; }
       const w = rect.width;
       const h = rect.height;
       ctx.clearRect(0, 0, w, h);
-      value += (Math.random() - 0.45) * 2;
-      value = Math.max(10, Math.min(90, value));
-      points.push(value);
-      if (points.length > maxPoints) points.shift();
+      if (tick % 4 === 0) {
+        const upBias = 0.42;
+        value += (Math.random() - upBias) * 1.2;
+        value = Math.max(5, Math.min(95, value));
+        points.push(value);
+        if (points.length > maxPoints) points.shift();
+      }
       const grad = ctx.createLinearGradient(0, 0, 0, h);
       grad.addColorStop(0, "rgba(0, 255, 65, 0.12)");
       grad.addColorStop(1, "transparent");
