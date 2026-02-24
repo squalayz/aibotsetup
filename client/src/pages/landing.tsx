@@ -1103,7 +1103,7 @@ export default function Landing() {
                 subtitle="Tell us what you need and we'll build it"
                 accentColor={C.silverBright}
                 buttonColor={`linear-gradient(135deg, ${C.silverBright}, ${C.white})`}
-                buttonText="BUILD MY AGENT — FREE 30-MIN CALL"
+                buttonText="BUILD MY AGENT"
                 fields={[
                   { name: "name", label: "Your Name", icon: Users, placeholder: "John Smith", required: true },
                   { name: "email", label: "Email", icon: Mail, type: "email", placeholder: "you@email.com", required: true },
@@ -1122,7 +1122,7 @@ export default function Landing() {
                 subtitle="Autonomous trading for stocks, crypto & leverage"
                 accentColor={C.matrix}
                 buttonColor={`linear-gradient(135deg, ${C.matrix}, ${C.matrixDim})`}
-                buttonText="DEPLOY TRADING AGENT NOW"
+                buttonText="DEPLOY TRADING AGENT"
                 fields={[
                   { name: "name", label: "Your Name", icon: Users, placeholder: "John Smith", required: true },
                   { name: "email", label: "Email", icon: Mail, type: "email", placeholder: "you@email.com", required: true },
