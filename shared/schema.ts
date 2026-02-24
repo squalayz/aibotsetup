@@ -37,6 +37,7 @@ export const signups = pgTable("signups", {
   email: text("email").notNull(),
   phone: text("phone").notNull(),
   message: text("message"),
+  type: text("type").notNull().default("general"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

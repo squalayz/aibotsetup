@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLAWDO • AI Agents That Run Your Empire</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;500;600&display=swap');
+        
+        :root {
+            --neon-cyan: #00f0ff;
+            --neon-purple: #c026d3;
+            --neon-green: #22ff88;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .title-font {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .neon-text {
+            text-shadow: 
+                0 0 10px var(--neon-cyan),
+                0 0 20px var(--neon-cyan),
+                0 0 40px var(--neon-cyan);
+        }
+
+        .glass {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+        }
+
+        .scanline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                transparent 50%,
+                rgba(0, 240, 255, 0.08) 50%
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            animation: scan 4s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+
+        .robot-glow {
+            filter: drop-shadow(0 0 60px #00f0ff);
+        }
+    </style>
+</head>
+<body class="bg-black text-white overflow-x-hidden">
+    <!-- NAV -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass border-b border-cyan-500/30">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-cyan-400 to-purple-500 rounded-2xl flex items-center justify-center text-2xl font-bold title-font">C</div>
+                <div>
+                    <span class="title-font text-3xl tracking-tighter font-black neon-text">CLAWDO</span>
+                </div>
+            </div>
+            <div class="hidden md:flex items-center gap-10 text-sm uppercase tracking-widest">
+                <a href="#features" class="hover:text-cyan-400 transition-colors">Capabilities</a>
+                <a href="#agents" class="hover:text-cyan-400 transition-colors">Your AI Team</a>
+                <a href="#trading" class="hover:text-cyan-400 transition-colors">AI Trading</a>
+                <a href="#build" class="hover:text-cyan-400 transition-colors">Build in 30 Min</a>
+                <a href="#join" class="hover:text-cyan-400 transition-colors">Join Team</a>
+            </div>
+            <button onclick="openInquiryModal()" 
+                    class="px-8 py-3 bg-gradient-to-r from-cyan-400 to-purple-500 rounded-2xl font-semibold hover:scale-105 transition-all flex items-center gap-2">
+                <i class="fas fa-bolt"></i> GET YOUR AGENT NOW
+            </button>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="min-h-screen relative flex items-center justify-center overflow-hidden">
+        <!-- BACKGROUND PARTICLES -->
+        <div id="particles" class="absolute inset-0 z-0"></div>
+        
+        <!-- NEURAL GRID -->
+        <canvas id="neuralCanvas" class="absolute inset-0 z-10 opacity-30"></canvas>
+
+        <!-- FLOATING ROBOT -->
+        <div class="absolute right-10 bottom-10 w-96 h-[600px] z-20 hidden lg:block">
+            <img id="heroRobot" src="https://picsum.photos/id/1015/600/800" 
+                 class="w-full h-full object-contain robot-glow transition-all duration-1000 hover:rotate-3">
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+        </div>
+
+        <div class="max-w-5xl mx-auto px-6 pt-32 pb-20 relative z-30 text-center">
+            <div class="inline-flex items-center gap-2 px-6 py-2 rounded-full glass mb-8 border border-cyan-400/50">
+                <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                <span class="uppercase text-xs tracking-[3px] font-mono">LIVE AI AGENTS • 24/7 • ZERO BURNOUT</span>
+            </div>
+
+            <h1 class="title-font text-7xl md:text-8xl font-black leading-none tracking-tighter mb-6">
+                WE BUILD AI AGENTS<br>
+                THAT <span class="bg-gradient-to-r from-cyan-400 via-purple-400 to-green-400 bg-clip-text text-transparent">RUN YOUR EMPIRE</span>
+            </h1>
+
+            <p class="max-w-2xl mx-auto text-xl text-gray-300 mb-12">
+                Custom AI that answers calls, books appointments, closes sales, trades crypto/stocks on leverage, 
+                posts content, and scales your business — built in <span class="text-cyan-400 font-bold">under 30 minutes</span>.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-6 justify-center">
+                <button onclick="openInquiryModal()" 
+                        class="px-12 py-6 text-xl font-semibold bg-white text-black rounded-3xl hover:bg-cyan-400 hover:text-black transition-all flex items-center gap-4 group">
+                    BUILD MY AGENT IN 30 MIN
+                    <span class="text-3xl group-hover:rotate-45 transition-transform">→</span>
+                </button>
+                
+                <button onclick="document.getElementById('trading').scrollIntoView({behavior:'smooth'})" 
+                        class="px-12 py-6 text-xl font-semibold border-2 border-cyan-400 rounded-3xl hover:bg-cyan-400/10 transition-all">
+                    SEE AI TRADING LIVE →
+                </button>
+            </div>
+
+            <div class="mt-20 flex justify-center gap-12 text-sm">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-check text-green-400"></i>
+                    <span>Instant Deployment</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-check text-green-400"></i>
+                    <span>Zero Coding</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-check text-green-400"></i>
+                    <span>100% Custom</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCROLL INDICATOR -->
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-xs tracking-widest">
+            <div class="w-px h-12 bg-gradient-to-b from-transparent via-cyan-400 to-transparent"></div>
+            SCROLL TO EXPLORE
+        </div>
+
+        <div class="scanline"></div>
+    </section>
+
+    <!-- TRUST BAR -->
+    <div class="border-t border-b border-cyan-500/20 py-6">
+        <div class="max-w-7xl mx-auto px-6 flex flex-wrap justify-center items-center gap-x-16 gap-y-6 opacity-75">
+            <div class="flex items-center gap-8 text-sm font-mono">
+                <span>POWERED BY</span>
+                <span class="text-cyan-400">GROK • CLAUDE • GPT-5 • LLAMA 4</span>
+            </div>
+            <div class="h-px w-16 bg-gradient-to-r from-transparent via-cyan-400 to-transparent"></div>
+            <div class="text-sm">Trusted by 3,247+ businesses scaling right now</div>
+        </div>
+    </div>
+
+    <!-- FEATURES / WHAT YOUR AGENT DOES -->
+    <section id="features" class="py-32 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20">
+                <span class="px-6 py-2 rounded-full bg-purple-500/10 text-purple-400 text-sm tracking-widest">NEXT-GEN AI THAT ACTS</span>
+                <h2 class="title-font text-6xl font-black mt-6">Your AI Doesn't Just Chat.<br>It <span class="text-cyan-400">Thinks • Decides • Closes</span></h2>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="glass rounded-3xl p-10 group hover:border-cyan-400 border border-transparent transition-all hover:-translate-y-4">
+                    <div class="w-16 h-16 bg-cyan-500/10 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-phone-volume text-4xl text-cyan-400"></i>
+                    </div>
+                    <h3 class="text-3xl font-semibold mb-4">Answers Calls 24/7</h3>
+                    <p class="text-gray-400">Qualifies leads, books appointments, handles objections, and transfers hot leads to you instantly. Voice + SMS + WhatsApp.</p>
+                    <div class="mt-10 h-px bg-gradient-to-r from-transparent via-cyan-400 to-transparent"></div>
+                    <div class="pt-6 text-xs text-cyan-400 font-mono">99.8% pickup rate • 2.4s average answer</div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="glass rounded-3xl p-10 group hover:border-purple-400 border border-transparent transition-all hover:-translate-y-4">
+                    <div class="w-16 h-16 bg-purple-500/10 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-calendar-check text-4xl text-purple-400"></i>
+                    </div>
+                    <h3 class="text-3xl font-semibold mb-4">Books Appointments</h3>
+                    <p class="text-gray-400">Syncs with your Google/Outlook calendar, checks availability, sends reminders, reschedules, and follows up no-shows automatically.</p>
+                    <div class="mt-auto pt-10">
+                        <div class="text-5xl font-mono font-black text-purple-400">∞</div>
+                        <div class="text-sm">Automated scheduling</div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="glass rounded-3xl p-10 group hover:border-green-400 border border-transparent transition-all hover:-translate-y-4">
+                    <div class="w-16 h-16 bg-green-500/10 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-chart-line text-4xl text-green-400"></i>
+                    </div>
+                    <h3 class="text-3xl font-semibold mb-4">Closes Sales & Trades</h3>
+                    <p class="text-gray-400">AI sales agents that follow up leads, send proposals, negotiate, and close. PLUS dedicated AI Trading agents for stocks, crypto, futures & leverage.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- YOUR AI TEAM -->
+    <section id="agents" class="py-32 bg-gradient-to-b from-black to-zinc-950">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="title-font text-6xl font-black">Your 24/7 AI Dream Team</h2>
+                <p class="text-xl text-gray-400 mt-4">Each specialist is custom-trained for your exact business</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- LUNA -->
+                <div class="glass rounded-3xl overflow-hidden">
+                    <div class="h-2 bg-cyan-400"></div>
+                    <div class="p-8">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-14 h-14 bg-cyan-500/10 rounded-2xl flex items-center justify-center text-4xl">👩‍💼</div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="font-semibold text-2xl">LUNA</span>
+                                    <span class="text-xs px-3 py-1 bg-green-400/20 text-green-400 rounded-full flex items-center gap-1">
+                                        <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div> ONLINE
+                                    </span>
+                                </div>
+                                <div class="text-cyan-400 text-sm">Receptionist • Voice AI</div>
+                            </div>
+                        </div>
+                        <div class="bg-black/50 rounded-2xl p-5 text-sm leading-relaxed">
+                            <span class="text-cyan-400">LUNA:</span> Hi! I just booked a consultation for your 2pm slot with Mr. Ramirez. He's pre-qualified and excited.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ATLAS -->
+                <div class="glass rounded-3xl overflow-hidden">
+                    <div class="h-2 bg-purple-400"></div>
+                    <div class="p-8">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-14 h-14 bg-purple-500/10 rounded-2xl flex items-center justify-center text-4xl">🧔</div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="font-semibold text-2xl">ATLAS</span>
+                                    <span class="text-xs px-3 py-1 bg-green-400/20 text-green-400 rounded-full flex items-center gap-1">
+                                        <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div> ONLINE
+                                    </span>
+                                </div>
+                                <div class="text-purple-400 text-sm">Sales Closer • Deal Maker</div>
+                            </div>
+                        </div>
+                        <div class="bg-black/50 rounded-2xl p-5 text-sm leading-relaxed">
+                            <span class="text-purple-400">ATLAS:</span> Proposal sent and signed! $14,700 closed in 11 minutes. Next up is the $47k enterprise deal.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NOVA + TRADING -->
+                <div class="glass rounded-3xl overflow-hidden">
+                    <div class="h-2 bg-green-400"></div>
+                    <div class="p-8">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-14 h-14 bg-green-500/10 rounded-2xl flex items-center justify-center text-4xl">📈</div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="font-semibold text-2xl">NOVA + TRADER-X</span>
+                                    <span class="text-xs px-3 py-1 bg-green-400/20 text-green-400 rounded-full flex items-center gap-1">
+                                        <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div> TRADING LIVE
+                                    </span>
+                                </div>
+                                <div class="text-green-400 text-sm">Content + Crypto Leverage Trader</div>
+                            </div>
+                        </div>
+                        <div class="bg-black/50 rounded-2xl p-5 text-sm leading-relaxed">
+                            <span class="text-green-400">NOVA:</span> 14 new posts scheduled. Trader-X just opened 3x long on SOL at 142.87 — +4.2% in 47 seconds.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI TRADING SECTION -->
+    <section id="trading" class="py-32 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-20 items-center">
+                <div>
+                    <div class="uppercase text-green-400 tracking-widest text-sm mb-4">NEW • LIVE MARKET AGENTS</div>
+                    <h2 class="title-font text-6xl font-black leading-none">AI Trading Agents That<br>Actually Make Money</h2>
+                    <p class="mt-8 text-xl text-gray-300">Stocks • Crypto • Futures • Options • 100x Leverage. 24/7 autonomous execution with risk management, backtesting, and real-time sentiment analysis.</p>
+                    
+                    <div class="mt-12 space-y-8">
+                        <div class="flex gap-6">
+                            <div class="text-6xl font-mono font-black text-green-400">+318%</div>
+                            <div>
+                                <div class="font-semibold">30-day avg return (backtested)</div>
+                                <div class="text-sm text-gray-500">BTC/ETH/SOL portfolios</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-6">
+                            <div class="text-6xl font-mono font-black text-cyan-400">0.8s</div>
+                            <div>
+                                <div class="font-semibold">Execution speed</div>
+                                <div class="text-sm text-gray-500">On Binance, Bybit, Coinbase Advanced</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="openTradingForm()" 
+                            class="mt-12 px-10 py-5 bg-gradient-to-r from-green-400 to-cyan-400 text-black font-bold text-lg rounded-3xl flex items-center gap-3 hover:scale-105 transition-all">
+                        <i class="fas fa-robot"></i> DEPLOY YOUR TRADING AGENT NOW
+                    </button>
+                </div>
+
+                <div class="glass rounded-3xl p-8 relative">
+                    <div class="bg-zinc-950 rounded-2xl p-6 font-mono text-sm">
+                        <div class="flex justify-between mb-6">
+                            <div>TRADER-X LIVE</div>
+                            <div class="text-green-400">+2.84% today</div>
+                        </div>
+                        <div class="space-y-4 text-xs">
+                            <div class="flex justify-between"><span>Long SOL 3x @ 142.87</span><span class="text-green-400">+4.21%</span></div>
+                            <div class="flex justify-between"><span>Short ETH 5x @ 2,874</span><span class="text-red-400">-0.91%</span></div>
+                            <div class="flex justify-between"><span>Closed NVDA call @ 138</span><span class="text-green-400">+$1,294 profit</span></div>
+                        </div>
+                    </div>
+                    <!-- Fake live chart would go here with canvas -->
+                    <div class="h-64 bg-gradient-to-br from-green-900/30 to-transparent rounded-2xl mt-8 flex items-center justify-center border border-green-400/30">
+                        <div class="text-center">
+                            <div class="text-4xl font-mono text-green-400">LIVE CHART</div>
+                            <div class="text-xs mt-2 text-gray-500">Real-time P&amp;L streaming</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BUILD IN 30 MIN -->
+    <section id="build" class="py-32 bg-black border-t border-b border-cyan-500/20">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <div class="inline-flex items-center gap-3 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 px-8 py-4 rounded-3xl mb-8">
+                <span class="text-4xl">⚡</span>
+                <span class="uppercase tracking-widest font-bold text-cyan-400">30-Minute Magic</span>
+            </div>
+            
+            <h2 class="title-font text-6xl font-black max-w-2xl mx-auto">
+                From idea to live AI agent in under 30 minutes. No code. No waiting.
+            </h2>
+            
+            <div class="grid grid-cols-3 gap-6 mt-20">
+                <div class="text-left">
+                    <div class="text-6xl font-black text-cyan-400 mb-2">01</div>
+                    <div class="font-semibold">Tell us your business</div>
+                    <div class="text-sm text-gray-400">Describe what you need in plain English</div>
+                </div>
+                <div class="text-left">
+                    <div class="text-6xl font-black text-purple-400 mb-2">02</div>
+                    <div class="font-semibold">AI builds it instantly</div>
+                    <div class="text-sm text-gray-400">Custom prompts, voice, integrations</div>
+                </div>
+                <div class="text-left">
+                    <div class="text-6xl font-black text-green-400 mb-2">03</div>
+                    <div class="font-semibold">Deploy &amp; profit</div>
+                    <div class="text-sm text-gray-400">Connect phone/calendar/exchanges and go live</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INQUIRY FORM SECTION -->
+    <section class="py-32">
+        <div class="max-w-2xl mx-auto px-6">
+            <div class="glass rounded-3xl p-12">
+                <h3 class="text-4xl font-semibold mb-8 text-center">Ready to 10x Your Business?</h3>
+                
+                <form id="mainForm" onsubmit="handleSubmit(event)" class="space-y-8">
+                    <div>
+                        <label class="block text-sm mb-2 text-gray-400">Your Name</label>
+                        <input type="text" required class="w-full bg-zinc-900 border border-cyan-400/30 focus:border-cyan-400 rounded-2xl px-6 py-5 outline-none">
+                    </div>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm mb-2 text-gray-400">Business Type</label>
+                            <select required class="w-full bg-zinc-900 border border-cyan-400/30 focus:border-cyan-400 rounded-2xl px-6 py-5 outline-none">
+                                <option>Real Estate</option>
+                                <option>Coaching / Consulting</option>
+                                <option>E-commerce</option>
+                                <option>Trading / Finance</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm mb-2 text-gray-400">Monthly Revenue</label>
+                            <input type="text" placeholder="$10k+" class="w-full bg-zinc-900 border border-cyan-400/30 focus:border-cyan-400 rounded-2xl px-6 py-5 outline-none">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm mb-2 text-gray-400">What do you want your AI to do?</label>
+                        <textarea required rows="4" class="w-full bg-zinc-900 border border-cyan-400/30 focus:border-cyan-400 rounded-3xl px-6 py-5 outline-none" placeholder="Answer calls, book appointments, trade crypto..."></textarea>
+                    </div>
+
+                    <button type="submit"
+                            class="w-full py-7 bg-gradient-to-r from-cyan-400 via-purple-500 to-green-400 text-black font-bold text-xl rounded-3xl hover:scale-[1.02] transition-all">
+                        BUILD MY CUSTOM AI AGENT NOW — FREE 30-MIN SETUP
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- JOIN TEAM / AFFILIATE -->
+    <section id="join" class="py-32 bg-zinc-950">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <div class="text-7xl mb-6">💰</div>
+            <h2 class="title-font text-6xl font-black">Earn 30% Lifetime Commission</h2>
+            <p class="text-2xl mt-6 max-w-md mx-auto">Refer businesses. We build the agents. You get paid every month they stay.</p>
+            
+            <button onclick="openJoinForm()" 
+                    class="mt-12 px-16 py-7 text-2xl font-bold border-4 border-dashed border-green-400 hover:bg-green-400 hover:text-black rounded-3xl transition-all">
+                JOIN THE CLAWDO PARTNER PROGRAM
+            </button>
+            
+            <div class="mt-20 text-sm text-gray-500">Average partner earns $4,872/month • Top earner: $41k last month</div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-black border-t border-cyan-500/20 py-20">
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-12">
+            <div>
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-8 h-8 bg-gradient-to-br from-cyan-400 to-purple-500 rounded-2xl flex items-center justify-center text-xl font-bold">C</div>
+                    <span class="title-font text-3xl font-black neon-text">CLAWDO</span>
+                </div>
+                <p class="text-sm text-gray-400">AI Agents for ambitious humans.<br>Built in minutes. Run forever.</p>
+            </div>
+            <div class="text-sm space-y-3">
+                <div class="font-semibold mb-4">Product</div>
+                <div class="cursor-pointer hover:text-cyan-400">Custom Agents</div>
+                <div class="cursor-pointer hover:text-cyan-400">AI Trading Bots</div>
+                <div class="cursor-pointer hover:text-cyan-400">Voice Agents</div>
+            </div>
+            <div class="text-sm space-y-3">
+                <div class="font-semibold mb-4">Company</div>
+                <div class="cursor-pointer hover:text-cyan-400">About</div>
+                <div class="cursor-pointer hover:text-cyan-400">Blog</div>
+                <div class="cursor-pointer hover:text-cyan-400">Careers</div>
+            </div>
+            <div>
+                <div class="text-sm mb-4">Made with 🔥 in the future</div>
+                <div class="text-xs text-gray-500">© 2026 CLAWDO • aibotsetup.com</div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODALS -->
+    <!-- Inquiry Modal -->
+    <div id="inquiryModal" class="hidden fixed inset-0 bg-black/90 z-[100] flex items-center justify-center">
+        <div class="glass max-w-lg w-full mx-4 rounded-3xl p-10 relative">
+            <button onclick="closeInquiryModal()" class="absolute top-6 right-6 text-3xl text-gray-400 hover:text-white">×</button>
+            <h3 class="text-4xl font-semibold text-center mb-10">Let's Build Your Agent</h3>
+            <!-- Same form as above but smaller -->
+            <form onsubmit="handleSubmit(event)" class="space-y-6">
+                <!-- abbreviated form fields -->
+                <input type="text" placeholder="Full name" class="w-full bg-zinc-900 border border-white/20 rounded-2xl px-6 py-4">
+                <input type="email" placeholder="Business email" class="w-full bg-zinc-900 border border-white/20 rounded-2xl px-6 py-4">
+                <textarea placeholder="What should your AI do?" rows="5" class="w-full bg-zinc-900 border border-white/20 rounded-3xl px-6 py-4"></textarea>
+                <button type="submit" class="w-full py-6 bg-white text-black font-bold rounded-3xl">DEPLOY MY AGENT • $0 TODAY</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Tailwind script already included
+        function initTailwind() {
+            tailwind.config = {
+                content: [],
+                theme: {
+                    extend: {}
+                }
+            }
+        }
+
+        // Particles.js config
+        function initParticles() {
+            tsParticles.load("particles", {
+                background: { color: { value: "#000000" } },
+                fpsLimit: 60,
+                particles: {
+                    color: { value: ["#00f0ff", "#c026d3", "#22ff88"] },
+                    links: { color: "#00f0ff", distance: 150, enable: true, opacity: 0.2 },
+                    move: { enable: true, speed: 1.5 },
+                    number: { value: 80 },
+                    opacity: { value: 0.6 },
+                    size: { value: { min: 1, max: 3 } }
+                },
+                interactivity: {
+                    events: {
+                        onHover: { enable: true, mode: "repulse" }
+                    }
+                }
+            });
+        }
+
+        // Simple neural canvas
+        function initNeuralCanvas() {
+            const canvas = document.getElementById('neuralCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            // Basic animated dots + lines (you can expand)
+            let dots = [];
+            for(let i = 0; i < 60; i++) {
+                dots.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: (Math.random() - 0.5) * 0.5
+                });
+            }
+            
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                dots.forEach(dot => {
+                    dot.x += dot.vx;
+                    dot.y += dot.vy;
+                    if(dot.x < 0 || dot.x > canvas.width) dot.vx *= -1;
+                    if(dot.y < 0 || dot.y > canvas.height) dot.vy *= -1;
+                    
+                    ctx.fillStyle = '#00f0ff';
+                    ctx.fillRect(dot.x, dot.y, 2, 2);
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // GSAP animations
+        function initGSAP() {
+            gsap.registerPlugin(ScrollTrigger);
+            
+            gsap.from(".title-font", {
+                y: 100,
+                opacity: 0,
+                duration: 1.2,
+                ease: "power4.out"
+            });
+            
+            // Animate cards on scroll
+            document.querySelectorAll('.glass').forEach((card, i) => {
+                gsap.from(card, {
+                    scrollTrigger: card,
+                    y: 80,
+                    opacity: 0,
+                    duration: 0.8,
+                    delay: i * 0.1
+                });
+            });
+        }
+
+        // Form handlers
+        function handleSubmit(e) {
+            e.preventDefault();
+            alert("🎉 Agent creation started! Your personal AI specialist will contact you in < 2 minutes.");
+            closeInquiryModal();
+        }
+
+        function openInquiryModal() {
+            document.getElementById('inquiryModal').classList.remove('hidden');
+            document.getElementById('inquiryModal').classList.add('flex');
+        }
+
+        function closeInquiryModal() {
+            document.getElementById('inquiryModal').classList.add('hidden');
+            document.getElementById('inquiryModal').classList.remove('flex');
+        }
+
+        function openTradingForm() {
+            alert("🚀 Trading Agent deployment flow opened.\n\nIn real build this would open a specialized modal with exchange API keys, risk settings, and capital allocation.");
+        }
+
+        function openJoinForm() {
+            alert("💼 Partner program application opened.\n\nIn real build this would be a full affiliate signup form with Stripe Connect.");
+        }
+
+        // Mobile nav (expandable if needed)
+
+        // Init everything
+        window.onload = function() {
+            initTailwind();
+            initParticles();
+            initNeuralCanvas();
+            initGSAP();
+            
+            // Hero robot hover effect
+            const robot = document.getElementById('heroRobot');
+            if(robot) {
+                robot.addEventListener('mousemove', (e) => {
+                    const rect = robot.getBoundingClientRect();
+                    const x = (e.clientX - rect.left) / rect.width - 0.5;
+                    const y = (e.clientY - rect.top) / rect.height - 0.5;
+                    robot.style.transform = `rotateY(${x * 25}deg) rotateX(${-y * 25}deg)`;
+                });
+            }
+            
+            console.log('%cCLAWDO Landing Page Ready — Insanely Beautiful Build Complete', 'color:#00f0ff; font-size:14px; font-family:monospace');
+        };
+
+        // Keyboard escape for modal
+        document.addEventListener('keydown', (e) => {
+            if(e.key === "Escape") {
+                const modal = document.getElementById('inquiryModal');
+                if(!modal.classList.contains('hidden')) closeInquiryModal();
+            }
+        });
+    </script>
+</body>
+</html>
