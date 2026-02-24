@@ -16,13 +16,14 @@ import {
 import robotImgSrc from "@assets/liftapp_(10)_1771462069765.png";
 
 const GLITCH_CHARS = "░▒▓█╔╗║═01∆Ωλ@#$%&*<>{}[]";
+const EASE_PREMIUM: [number, number, number, number] = [0.16, 1, 0.3, 1];
 const C = {
   bg: "#050510",
-  cyan: "#00f0ff",
-  purple: "#c026d3",
-  green: "#22ff88",
+  cyan: "#00e5ff",
+  purple: "#a855f7",
+  green: "#22c55e",
   text: "#ffffff",
-  muted: "#94a3b8",
+  muted: "#9ca3af",
 };
 
 function useReducedMotion() {
@@ -569,7 +570,7 @@ function RevealSection({ children, delay = 0, className = "" }: { children: Reac
       ref={ref}
       initial={{ opacity: 0, y: 40 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.7, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
+      transition={{ duration: 0.8, delay, ease: EASE_PREMIUM }}
       className={className}
     >
       {children}
@@ -790,159 +791,238 @@ export default function Landing() {
   return (
     <div className="relative min-h-screen overflow-x-hidden" style={{ backgroundColor: C.bg }}>
 
-      <nav
+      <motion.nav
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: EASE_PREMIUM }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "glass-nav" : ""}`}
-        style={{ backgroundColor: scrolled ? "rgba(5,5,16,0.9)" : "transparent" }}
+        style={{ backgroundColor: scrolled ? "rgba(5,5,16,0.92)" : "transparent" }}
         data-testid="nav-main"
       >
-        <div className="max-w-7xl mx-auto px-5 flex items-center justify-between gap-4 h-16 md:h-20">
+        <div className="max-w-7xl mx-auto px-5 flex items-center justify-between gap-4 h-14 md:h-16">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-gradient-to-br from-cyan-400 to-purple-500 rounded-xl flex items-center justify-center">
-              <Bot className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-xl flex items-center justify-center">
+              <Bot className="w-4 h-4 text-white" />
             </div>
-            <span className="text-xl font-black tracking-tight title-font neon-text-cyan" data-testid="text-logo">
-              AI BOT SETUP
+            <span className="text-lg font-bold tracking-tight" style={{ fontFamily: "'Space Grotesk', sans-serif" }} data-testid="text-logo">
+              CLAWD
             </span>
           </div>
-          <div className="hidden lg:flex items-center gap-8 text-xs uppercase tracking-[2px]">
-            <button onClick={() => scrollTo("features")} className="text-slate-400 hover:text-cyan-400 transition-colors" data-testid="nav-features">Capabilities</button>
-            <button onClick={() => scrollTo("agents")} className="text-slate-400 hover:text-cyan-400 transition-colors" data-testid="nav-agents">AI Team</button>
-            <button onClick={() => scrollTo("trading")} className="text-slate-400 hover:text-cyan-400 transition-colors" data-testid="nav-trading">AI Trading</button>
-            <button onClick={() => scrollTo("build")} className="text-slate-400 hover:text-cyan-400 transition-colors" data-testid="nav-build">30-Min Build</button>
-            <button onClick={() => scrollTo("forms")} className="text-slate-400 hover:text-cyan-400 transition-colors" data-testid="nav-forms">Get Started</button>
+          <div className="hidden lg:flex items-center gap-8" style={{ fontSize: "14px", fontWeight: 500, letterSpacing: "0.05em", textTransform: "uppercase" as const }}>
+            {[
+              { id: "features", label: "Capabilities" },
+              { id: "agents", label: "AI Team" },
+              { id: "trading", label: "AI Trading" },
+              { id: "build", label: "30-Min Build" },
+              { id: "forms", label: "Get Started" },
+            ].map(link => (
+              <Button
+                key={link.id}
+                variant="link"
+                onClick={() => scrollTo(link.id)}
+                className="text-gray-400 hover:text-white transition-colors duration-300 ease-out p-0 h-auto text-sm font-medium uppercase tracking-wide"
+                data-testid={`nav-${link.id}`}
+              >
+                {link.label}
+              </Button>
+            ))}
           </div>
           <Button
             onClick={() => scrollTo("forms")}
-            className="px-6 py-2 bg-gradient-to-r from-cyan-400 to-purple-500 rounded-xl font-semibold hover:scale-105 transition-all text-white text-sm"
+            className="nav-cta-pill"
             data-testid="button-nav-cta"
           >
-            <Zap className="w-4 h-4 mr-1" /> GET YOUR AGENT
+            <Zap className="w-3.5 h-3.5" /> GET YOUR AGENT
           </Button>
         </div>
-      </nav>
+      </motion.nav>
 
-      <section className="relative min-h-screen flex items-center overflow-hidden pt-16 pb-20 px-5" data-testid="section-hero">
+      <section className="relative min-h-screen flex items-center overflow-hidden pt-16 pb-20" data-testid="section-hero">
         <NeuralCanvas />
         <div className="scanline-overlay" />
 
-        <div className="max-w-7xl mx-auto w-full flex flex-col-reverse lg:flex-row items-center gap-8 lg:gap-0 relative z-20">
-          <div className="w-full lg:w-[50%] relative z-10 text-left lg:text-left text-center">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card mb-6 border border-cyan-400/30">
-                <div className="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse" />
-                <span className="uppercase text-[10px] tracking-[3px] font-mono text-slate-300">LIVE AI AGENTS • 24/7 • ZERO BURNOUT</span>
+        <div className="hero-bg-glow" />
+
+        <div className="max-w-7xl mx-auto w-full flex flex-col-reverse lg:flex-row items-center gap-8 lg:gap-0 relative z-20 px-5">
+          <div className="w-full lg:w-[50%] relative z-10 text-center lg:text-left" style={{ paddingLeft: isMobileView ? 0 : "5%" }}>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3, ease: EASE_PREMIUM }}
+            >
+              <div
+                className="inline-flex items-center gap-2.5 mb-10"
+                style={{
+                  background: "rgba(0, 229, 255, 0.08)",
+                  border: "1px solid rgba(0, 229, 255, 0.2)",
+                  borderRadius: "50px",
+                  padding: "8px 20px",
+                }}
+              >
+                <div className="w-2 h-2 rounded-full dot-pulse" style={{ backgroundColor: C.green }} />
+                <span style={{ fontSize: "12px", letterSpacing: "0.1em", fontWeight: 500, color: "#9ca3af", textTransform: "uppercase" as const }}>
+                  LIVE AI AGENTS • 24/7 • ZERO BURNOUT
+                </span>
               </div>
             </motion.div>
 
-            <div className="title-font mb-6" style={{ fontSize: "clamp(2.2rem, 5.5vw, 4.5rem)", lineHeight: 1.05, fontWeight: 900 }}>
-              <DecodeText text="WE BUILD" as="span" className="text-white" delay={0.3} />
+            <div className="mb-8" style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "clamp(1.9rem, 4.5vw, 3.6rem)", lineHeight: 1.1, fontWeight: 700, letterSpacing: "-0.02em" }}>
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.5, ease: EASE_PREMIUM }}>
+                <DecodeText text="We Build" as="span" className="text-white" delay={0.5} />
+              </motion.div>
               <br />
-              <span className="neon-gradient-text">
-                <DecodeText text="AI AGENTS" as="span" delay={0.5} className="neon-gradient-text" />
-              </span>
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.7, ease: EASE_PREMIUM }} className="inline">
+                <span className="neon-gradient-text">
+                  <DecodeText text="AI Agents" as="span" delay={0.7} className="neon-gradient-text" />
+                </span>
+              </motion.div>
               <br />
-              <DecodeText text="THAT RUN YOUR" as="span" className="text-white" delay={0.7} />
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.9, ease: EASE_PREMIUM }}>
+                <DecodeText text="That Run Your" as="span" className="text-white" delay={0.9} />
+              </motion.div>
               <br />
-              <GlitchWord text="EMPIRE" className="text-white">
-                <DecodeText text="EMPIRE" as="span" delay={0.9} className="text-white" />
-              </GlitchWord>
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 1.1, ease: EASE_PREMIUM }} className="inline">
+                <GlitchWord text="Business" className="text-white">
+                  <DecodeText text="Business" as="span" delay={1.1} className="text-white" />
+                </GlitchWord>
+              </motion.div>
             </div>
 
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 1.5 }}
-              className="text-slate-400 max-w-[520px] mb-10 leading-relaxed mx-auto lg:mx-0"
-              style={{ fontSize: "clamp(0.95rem, 2vw, 1.15rem)" }}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 1.3, ease: EASE_PREMIUM }}
+              className="max-w-[520px] mb-10 mx-auto lg:mx-0"
+              style={{ fontSize: "18px", lineHeight: 1.7, color: "#9ca3af" }}
             >
               <TypewriterText
                 text="Custom AI that answers calls, books appointments, closes sales, trades crypto & stocks, posts content, and scales your business — built in under 30 minutes."
-                delay={1.8}
+                delay={1.5}
                 speed={18}
               />
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 2.5 }}
-              className="flex flex-col sm:flex-row items-center lg:items-start gap-4"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 1.6, ease: EASE_PREMIUM }}
+              className="flex flex-col sm:flex-row items-center lg:items-center gap-4 sm:gap-8 mb-12"
             >
               <Button
                 size="lg"
                 onClick={() => scrollTo("forms")}
-                className="px-10 py-6 text-lg font-bold bg-white text-black rounded-2xl hover:bg-cyan-400 hover:text-black transition-all group"
+                className="hero-primary-btn group flex items-center gap-2"
                 data-testid="button-hero-cta"
               >
-                BUILD MY AGENT IN 30 MIN
-                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                Build My Agent in 30 Min
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
               </Button>
 
               <Button
-                size="lg"
-                variant="outline"
+                variant="link"
                 onClick={() => scrollTo("trading")}
-                className="px-8 py-6 text-lg font-semibold border-2 border-cyan-400/40 rounded-2xl text-cyan-400 hover:bg-cyan-400/10 transition-all"
+                className="hero-text-link-cyan flex items-center gap-1.5 p-0 h-auto"
                 data-testid="button-hero-trading"
               >
-                SEE AI TRADING <ArrowRight className="w-4 h-4 ml-2" />
+                See AI Trading <ArrowRight className="w-3.5 h-3.5" />
               </Button>
 
               <Button
-                size="lg"
-                variant="outline"
+                variant="link"
                 onClick={() => scrollTo("form-card-team")}
-                className="px-8 py-6 text-lg font-semibold border-2 border-purple-500/40 rounded-2xl text-purple-400 hover:bg-purple-500/10 transition-all"
+                className="hero-text-link-muted flex items-center gap-1.5 p-0 h-auto"
                 data-testid="button-hero-team"
               >
-                <Users className="w-4 h-4 mr-2" /> JOIN THE TEAM
+                <Users className="w-3.5 h-3.5" /> Join The Team
               </Button>
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1, delay: 3 }}
-              className="mt-10 flex gap-6 text-xs text-slate-500 uppercase tracking-widest flex-wrap justify-center lg:justify-start"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 2.0, ease: EASE_PREMIUM }}
+              className="flex gap-10 flex-wrap justify-center lg:justify-start pt-6"
+              style={{ borderTop: "1px solid rgba(255, 255, 255, 0.06)" }}
             >
               {["Instant Deploy", "Zero Coding", "100% Custom"].map((item, i) => (
-                <motion.span key={item} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 3 + i * 0.15 }} className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-green-400" />
+                <motion.span
+                  key={item}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 2.0 + i * 0.15, duration: 0.5, ease: EASE_PREMIUM }}
+                  className="flex items-center gap-2"
+                  style={{ fontSize: "13px", letterSpacing: "0.08em", color: "#6b7280", textTransform: "uppercase" as const }}
+                >
+                  <Check className="w-3.5 h-3.5" style={{ color: "#22c55e" }} />
                   {item}
                 </motion.span>
               ))}
             </motion.div>
           </div>
 
-          <div className="w-full lg:w-[50%] relative" style={{ minHeight: isMobileView ? "35vh" : "500px", height: isMobileView ? "35vh" : "70vh", maxHeight: isMobileView ? "350px" : "750px" }}>
+          <motion.div
+            initial={{ opacity: 0, x: 40, scale: 0.95 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.5, ease: EASE_PREMIUM }}
+            className="w-full lg:w-[50%] relative"
+            style={{
+              minHeight: isMobileView ? "35vh" : "500px",
+              height: isMobileView ? "35vh" : "70vh",
+              maxHeight: isMobileView ? "350px" : "750px",
+              marginRight: isMobileView ? 0 : "-5%",
+            }}
+          >
             <RobotHero />
             <div className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none" style={{
               background: `linear-gradient(to top, ${C.bg}, transparent)`,
             }} />
-          </div>
+          </motion.div>
         </div>
 
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[10px] tracking-[3px] text-slate-600 z-20">
-          <motion.div
-            className="w-px h-10"
-            style={{ background: `linear-gradient(to bottom, transparent, ${C.cyan}, transparent)` }}
-            animate={{ opacity: [0.3, 1, 0.3] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          />
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 2.2, ease: EASE_PREMIUM }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20"
+          style={{ fontSize: "11px", letterSpacing: "0.15em", color: "#4b5563" }}
+        >
+          <div className="scroll-indicator-line" />
           SCROLL TO EXPLORE
-        </div>
+        </motion.div>
       </section>
 
-      <div className="border-t border-b border-cyan-500/20 py-5" data-testid="section-trust">
-        <div className="max-w-7xl mx-auto px-6 flex flex-wrap justify-center items-center gap-x-12 gap-y-4 opacity-70">
-          <div className="flex items-center gap-4 text-xs font-mono">
-            <span className="text-slate-500">POWERED BY</span>
-            <span className="neon-text-cyan text-[11px]">GROK • CLAUDE • GPT • LLAMA</span>
+      <RevealSection>
+        <div className="border-t border-white/5 py-5" data-testid="section-trust">
+          <div className="max-w-7xl mx-auto px-6 flex flex-wrap justify-center items-center gap-x-12 gap-y-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 0.6 }}
+              transition={{ duration: 0.6, delay: 0.1, ease: EASE_PREMIUM }}
+              viewport={{ once: true }}
+              className="flex items-center gap-4 text-xs font-mono"
+            >
+              <span className="text-slate-500">POWERED BY</span>
+              <span className="neon-text-cyan text-[11px]">GROK • CLAUDE • GPT • LLAMA</span>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 0.6 }}
+              transition={{ duration: 0.6, delay: 0.25, ease: EASE_PREMIUM }}
+              viewport={{ once: true }}
+              className="h-px w-12 bg-gradient-to-r from-transparent via-cyan-400 to-transparent"
+            />
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 0.6 }}
+              transition={{ duration: 0.6, delay: 0.4, ease: EASE_PREMIUM }}
+              viewport={{ once: true }}
+              className="text-xs text-slate-500"
+            >
+              Trusted by businesses scaling right now
+            </motion.div>
           </div>
-          <div className="h-px w-12 bg-gradient-to-r from-transparent via-cyan-400 to-transparent" />
-          <div className="text-xs text-slate-500">Trusted by businesses scaling right now</div>
         </div>
-      </div>
+      </RevealSection>
 
       <section id="features" className="py-24 relative" data-testid="section-features">
         <div className="max-w-7xl mx-auto px-6">
@@ -967,7 +1047,7 @@ export default function Landing() {
               { icon: Globe, title: "Scales Your Empire", desc: "Handle unlimited customers simultaneously. No hiring, no training, no burnout.", color: C.green, stat: "Unlimited capacity" },
             ].map((cap, i) => (
               <RevealSection key={cap.title} delay={i * 0.08}>
-                <div className="glass-card rounded-2xl p-8 group hover:border-opacity-60 transition-all duration-300 hover:-translate-y-2 h-full" style={{ borderColor: `${cap.color}30` }} data-testid={`card-cap-${i}`}>
+                <div className="glass-card rounded-2xl p-8 group transition-all duration-300 h-full" style={{ borderColor: `${cap.color}20` }} data-testid={`card-cap-${i}`}>
                   <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform" style={{ backgroundColor: `${cap.color}12` }}>
                     <cap.icon className="w-7 h-7" style={{ color: cap.color }} />
                   </div>
@@ -1316,10 +1396,10 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-purple-500 rounded-lg flex items-center justify-center">
-                <Bot className="w-4 h-4 text-white" />
+              <div className="w-7 h-7 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-lg flex items-center justify-center">
+                <Bot className="w-3.5 h-3.5 text-white" />
               </div>
-              <span className="font-bold text-sm title-font neon-text-cyan">AI BOT SETUP</span>
+              <span className="font-bold text-sm" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>CLAWD</span>
             </div>
             <div className="flex gap-6 text-xs text-slate-500 flex-wrap justify-center">
               {[
@@ -1329,13 +1409,13 @@ export default function Landing() {
                 { label: "Get Started", action: () => scrollTo("forms") },
                 { label: "FAQ", action: () => scrollTo("section-faq") },
               ].map(l => (
-                <button key={l.label} onClick={l.action} className="hover:text-white transition-colors" data-testid={`link-footer-${l.label.toLowerCase()}`}>
+                <button key={l.label} onClick={l.action} className="hover:text-white transition-colors duration-300" data-testid={`link-footer-${l.label.toLowerCase()}`}>
                   {l.label}
                 </button>
               ))}
-              <a href="sms:+17542504912" className="hover:text-white transition-colors" data-testid="link-footer-contact">Contact</a>
+              <a href="sms:+17542504912" className="hover:text-white transition-colors duration-300" data-testid="link-footer-contact">Contact</a>
             </div>
-            <p className="text-xs text-slate-600 title-font">
+            <p className="text-xs text-slate-600" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
               aibotsetup.com
             </p>
           </div>

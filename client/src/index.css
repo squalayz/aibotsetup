@@ -3,7 +3,8 @@
 @tailwind utilities;
 
 .title-font {
-  font-family: 'Orbitron', 'Space Grotesk', sans-serif;
+  font-family: 'Space Grotesk', 'Orbitron', sans-serif;
+  letter-spacing: -0.02em;
 }
 
 .neon-text-cyan {
@@ -14,12 +15,12 @@
 }
 
 .neon-gradient-text {
-  background: linear-gradient(90deg, #00f0ff, #c026d3, #22ff88, #00f0ff);
-  background-size: 300% auto;
+  background: linear-gradient(90deg, #00e5ff, #a855f7, #22c55e, #00e5ff);
+  background-size: 400% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: gradient-flow 4s ease infinite;
+  animation: gradient-flow 6s ease infinite;
 }
 
 @keyframes gradient-flow {
@@ -29,19 +30,20 @@
 }
 
 .glass-card {
-  background: rgba(15, 23, 42, 0.6);
+  background: rgba(15, 23, 42, 0.5);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(0, 240, 255, 0.12);
-  transition: border-color 0.3s;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all 0.3s ease-out;
 }
 
 .glass-card:hover {
-  border-color: rgba(0, 240, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
 }
 
 .glass-nav {
   backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(0, 240, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .scanline-overlay {
@@ -53,12 +55,136 @@
   background: linear-gradient(
     to bottom,
     transparent 50%,
-    rgba(0, 240, 255, 0.03) 50%
+    rgba(0, 229, 255, 0.015) 50%
   );
   background-size: 100% 4px;
   pointer-events: none;
   z-index: 5;
-  opacity: 0.5;
+  opacity: 0.4;
+}
+
+.hero-bg-glow {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 30% 50%, rgba(0, 229, 255, 0.03) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 40%, rgba(168, 85, 247, 0.03) 0%, transparent 50%);
+}
+
+.hero-primary-btn {
+  background: #ffffff;
+  color: #000000;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 16px;
+  padding: 16px 32px;
+  transition: all 0.3s ease-out;
+  cursor: pointer;
+  border: none;
+}
+
+.hero-primary-btn:hover {
+  background: #00e5ff;
+  color: #ffffff;
+  box-shadow: 0 0 25px rgba(0, 229, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.hero-text-link-cyan {
+  color: #00e5ff;
+  font-weight: 500;
+  font-size: 15px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.3s ease-out;
+  padding: 0;
+}
+
+.hero-text-link-cyan::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: #00e5ff;
+  transition: width 0.3s ease-out;
+}
+
+.hero-text-link-cyan:hover::after {
+  width: 100%;
+}
+
+.hero-text-link-muted {
+  color: #9ca3af;
+  font-weight: 400;
+  font-size: 15px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s ease-out;
+  padding: 0;
+}
+
+.hero-text-link-muted:hover {
+  color: #ffffff;
+}
+
+.nav-cta-pill {
+  background: linear-gradient(135deg, #a855f7, #6366f1) !important;
+  border-radius: 50px !important;
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+  color: #ffffff !important;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 8px 20px;
+  transition: all 0.3s ease-out;
+  border: none !important;
+}
+
+.nav-cta-pill:hover {
+  box-shadow: 0 0 30px rgba(168, 85, 247, 0.5);
+  transform: scale(1.03);
+}
+
+@keyframes dot-pulse-anim {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.dot-pulse {
+  animation: dot-pulse-anim 2s ease-in-out infinite;
+}
+
+.scroll-indicator-line {
+  width: 1px;
+  height: 30px;
+  position: relative;
+  background: rgba(0, 229, 255, 0.15);
+  overflow: hidden;
+}
+
+.scroll-indicator-line::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -1px;
+  width: 3px;
+  height: 8px;
+  background: rgba(0, 229, 255, 0.8);
+  border-radius: 2px;
+  animation: scroll-dot-travel 2s ease-in-out infinite;
+}
+
+@keyframes scroll-dot-travel {
+  0% { top: -4px; opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { top: 30px; opacity: 0; }
 }
 
 @keyframes gradient-shift {
