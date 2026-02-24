@@ -368,7 +368,7 @@ function InquiryForm({ type, title, subtitle, fields, buttonText, buttonColor, a
       ))}
       <Button
         type="submit"
-        className="w-full font-bold py-5"
+        className="w-full font-bold py-5 text-sm md:text-base"
         style={{ background: buttonColor, color: "#000" }}
         disabled={!values.name || !values.email || !values.phone || mutation.isPending}
         data-testid={`button-submit-${type}`}
@@ -1103,7 +1103,7 @@ export default function Landing() {
                 subtitle="Tell us what you need and we'll build it"
                 accentColor={C.silverBright}
                 buttonColor={`linear-gradient(135deg, ${C.silverBright}, ${C.white})`}
-                buttonText="BUILD MY AGENT — FREE 30-MIN SETUP"
+                buttonText="BUILD MY AGENT — FREE 30-MIN CALL"
                 fields={[
                   { name: "name", label: "Your Name", icon: Users, placeholder: "John Smith", required: true },
                   { name: "email", label: "Email", icon: Mail, type: "email", placeholder: "you@email.com", required: true },
