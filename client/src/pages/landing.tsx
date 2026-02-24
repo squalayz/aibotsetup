@@ -604,6 +604,15 @@ export default function Landing() {
         gsap.fromTo(".hero-body-text", { opacity: 0 }, { opacity: 1, duration: 0.6, delay: 1.2 });
         gsap.fromTo(".hero-cta-buttons", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, delay: 1.4 });
         gsap.fromTo(".hero-pill", { opacity: 0 }, { opacity: 1, duration: 0.6, delay: 0.2 });
+
+        const termEls = [".term-header", ".term-line-0", ".term-line-1", ".term-line-2", ".term-line-3", ".term-line-4", ".term-line-5", ".term-status"];
+        termEls.forEach((sel, i) => {
+          gsap.fromTo(sel, { opacity: 0, y: 20 }, {
+            opacity: 1, y: 0, duration: 0.5, ease: "power2.out",
+            scrollTrigger: { trigger: "#terminal-section", start: "top 80%", toggleActions: "play none none none" },
+            delay: i * 0.1,
+          });
+        });
       });
 
       gsap.utils.toArray<HTMLElement>(".reveal-on-scroll").forEach(el => {
@@ -801,8 +810,8 @@ export default function Landing() {
         </div>
       </section>
 
-      <section id="terminal-section" className="relative" style={{ minHeight: "100vh" }} data-testid="section-terminal">
-        <div className="term-content h-screen flex items-center justify-center overflow-hidden relative px-8">
+      <section id="terminal-section" className="relative min-h-screen md:min-h-0" data-testid="section-terminal">
+        <div className="term-content min-h-[60vh] md:h-screen flex items-center justify-center overflow-hidden relative px-4 md:px-8">
           <div className="absolute inset-0 opacity-15">
             <MatrixRain />
           </div>
