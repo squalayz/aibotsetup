@@ -1,0 +1,368 @@
+# CLAWD — Cinematic Scroll Experience (Apple.com + Supercar + Matrix)
+
+## THE CONCEPT
+
+The entire website should feel like a **movie that plays as you scroll.** Nothing just "sits" on the page waiting to be read. Every section is a SCENE that transitions cinematically into the next. The scroll bar IS the play button.
+
+Study these references for what I mean:
+- apple.com/macbook-pro (product pins in center, text fades around it)
+- apple.com/iphone (scroll-driven animations, text reveals timed to scroll)
+- porsche.com (cinematic car reveals, dramatic lighting shifts)
+
+The user scrolls and the page PERFORMS. Sections don't just appear — they ARRIVE.
+
+**Use GSAP + ScrollTrigger for EVERYTHING.** This is non-negotiable. Import from CDN:
+```html
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+```
+
+---
+
+## SCENE 1: THE ARRIVAL (Hero — 100vh, pinned for 300vh of scroll)
+
+This is the most important scene. The hero section is **pinned** (position: sticky/fixed) and transforms dramatically as the user scrolls through it. The user scrolls through 3 "acts" within the hero alone:
+
+### Act 1 (scroll 0% → 30%): THE BOOT SEQUENCE
+- Screen starts **completely black.** Nothing visible.
+- As user begins scrolling, a **single horizontal scan line** sweeps down the screen (like a monitor powering on)
+- After the scan line passes, the robot image **fades in from darkness** — starts at scale 1.3 and opacity 0, scales down to 1.0 and opacity 1 (like it's materializing out of the void)
+- The robot has a brief **static/noise overlay** that clears as it appears (use a CSS noise texture that fades out)
+- Small silver text types out at the bottom of the screen: `> SYSTEM ONLINE` then `> CLAWD AI v4.2 INITIALIZED` (monospace font, typewriter effect, silver color)
+
+### Act 2 (scroll 30% → 65%): THE REVEAL
+- The robot **slowly slides to the right 55%** of the screen (it started centered)
+- Simultaneously, the headline text fades in on the left side, word by word timed to scroll position:
+  - "WE BUILD" appears first (fade in + slide from left 30px)
+  - "AI AGENTS" appears next (with silver shimmer gradient)
+  - "THAT RUN" 
+  - "YOUR BUSINESS"
+  - Each line is triggered by scroll position, NOT by time. User controls the pace.
+- The body text fades in below the headline (opacity 0→1, translateY 20→0)
+- The pill badge appears above the headline
+- CTA buttons slide in from the left
+
+### Act 3 (scroll 65% → 100%): THE TRANSITION
+- The entire hero content **slowly fades and scales down slightly** (scale 1 → 0.95, opacity 1 → 0)
+- A **bright horizontal light wipe** sweeps across the screen (like a scene transition in a film)
+- This wipe reveals Scene 2 underneath
+
+**GSAP Implementation for Scene 1:**
+```javascript
+// Pin the hero for extended scroll
+gsap.timeline({
+  scrollTrigger: {
+    trigger: "#hero",
+    start: "top top",
+    end: "+=300%",  // 3x viewport height of scroll distance
+    pin: true,
+    scrub: 1,  // Smooth scroll-linked animation
+  }
+})
+// Act 1: Robot materializes
+.fromTo(".robot-image", 
+  { opacity: 0, scale: 1.3, filter: "brightness(3) blur(10px)" },
+  { opacity: 1, scale: 1, filter: "brightness(1) blur(0px)", duration: 30 }
+)
+// Act 2: Robot slides right, text appears
+.to(".robot-container", { x: "15%", duration: 25 }, "reveal")
+.fromTo(".hero-line-1", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 8 }, "reveal")
+.fromTo(".hero-line-2", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 8 }, "reveal+=3")
+.fromTo(".hero-line-3", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 8 }, "reveal+=6")
+.fromTo(".hero-line-4", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 8 }, "reveal+=9")
+.fromTo(".hero-body", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 10 }, "reveal+=12")
+.fromTo(".hero-cta", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 8 }, "reveal+=15")
+// Act 3: Fade out
+.to(".hero-content-wrapper", { opacity: 0, scale: 0.95, duration: 20 })
+```
+
+---
+
+## SCENE 2: CAPABILITIES — "What Your AI Does" (Pinned, scroll-driven card reveals)
+
+### Layout: Full screen, pinned section. One capability at a time fills the viewport.
+
+Instead of showing all 6 cards in a grid, show them **ONE AT A TIME** like slides in a presentation, each taking over the full screen as the user scrolls:
+
+### How it works:
+- Section is pinned for 600vh of scroll (6 capabilities × ~100vh each)
+- A persistent **section title** at the top: "WHAT YOUR AI AGENT DOES" (silver, small, stays visible)
+- A **progress bar** at the top of the section shows how far through the capabilities you are (thin line, fills left to right as you scroll through all 6)
+- Each capability takes over the screen:
+
+**Capability 1: ANSWER CALLS 24/7**
+- Large number "01" on the left (massive, like 30vw, very low opacity 0.05 — watermark style)
+- Capability title in big bold text center-left
+- 1-2 sentence description below
+- On the right: an **animated visualization** — show a simple animation of a phone ringing icon, then a checkmark appearing (SVG animation, not an image)
+- **Transition to next:** content slides UP and out while next capability slides UP and in (scroll-driven, not auto)
+
+**Capability 2: BOOK APPOINTMENTS** → same layout, number "02", calendar icon animation
+**Capability 3: FOLLOW UP LEADS** → "03", message/envelope icon animation  
+**Capability 4: POST CONTENT** → "04", social media icons animation
+**Capability 5: CLOSE SALES** → "05", chart/money icon animation
+**Capability 6: INTEGRATE EVERYTHING** → "06", connected nodes animation
+
+**GSAP Implementation:**
+```javascript
+// Pin section, each card takes ~100vh of scroll
+const capabilities = gsap.utils.toArray(".capability-slide");
+
+gsap.timeline({
+  scrollTrigger: {
+    trigger: "#capabilities",
+    start: "top top",
+    end: `+=${capabilities.length * 100}%`,
+    pin: true,
+    scrub: 1,
+  }
+}).to(capabilities, {
+  yPercent: -100 * (capabilities.length - 1),
+  ease: "none",
+  stagger: { each: 1 / capabilities.length }
+});
+```
+
+**Transitions between cards:** Each card slides up and the next slides in from below. The big watermark number fades/scales during transitions. Smooth, continuous, scroll-driven.
+
+---
+
+## SCENE 3: THE ROBOT ZOOM — Cinematic Close-up (This is the "supercar" moment)
+
+This is the **showstopper section.** Think of car commercials where the camera slowly orbits around the vehicle revealing details.
+
+### What happens:
+- As user scrolls into this section, the **robot image reappears** in the center of the screen, small at first
+- As they scroll, the robot **scales up dramatically** (scale 0.5 → 2.5) — zooming INTO the robot, like a camera pushing in
+- At the same time, the image **slowly shifts upward** so you're zooming into the face/head area
+- The background darkens further (if possible)
+- Floating text labels appear around the robot at different scroll positions, pointing to different body parts:
+  - Near eyes: **"SEES YOUR DATA"** (fades in at 30% scroll)
+  - Near head: **"THINKS IN REAL-TIME"** (fades in at 45%)
+  - Near chest: **"POWERED BY AI"** (fades in at 60%)
+  - Near hands: **"EXECUTES 24/7"** (fades in at 75%)
+- Each label has a thin **line connecting it to the body part** (SVG line that draws itself)
+- At max scroll: the robot face fills most of the viewport, eyes glowing, labels visible — **dramatic pause moment**
+- Then everything fades to black as user scrolls past
+
+**GSAP Implementation:**
+```javascript
+gsap.timeline({
+  scrollTrigger: {
+    trigger: "#robot-zoom",
+    start: "top top",
+    end: "+=400%",
+    pin: true,
+    scrub: 1,
+  }
+})
+.fromTo(".zoom-robot", { scale: 0.5, y: 0 }, { scale: 2.5, y: "-30%", duration: 60 })
+.fromTo(".label-eyes", { opacity: 0 }, { opacity: 1, duration: 5 }, 20)
+.fromTo(".label-head", { opacity: 0 }, { opacity: 1, duration: 5 }, 30)
+.fromTo(".label-chest", { opacity: 0 }, { opacity: 1, duration: 5 }, 40)
+.fromTo(".label-hands", { opacity: 0 }, { opacity: 1, duration: 5 }, 50)
+.to(".robot-zoom-section", { opacity: 0, duration: 10 })
+```
+
+---
+
+## SCENE 4: HOW IT WORKS — Scroll-Driven Path Animation
+
+### Instead of a static timeline, make it a JOURNEY:
+
+- A **single glowing line** starts at the top-left of the section
+- As the user scrolls, the line **draws itself** across the screen (SVG path animation driven by scroll position)
+- The line moves in a flowing S-curve or angular path across the viewport
+- At 4 points along the path, the line hits a **node** (circle) which triggers:
+  - The node lights up (glow animation)
+  - A text card appears next to the node with the step info
+  - The card fades/slides in timed to when the line reaches that node
+
+**Steps on the path:**
+1. "BOOK A CALL" → "See AI agents in action during a free Zoom session"
+2. "MAP YOUR WORKFLOWS" → "We learn every process, tool, and bottleneck in your business"
+3. "WE BUILD YOUR AGENT" → "Custom-trained on your data, integrated with your stack"
+4. "LAUNCH & SCALE" → "Your agent goes live and starts producing results day one"
+
+**The line should feel like ENERGY TRAVELING** — bright leading edge with a fading trail behind it. The path itself stays visible (dim) after the energy passes through.
+
+**GSAP + SVG drawSVG approach:**
+```javascript
+gsap.timeline({
+  scrollTrigger: {
+    trigger: "#how-it-works",
+    start: "top top",
+    end: "+=400%",
+    pin: true,
+    scrub: 1,
+  }
+})
+.fromTo(".journey-path", 
+  { strokeDashoffset: pathLength }, 
+  { strokeDashoffset: 0, duration: 100 }
+)
+.fromTo(".node-1", { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 5 }, 20)
+.fromTo(".step-card-1", { opacity: 0, x: 20 }, { opacity: 1, x: 0, duration: 5 }, 22)
+.fromTo(".node-2", { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 5 }, 40)
+.fromTo(".step-card-2", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 5 }, 42)
+// ... etc for nodes 3 and 4
+```
+
+---
+
+## SCENE 5: PRICING — Cards Rise From Darkness
+
+- Section starts with just the headline: **"CHOOSE YOUR AGENT"** (large, centered, fades in)
+- As user scrolls further, the 3 pricing cards **rise up from below the viewport** one at a time, staggered:
+  - Starter ($199) rises first
+  - Growth ($499) rises second, slightly HIGHER than the others (it's featured)
+  - Enterprise ($799) rises third
+- Each card rising has a subtle **shadow that grows** as it "lifts" — like it's physically elevating
+- Price numbers **count up from $0** as the cards reach their final position
+- Feature checkmarks draw in one by one (SVG line animation) after the card lands
+- The "MOST POPULAR" badge on the Growth card has a slow silver shimmer
+
+**GSAP:**
+```javascript
+gsap.timeline({
+  scrollTrigger: {
+    trigger: "#pricing",
+    start: "top 60%",
+    end: "top 10%",
+    scrub: 1,
+  }
+})
+.fromTo(".price-card-1", { y: 200, opacity: 0 }, { y: 0, opacity: 1, duration: 10 })
+.fromTo(".price-card-2", { y: 300, opacity: 0 }, { y: -20, opacity: 1, duration: 10 }, 3) // -20 = elevated
+.fromTo(".price-card-3", { y: 200, opacity: 0 }, { y: 0, opacity: 1, duration: 10 }, 6)
+```
+
+---
+
+## SCENE 6: STATS — Numbers Slam In
+
+- 4 big stats in a row
+- As user scrolls to them, each number **slams in from above** with a heavy, impactful feel:
+  - Starts off-screen above (y: -100, opacity: 0)
+  - Drops down with `ease: "bounce.out"` — feels like it LANDS with weight
+  - On landing, a brief **shockwave ring** expands outward from the number (subtle CSS animation)
+  - Then the number starts its counter animation (rapid count up to final value)
+- Stagger each stat by ~200ms for a 1-2-3-4 impact sequence
+
+**Stats:**
+- 500+ Agents Deployed
+- 50+ Industries
+- 99.9% Uptime  
+- 10x Faster Response
+
+---
+
+## SCENE 7: FAQ — Matrix-Style Text Decode
+
+- Clean accordion, but when an answer expands:
+  - The answer text **decodes in from scrambled matrix characters** (not typewriter — actual character scramble like the matrix rain resolving into readable text)
+  - Takes about 1 second to fully decode
+  - Characters cycle through: `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*` then resolve to the correct letter
+  - A very faint **green tint** (#a0ffa0 at like 5% opacity) briefly flashes behind the text as it decodes, then fades — the only hint of "matrix green" on the entire page, used as an Easter egg
+
+---
+
+## SCENE 8: FINAL CTA — The Convergence
+
+- As user scrolls here, **everything converges to the center:**
+  - Thin lines draw in from all 4 corners of the screen toward the center point (like crosshairs locking on)
+  - When lines reach center: the CTA text **materializes** with the decode effect: "READY TO PUT AI TO WORK?"
+  - The CTA button fades in below with a strong glow
+  - The robot's **eyes appear faintly** in the dark background behind the text (just the two glowing dots, like it's watching from the shadows)
+  - Subtle silver particles drift inward toward the button (reversed floating — converging not dispersing)
+
+---
+
+## GLOBAL SCROLL BEHAVIORS
+
+### Smooth Scroll:
+```css
+html {
+  scroll-behavior: smooth;
+}
+```
+Actually, DON'T use CSS smooth scroll — use **Lenis** for buttery smooth scrolling that works perfectly with GSAP:
+```html
+<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+```
+```javascript
+const lenis = new Lenis({
+  duration: 1.2,
+  easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+  smooth: true,
+});
+
+function raf(time) {
+  lenis.raf(time);
+  requestAnimationFrame(raf);
+}
+requestAnimationFrame(raf);
+
+// Connect Lenis to GSAP ScrollTrigger
+lenis.on('scroll', ScrollTrigger.update);
+gsap.ticker.add((time) => lenis.raf(time * 1000));
+gsap.ticker.lagSmoothing(0);
+```
+
+### Scene Transition Wipes:
+Between major sections, add **horizontal light wipes** — a bright thin line (2px, white/silver, 15% opacity) that sweeps across the screen left-to-right as a scene divider. Triggered by scroll position.
+
+### Scroll Progress Indicator:
+- Fixed to the right edge of the screen: a thin vertical line (2px wide, full viewport height)
+- A bright dot travels down this line proportional to total page scroll progress
+- Line color: `rgba(255, 255, 255, 0.05)`, dot color: `rgba(255, 255, 255, 0.4)`
+
+### Scroll Velocity Effects:
+- When user scrolls FAST, add a subtle **motion blur** to elements (use CSS `filter: blur(1px)` on scroll velocity > threshold, remove when scroll slows)
+- This is a small touch but makes it feel incredibly responsive and cinematic
+
+---
+
+## PERFORMANCE — CRITICAL
+
+- **scrub: 1** on all ScrollTrigger timelines (smooth 1-second catch-up to scroll position)
+- Use `will-change: transform, opacity` on ALL animated elements
+- Use `transform` and `opacity` ONLY — never animate width, height, top, left, margin
+- Batch DOM reads/writes
+- Pinned sections need `anticipatePin: 1` in ScrollTrigger config to prevent jump
+- Test on a real device — not just the Replit preview. Open the deployed URL in a real browser tab
+- Add `fastScrollEnd: true` to ScrollTrigger defaults for snappier feel
+- **Lazy load** the robot image and any heavy assets below the fold
+
+```javascript
+// Set GSAP defaults for performance
+gsap.defaults({ ease: "power3.out" });
+ScrollTrigger.defaults({ fastScrollEnd: true, preventOverlaps: true });
+```
+
+---
+
+## MOBILE HANDLING
+
+- On screens < 768px:
+  - Reduce pin durations by 50% (hero pins for 150vh instead of 300vh)
+  - Capabilities section: show as simple stacked cards with fade-in (no pinned slides)
+  - Robot zoom section: simpler scale animation (0.8 → 1.5 instead of 0.5 → 2.5)
+  - Stats: simple fade-in instead of slam effect
+  - Disable motion blur on scroll
+  - Disable Lenis smooth scroll (mobile handles its own scroll physics better)
+  - Reduce particle counts everywhere
+
+```javascript
+const isMobile = window.innerWidth < 768;
+if (!isMobile) {
+  // Initialize Lenis and all heavy scroll animations
+}
+```
+
+---
+
+## THE FEEL — One Sentence Summary
+
+Scrolling this page should feel like **scrubbing through a cinematic trailer** — every frame is composed, every transition is intentional, and the user has complete control of the pacing. They're not reading a website. They're watching their future AI workforce come to life.

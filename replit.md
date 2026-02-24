@@ -17,7 +17,7 @@ Preferred communication style: Simple, everyday language.
 - **State Management**: TanStack React Query for server state
 - **UI Library**: shadcn/ui (new-york style) with Radix UI primitives
 - **Styling**: Tailwind CSS with CSS variables for theming (dark theme by default)
-- **Animations**: Framer Motion for page transitions and UI animations, plus custom canvas-based particle effects
+- **Animations**: GSAP with ScrollTrigger for cinematic scroll-driven animations (pinned scenes, scrubbed timelines), Framer Motion for micro-interactions (FAQ accordion, form transitions)
 - **Key Pages**:
   - `/` — Landing page with features, pricing tiers
   - `/payment/:tier` — Crypto payment flow (self or vip tier)
@@ -103,6 +103,7 @@ Preferred communication style: Simple, everyday language.
 - Admin endpoints: `GET /api/admin/visitors/stats` (aggregated analytics), `GET /api/admin/visitors` (recent 200 visitors)
 
 ### Recent Changes
+- 2026-02-24: Complete cinematic scroll overhaul with GSAP ScrollTrigger — pinned hero (scan line, robot materialize, staggered text reveal, scene wipe), pinned capabilities (full-screen slides with progress bar), robot zoom (close-up with floating labels), journey timeline (animated line + nodes), stats slam (bounce-in), CTA convergence lines. Mobile: no pins, simple fade-in. Scroll progress dot on right edge. Kept neon-gradient-text "AI AGENTS" and all forms/trading/FAQ.
 - 2026-02-24: Added comprehensive admin dashboard with visitor tracking, location analytics, signup breakdown, daily traffic chart, top pages, referrers, and device info
 - 2026-02-11: Removed all card/debit payment options (Stripe, Whop) — crypto payments only
 - 2026-02-11: Added automated crypto payment tracking with MetaMask wallet connection and on-chain verification via public Ethereum RPC
