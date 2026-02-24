@@ -1134,29 +1134,33 @@ export default function Landing() {
             <RevealSection delay={0.2}>
               <div className="glass-card rounded-2xl p-6 relative">
                 <div className="bg-black/60 rounded-xl p-5 font-mono text-sm mb-6">
-                  <div className="flex justify-between mb-4 items-center">
+                  <div className="flex justify-between mb-2 items-center">
                     <div className="flex items-center gap-2">
                       <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
                       <span className="text-white font-bold">TRADER-X LIVE</span>
                     </div>
-                    <div className="text-green-400 font-bold">+2.84% today</div>
+                    <div className="text-green-400 font-bold">+6.42% today</div>
+                  </div>
+                  <div className="flex justify-between items-baseline mb-4 pt-1 border-b border-green-400/10 pb-3">
+                    <span className="text-slate-500 text-xs">Total Realized P&L</span>
+                    <span className="text-green-400 font-black text-lg">+$9,847.31</span>
                   </div>
                   <div className="space-y-3 text-xs">
                     <div className="flex justify-between py-2 border-b border-white/5">
                       <span className="text-slate-400">Long SOL 3x @ 142.87</span>
-                      <span className="text-green-400 font-bold">+4.21%</span>
+                      <span className="text-green-400 font-bold">+$3,218 profit</span>
                     </div>
                     <div className="flex justify-between py-2 border-b border-white/5">
                       <span className="text-slate-400">Short ETH 5x @ 2,874</span>
-                      <span className="text-red-400 font-bold">-0.91%</span>
+                      <span className="text-green-400 font-bold">+$2,941 profit</span>
                     </div>
                     <div className="flex justify-between py-2 border-b border-white/5">
                       <span className="text-slate-400">Closed NVDA call @ 138</span>
-                      <span className="text-green-400 font-bold">+$1,294 profit</span>
+                      <span className="text-green-400 font-bold">+$2,486 profit</span>
                     </div>
                     <div className="flex justify-between py-2">
                       <span className="text-slate-400">BTC swing 2x long</span>
-                      <span className="text-green-400 font-bold">+1.87%</span>
+                      <span className="text-green-400 font-bold">+$1,202 profit</span>
                     </div>
                   </div>
                 </div>
