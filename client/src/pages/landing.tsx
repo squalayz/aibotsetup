@@ -44,8 +44,8 @@ function MatrixRain({ className = "" }: { className?: string }) {
     if (!ctx) return;
 
     let w = 0, h = 0;
-    const cols: number[] = [];
-    const fontSize = 14;
+    const fontSize = 16;
+    const cols: { y: number; speed: number; drift: number; driftSpeed: number; chars: string[] }[] = [];
 
     const resize = () => {
       const rect = canvas.parentElement?.getBoundingClientRect();
@@ -55,40 +55,66 @@ function MatrixRain({ className = "" }: { className?: string }) {
       canvas.width = w * 2;
       canvas.height = h * 2;
       ctx.setTransform(2, 0, 0, 2, 0, 0);
-      const colCount = Math.ceil(w / fontSize);
-      while (cols.length < colCount) cols.push(Math.random() * h / fontSize * -1);
+      const colCount = Math.ceil(w / (fontSize * 1.8));
+      while (cols.length < colCount) {
+        const trailLen = 4 + Math.floor(Math.random() * 8);
+        cols.push({
+          y: Math.random() * h * -0.5,
+          speed: 0.15 + Math.random() * 0.25,
+          drift: Math.random() * Math.PI * 2,
+          driftSpeed: 0.003 + Math.random() * 0.006,
+          chars: Array.from({ length: trailLen }, () => MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)]),
+        });
+      }
     };
     resize();
     window.addEventListener("resize", resize);
 
     let frame = 0;
     const draw = () => {
-      ctx.fillStyle = "rgba(8, 8, 15, 0.06)";
+      ctx.fillStyle = "rgba(8, 8, 15, 0.04)";
       ctx.fillRect(0, 0, w, h);
+      ctx.font = `${fontSize}px monospace`;
+
       for (let i = 0; i < cols.length; i++) {
-        const char = MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)];
-        const x = i * fontSize;
-        const y = cols[i] * fontSize;
-        const brightness = Math.random();
-        if (brightness > 0.95) {
-          ctx.fillStyle = "#ffffff";
-          ctx.shadowColor = "#ffffff";
-          ctx.shadowBlur = 8;
-        } else if (brightness > 0.7) {
-          ctx.fillStyle = "#00ff41";
-          ctx.shadowColor = "#00ff41";
-          ctx.shadowBlur = 4;
-        } else {
-          ctx.fillStyle = `rgba(0, 255, 65, ${0.15 + brightness * 0.35})`;
+        const col = cols[i];
+        const baseX = i * fontSize * 1.8;
+        const xOffset = Math.sin(col.drift) * 12;
+        col.drift += col.driftSpeed;
+
+        for (let j = 0; j < col.chars.length; j++) {
+          const charY = col.y - j * fontSize * 1.2;
+          if (charY < -fontSize || charY > h + fontSize) continue;
+
+          const fade = 1 - j / col.chars.length;
+          if (j === 0) {
+            ctx.fillStyle = `rgba(200, 220, 240, ${0.6 * fade})`;
+            ctx.shadowColor = "#e8edf5";
+            ctx.shadowBlur = 6;
+          } else if (j === 1) {
+            ctx.fillStyle = `rgba(0, 255, 65, ${0.5 * fade})`;
+            ctx.shadowColor = "#00ff41";
+            ctx.shadowBlur = 3;
+          } else {
+            ctx.fillStyle = `rgba(0, 255, 65, ${0.08 + 0.18 * fade})`;
+            ctx.shadowBlur = 0;
+          }
+
+          ctx.fillText(col.chars[j], baseX + xOffset, charY);
           ctx.shadowBlur = 0;
         }
-        ctx.font = `${fontSize}px monospace`;
-        ctx.fillText(char, x, y);
-        ctx.shadowBlur = 0;
-        if (y > h && Math.random() > 0.975) {
-          cols[i] = 0;
+
+        col.y += col.speed;
+
+        if (Math.random() > 0.995) {
+          const idx = Math.floor(Math.random() * col.chars.length);
+          col.chars[idx] = MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)];
         }
-        cols[i] += 0.4 + Math.random() * 0.3;
+
+        if (col.y - col.chars.length * fontSize * 1.2 > h) {
+          col.y = Math.random() * h * -0.3 - fontSize * col.chars.length;
+          col.speed = 0.15 + Math.random() * 0.25;
+        }
       }
       frame = requestAnimationFrame(draw);
     };
@@ -751,13 +777,17 @@ export default function Landing() {
                 </Button>
               </div>
 
-              <div className="hero-badges mt-10 flex gap-6 text-xs uppercase tracking-widest flex-wrap justify-center lg:justify-start" style={{ opacity: 0, color: C.muted }}>
+              <div className="hero-badges mt-10 flex items-center gap-6 text-xs uppercase tracking-widest flex-wrap justify-center lg:justify-start" style={{ opacity: 0, color: C.muted }}>
                 {["Instant Deploy", "Zero Coding", "100% Custom"].map((item) => (
                   <span key={item} className="flex items-center gap-2">
                     <Check className="w-3.5 h-3.5" style={{ color: C.matrix }} />
                     {item}
                   </span>
                 ))}
+                <a href="https://openclaw.ai" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-1.5 rounded-full transition-all hover:scale-105" style={{ background: `rgba(255, 77, 77, 0.08)`, border: `1px solid rgba(255, 77, 77, 0.2)` }} data-testid="link-openclaw-hero">
+                  <img src="/openclaw-logo.svg" alt="OpenClaw" className="w-4 h-4" />
+                  <span className="text-[10px] tracking-wider normal-case" style={{ color: "#ff6b6b" }}>Powered by OpenClaw</span>
+                </a>
               </div>
             </div>
           </div>
@@ -807,6 +837,39 @@ export default function Landing() {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="py-16 md:py-20 relative reveal-on-scroll" style={{ background: `linear-gradient(180deg, ${C.bg} 0%, rgba(15,17,25,1) 50%, ${C.bg} 100%)` }} data-testid="section-openclaw">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="matrix-card rounded-2xl p-8 md:p-12 relative overflow-hidden" style={{ border: `1px solid rgba(255, 77, 77, 0.15)` }}>
+            <div className="absolute inset-0 opacity-5">
+              <MatrixRain />
+            </div>
+            <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
+              <div className="shrink-0">
+                <div className="w-20 h-20 md:w-24 md:h-24 rounded-2xl flex items-center justify-center" style={{ background: `rgba(255, 77, 77, 0.08)`, border: `1px solid rgba(255, 77, 77, 0.2)` }}>
+                  <img src="/openclaw-logo.svg" alt="OpenClaw" className="w-14 h-14 md:w-16 md:h-16" />
+                </div>
+              </div>
+              <div className="text-center md:text-left flex-1">
+                <div className="flex items-center gap-3 justify-center md:justify-start mb-3">
+                  <h3 className="title-font text-2xl md:text-3xl font-black" style={{ color: C.silverBright }}>Built with OpenClaw</h3>
+                  <span className="px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider" style={{ background: `rgba(255, 77, 77, 0.15)`, color: "#ff6b6b" }}>Core Engine</span>
+                </div>
+                <p className="text-sm md:text-base leading-relaxed mb-5" style={{ color: C.muted }}>
+                  Our agents run on <a href="https://openclaw.ai" target="_blank" rel="noopener noreferrer" className="font-semibold hover:underline" style={{ color: "#ff6b6b" }}>OpenClaw</a> — the open-source AI agent framework with persistent memory, full system access, browser control, and 50+ integrations. Your AI runs locally on your machine, private and powerful.
+                </p>
+                <div className="flex flex-wrap gap-3 justify-center md:justify-start">
+                  {["Persistent Memory", "Browser Control", "Full System Access", "Skills & Plugins", "50+ Integrations"].map((feat) => (
+                    <span key={feat} className="px-3 py-1.5 rounded-lg text-xs font-mono" style={{ background: `rgba(255, 77, 77, 0.06)`, border: `1px solid rgba(255, 77, 77, 0.12)`, color: C.silver }}>
+                      {feat}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
