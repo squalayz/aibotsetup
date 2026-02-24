@@ -1,4 +1,5 @@
-import { Switch, Route } from "wouter";
+import { useEffect } from "react";
+import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -30,10 +31,24 @@ function Router() {
   );
 }
 
+function PageTracker() {
+  const [location] = useLocation();
+  useEffect(() => {
+    if (location.startsWith("/admin")) return;
+    fetch("/api/track", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ page: location, referrer: document.referrer || null }),
+    }).catch(() => {});
+  }, [location]);
+  return null;
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+        <PageTracker />
         <div className="relative min-h-screen bg-background text-foreground">
           <AnimatedBackground />
           <ParticleField />

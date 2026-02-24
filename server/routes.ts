@@ -164,10 +164,52 @@ async function verifyTransactionOnChain(txHash: string, expectedAmountUsd: numbe
   }
 }
 
+async function lookupGeo(ip: string): Promise<{ country?: string; city?: string; region?: string }> {
+  try {
+    const cleanIp = ip === "::1" || ip === "127.0.0.1" ? "" : ip;
+    const url = cleanIp ? `http://ip-api.com/json/${cleanIp}?fields=country,city,regionName` : `http://ip-api.com/json/?fields=country,city,regionName`;
+    const res = await fetch(url);
+    const data = await res.json();
+    return { country: data.country, city: data.city, region: data.regionName };
+  } catch {
+    return {};
+  }
+}
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+
+  const BOT_UA = /bot|crawl|spider|facebookexternalhit|Facebot|Twitterbot|LinkedInBot|WhatsApp|TelegramBot|Slackbot|Discordbot|iMessageLinkPreview|applebot|Googlebot|bingbot|Baiduspider|YandexBot|DuckDuckBot/i;
+
+  app.post("/api/track", async (req, res) => {
+    try {
+      const ua = req.headers["user-agent"] || "";
+      if (BOT_UA.test(ua)) return res.json({ ok: true });
+
+      const forwarded = req.headers["x-forwarded-for"];
+      const ip = (typeof forwarded === "string" ? forwarded.split(",")[0].trim() : req.socket.remoteAddress) || "unknown";
+      const page = req.body?.page || "/";
+      const referrer = req.body?.referrer || req.headers.referer || null;
+
+      const geo = await lookupGeo(ip);
+
+      await storage.createVisitor({
+        ip,
+        country: geo.country || null,
+        city: geo.city || null,
+        region: geo.region || null,
+        userAgent: ua || null,
+        referrer,
+        page,
+      });
+
+      res.json({ ok: true });
+    } catch {
+      res.json({ ok: true });
+    }
+  });
 
   const CRAWLER_UA = /facebookexternalhit|Facebot|Twitterbot|LinkedInBot|WhatsApp|TelegramBot|Slackbot|Discordbot|iMessageLinkPreview|applebot/i;
 
@@ -389,6 +431,24 @@ export async function registerRoutes(
       res.json({ success: true });
     } catch {
       res.status(500).json({ message: "Failed to delete booking" });
+    }
+  });
+
+  app.get("/api/admin/visitors/stats", requireAdmin, async (_req, res) => {
+    try {
+      const stats = await storage.getVisitorStats();
+      res.json(stats);
+    } catch {
+      res.status(500).json({ message: "Failed to fetch visitor stats" });
+    }
+  });
+
+  app.get("/api/admin/visitors", requireAdmin, async (_req, res) => {
+    try {
+      const allVisitors = await storage.getVisitors();
+      res.json(allVisitors);
+    } catch {
+      res.status(500).json({ message: "Failed to fetch visitors" });
     }
   });
 

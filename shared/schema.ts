@@ -41,6 +41,18 @@ export const signups = pgTable("signups", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+export const visitors = pgTable("visitors", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  ip: text("ip").notNull(),
+  country: text("country"),
+  city: text("city"),
+  region: text("region"),
+  userAgent: text("user_agent"),
+  referrer: text("referrer"),
+  page: text("page").notNull().default("/"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
@@ -67,5 +79,12 @@ export const insertSignupSchema = createInsertSchema(signups).omit({
 
 export type InsertBooking = z.infer<typeof insertBookingSchema>;
 export type Booking = typeof bookings.$inferSelect;
+export const insertVisitorSchema = createInsertSchema(visitors).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type InsertSignup = z.infer<typeof insertSignupSchema>;
 export type Signup = typeof signups.$inferSelect;
+export type InsertVisitor = z.infer<typeof insertVisitorSchema>;
+export type Visitor = typeof visitors.$inferSelect;

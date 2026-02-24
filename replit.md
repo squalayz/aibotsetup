@@ -46,6 +46,7 @@ Preferred communication style: Simple, everyday language.
   - `users` — id (UUID), username (unique), password
   - `payments` — id (UUID), txHash, tier, amount, verified, createdAt
   - `bookings` — id (UUID), paymentId, name, email, instagram, phone, date, hour, status, createdAt
+  - `visitors` — id (UUID), ip, country, city, region, userAgent, referrer, page, createdAt
 - **Migrations**: Managed via `drizzle-kit push` (schema push approach, not migration files)
 
 ### Storage Layer
@@ -95,7 +96,14 @@ Preferred communication style: Simple, everyday language.
 - Custom favicon at `/favicon-new.png` (neon claw circuit icon)
 - Theme color: `#0a0a1a`
 
+### Visitor Tracking
+- Frontend `PageTracker` component in `App.tsx` sends a `POST /api/track` on each page navigation (excluding `/admin`)
+- Backend uses ip-api.com (free) for IP geolocation (country, city, region)
+- Bots/crawlers are filtered out and not tracked
+- Admin endpoints: `GET /api/admin/visitors/stats` (aggregated analytics), `GET /api/admin/visitors` (recent 200 visitors)
+
 ### Recent Changes
+- 2026-02-24: Added comprehensive admin dashboard with visitor tracking, location analytics, signup breakdown, daily traffic chart, top pages, referrers, and device info
 - 2026-02-11: Removed all card/debit payment options (Stripe, Whop) — crypto payments only
 - 2026-02-11: Added automated crypto payment tracking with MetaMask wallet connection and on-chain verification via public Ethereum RPC
 - 2026-02-11: Added OG image and favicon for social media sharing (iMessage, Facebook, Telegram)
