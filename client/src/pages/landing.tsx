@@ -19,7 +19,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const MATRIX_CHARS = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEF";
 const GLITCH_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*<>{}[]";
 
 const C = {
@@ -35,6 +34,15 @@ const C = {
   cardBorder: "rgba(200, 208, 220, 0.08)",
 };
 
+interface Orb {
+  x: number; y: number;
+  vx: number; vy: number;
+  r: number; baseR: number;
+  pulse: number; pulseSpeed: number;
+  opacity: number;
+  hue: number;
+}
+
 function MatrixRain({ className = "" }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
@@ -44,8 +52,23 @@ function MatrixRain({ className = "" }: { className?: string }) {
     if (!ctx) return;
 
     let w = 0, h = 0;
-    const fontSize = 16;
-    const cols: { y: number; speed: number; drift: number; driftSpeed: number; chars: string[] }[] = [];
+    const orbs: Orb[] = [];
+
+    const spawnOrb = (): Orb => {
+      const baseR = 3 + Math.random() * 25;
+      return {
+        x: Math.random() * (w || 800),
+        y: Math.random() * (h || 600),
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        r: baseR,
+        baseR,
+        pulse: Math.random() * Math.PI * 2,
+        pulseSpeed: 0.008 + Math.random() * 0.015,
+        opacity: 0.15 + Math.random() * 0.35,
+        hue: 120 + Math.random() * 20,
+      };
+    };
 
     const resize = () => {
       const rect = canvas.parentElement?.getBoundingClientRect();
@@ -55,66 +78,46 @@ function MatrixRain({ className = "" }: { className?: string }) {
       canvas.width = w * 2;
       canvas.height = h * 2;
       ctx.setTransform(2, 0, 0, 2, 0, 0);
-      const colCount = Math.ceil(w / (fontSize * 1.8));
-      while (cols.length < colCount) {
-        const trailLen = 4 + Math.floor(Math.random() * 8);
-        cols.push({
-          y: Math.random() * h * -0.5,
-          speed: 0.15 + Math.random() * 0.25,
-          drift: Math.random() * Math.PI * 2,
-          driftSpeed: 0.003 + Math.random() * 0.006,
-          chars: Array.from({ length: trailLen }, () => MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)]),
-        });
-      }
+      const count = Math.max(15, Math.floor((w * h) / 25000));
+      while (orbs.length < count) orbs.push(spawnOrb());
+      while (orbs.length > count) orbs.pop();
     };
     resize();
     window.addEventListener("resize", resize);
 
     let frame = 0;
     const draw = () => {
-      ctx.fillStyle = "rgba(8, 8, 15, 0.04)";
-      ctx.fillRect(0, 0, w, h);
-      ctx.font = `${fontSize}px monospace`;
+      ctx.clearRect(0, 0, w, h);
 
-      for (let i = 0; i < cols.length; i++) {
-        const col = cols[i];
-        const baseX = i * fontSize * 1.8;
-        const xOffset = Math.sin(col.drift) * 12;
-        col.drift += col.driftSpeed;
+      for (const orb of orbs) {
+        orb.x += orb.vx;
+        orb.y += orb.vy;
+        orb.pulse += orb.pulseSpeed;
 
-        for (let j = 0; j < col.chars.length; j++) {
-          const charY = col.y - j * fontSize * 1.2;
-          if (charY < -fontSize || charY > h + fontSize) continue;
+        if (orb.x < -orb.r * 2) orb.x = w + orb.r;
+        if (orb.x > w + orb.r * 2) orb.x = -orb.r;
+        if (orb.y < -orb.r * 2) orb.y = h + orb.r;
+        if (orb.y > h + orb.r * 2) orb.y = -orb.r;
 
-          const fade = 1 - j / col.chars.length;
-          if (j === 0) {
-            ctx.fillStyle = `rgba(200, 220, 240, ${0.6 * fade})`;
-            ctx.shadowColor = "#e8edf5";
-            ctx.shadowBlur = 6;
-          } else if (j === 1) {
-            ctx.fillStyle = `rgba(0, 255, 65, ${0.5 * fade})`;
-            ctx.shadowColor = "#00ff41";
-            ctx.shadowBlur = 3;
-          } else {
-            ctx.fillStyle = `rgba(0, 255, 65, ${0.08 + 0.18 * fade})`;
-            ctx.shadowBlur = 0;
-          }
+        const pulseScale = 0.85 + Math.sin(orb.pulse) * 0.15;
+        orb.r = orb.baseR * pulseScale;
+        const currentOpacity = orb.opacity * (0.7 + Math.sin(orb.pulse * 0.7) * 0.3);
 
-          ctx.fillText(col.chars[j], baseX + xOffset, charY);
-          ctx.shadowBlur = 0;
-        }
+        const grad = ctx.createRadialGradient(orb.x, orb.y, 0, orb.x, orb.y, orb.r * 2.5);
+        grad.addColorStop(0, `hsla(${orb.hue}, 100%, 60%, ${currentOpacity * 0.9})`);
+        grad.addColorStop(0.3, `hsla(${orb.hue}, 100%, 50%, ${currentOpacity * 0.5})`);
+        grad.addColorStop(0.7, `hsla(${orb.hue}, 100%, 40%, ${currentOpacity * 0.15})`);
+        grad.addColorStop(1, `hsla(${orb.hue}, 100%, 30%, 0)`);
 
-        col.y += col.speed;
+        ctx.beginPath();
+        ctx.arc(orb.x, orb.y, orb.r * 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
+        ctx.fill();
 
-        if (Math.random() > 0.995) {
-          const idx = Math.floor(Math.random() * col.chars.length);
-          col.chars[idx] = MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)];
-        }
-
-        if (col.y - col.chars.length * fontSize * 1.2 > h) {
-          col.y = Math.random() * h * -0.3 - fontSize * col.chars.length;
-          col.speed = 0.15 + Math.random() * 0.25;
-        }
+        ctx.beginPath();
+        ctx.arc(orb.x, orb.y, orb.r * 0.4, 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(${orb.hue}, 100%, 85%, ${currentOpacity * 0.7})`;
+        ctx.fill();
       }
       frame = requestAnimationFrame(draw);
     };
