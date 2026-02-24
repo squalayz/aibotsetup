@@ -501,12 +501,27 @@ export default function Landing() {
       const mm = gsap.matchMedia();
       ScrollTrigger.defaults({ fastScrollEnd: true });
 
+      const introTl = gsap.timeline({ delay: 0.1 });
+      introTl
+        .fromTo(".scan-line", { y: "-100vh" }, { y: "100vh", duration: 1.2, ease: "power1.inOut" }, 0)
+        .fromTo(".noise-overlay", { opacity: 0.5 }, { opacity: 0, duration: 1 }, 0)
+        .fromTo(".hero-pill", { opacity: 0, y: -15 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0.2)
+        .fromTo(".hero-line-1", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.5, ease: "power2.out" }, 0.3)
+        .fromTo(".hero-line-2", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.5, ease: "power2.out" }, 0.45)
+        .fromTo(".hero-line-3", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.5, ease: "power2.out" }, 0.6)
+        .fromTo(".hero-line-4", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.5, ease: "power2.out" }, 0.75)
+        .fromTo(".hero-body-text", { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0.9)
+        .fromTo(".hero-cta-buttons", { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 1.1)
+        .fromTo(".hero-badges", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 1.3)
+        .fromTo(".boot-text", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 0.5)
+        .to(".boot-text", { opacity: 0, duration: 0.4 }, 2);
+
       mm.add("(min-width: 768px)", () => {
         const heroTl = gsap.timeline({
           scrollTrigger: {
             trigger: "#hero",
             start: "top top",
-            end: "+=250%",
+            end: "+=150%",
             pin: true,
             scrub: 1,
             anticipatePin: 1,
@@ -514,19 +529,7 @@ export default function Landing() {
         });
 
         heroTl
-          .fromTo(".scan-line", { y: "-100vh", opacity: 1 }, { y: "100vh", opacity: 0.5, duration: 15 }, 0)
-          .fromTo(".noise-overlay", { opacity: 0.6 }, { opacity: 0, duration: 15 }, 2)
-          .fromTo(".boot-text", { opacity: 0 }, { opacity: 1, duration: 8 }, 8)
-          .to(".boot-text", { opacity: 0, duration: 5 }, 20)
-          .fromTo(".hero-pill", { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 8 }, "reveal")
-          .fromTo(".hero-line-1", { opacity: 0, x: -50 }, { opacity: 1, x: 0, duration: 10 }, "reveal+=2")
-          .fromTo(".hero-line-2", { opacity: 0, x: -50 }, { opacity: 1, x: 0, duration: 10 }, "reveal+=5")
-          .fromTo(".hero-line-3", { opacity: 0, x: -50 }, { opacity: 1, x: 0, duration: 10 }, "reveal+=8")
-          .fromTo(".hero-line-4", { opacity: 0, x: -50 }, { opacity: 1, x: 0, duration: 10 }, "reveal+=11")
-          .fromTo(".hero-body-text", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 12 }, "reveal+=14")
-          .fromTo(".hero-cta-buttons", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 10 }, "reveal+=18")
-          .fromTo(".hero-badges", { opacity: 0 }, { opacity: 1, duration: 8 }, "reveal+=22")
-          .to(".hero-content-wrapper", { opacity: 0, scale: 0.95, duration: 15 }, "+=5")
+          .to(".hero-content-wrapper", { opacity: 0, scale: 0.95, duration: 15 }, 0)
           .fromTo(".scene-wipe", { x: "-100%" }, { x: "100%", duration: 10 }, "<");
 
         const capTl = gsap.timeline({
