@@ -937,11 +937,11 @@ export default function Landing() {
 
               <Button
                 onClick={() => scrollTo("forms")}
-                className="px-8 py-5 font-bold text-lg rounded-2xl hover:scale-105 transition-all"
+                className="px-5 py-3 md:px-8 md:py-5 font-bold text-sm md:text-lg rounded-xl md:rounded-2xl hover:scale-105 transition-all w-full md:w-auto"
                 style={{ background: `linear-gradient(135deg, ${C.matrix}, ${C.silverBright})`, color: "#000" }}
                 data-testid="button-trading-cta"
               >
-                <Bot className="w-5 h-5 mr-2" /> DEPLOY YOUR TRADING AGENT NOW
+                <Bot className="w-4 h-4 md:w-5 md:h-5 mr-2 shrink-0" /> DEPLOY YOUR TRADING AGENT NOW
               </Button>
             </div>
 
