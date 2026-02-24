@@ -15,6 +15,64 @@ import {
 } from "lucide-react";
 import robotImgSrc from "@assets/liftapp_(10)_1771462069765.png";
 
+function LiveProfitCounter({ baseValue = 10400.99 }: { baseValue?: number }) {
+  const [value, setValue] = useState(baseValue);
+  const [flash, setFlash] = useState<"up" | "down" | null>(null);
+  const prevValue = useRef(baseValue);
+
+  useEffect(() => {
+    const tick = () => {
+      const delta = (Math.random() - 0.48) * 120;
+      setValue((v) => {
+        const next = Math.max(baseValue - 400, Math.min(baseValue + 600, v + delta));
+        const direction = next > prevValue.current ? "up" : "down";
+        setFlash(direction);
+        prevValue.current = next;
+        setTimeout(() => setFlash(null), 400);
+        return next;
+      });
+    };
+    const id = setInterval(tick, 1800 + Math.random() * 1200);
+    return () => clearInterval(id);
+  }, [baseValue]);
+
+  const formatted = value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const isUp = value >= baseValue;
+
+  return (
+    <div className="flex items-center gap-5">
+      <div className="relative">
+        <div
+          className="text-4xl md:text-5xl font-mono font-black transition-colors duration-300"
+          style={{ color: isUp ? "#22ff88" : "#ff4466" }}
+          data-testid="text-live-profit"
+        >
+          <span className="text-2xl md:text-3xl align-top mr-0.5">$</span>
+          {formatted}
+        </div>
+        {flash && (
+          <motion.div
+            initial={{ opacity: 0.8, y: flash === "up" ? 0 : 0 }}
+            animate={{ opacity: 0, y: flash === "up" ? -18 : 18 }}
+            transition={{ duration: 0.5 }}
+            className="absolute right-0 top-0 text-xs font-mono font-bold"
+            style={{ color: flash === "up" ? "#22ff88" : "#ff4466" }}
+          >
+            {flash === "up" ? "▲" : "▼"}
+          </motion.div>
+        )}
+      </div>
+      <div>
+        <div className="font-semibold text-white flex items-center gap-2">
+          Live 24h Profit
+          <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse inline-block" />
+        </div>
+        <div className="text-xs text-slate-500">TRADER-X autonomous portfolio</div>
+      </div>
+    </div>
+  );
+}
+
 const GLITCH_CHARS = "░▒▓█╔╗║═01∆Ωλ@#$%&*<>{}[]";
 const C = {
   bg: "#050510",
@@ -1046,6 +1104,7 @@ export default function Landing() {
                 </p>
 
                 <div className="space-y-6 mb-10">
+                  <LiveProfitCounter />
                   <div className="flex items-center gap-5">
                     <div className="text-4xl md:text-5xl font-mono font-black" style={{ color: C.green }}>+318%</div>
                     <div>
