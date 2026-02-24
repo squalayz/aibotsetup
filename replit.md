@@ -103,7 +103,7 @@ Preferred communication style: Simple, everyday language.
 - Admin endpoints: `GET /api/admin/visitors/stats` (aggregated analytics), `GET /api/admin/visitors` (recent 200 visitors)
 
 ### Recent Changes
-- 2026-02-24: Complete cinematic scroll overhaul with GSAP ScrollTrigger — pinned hero (scan line, robot materialize, staggered text reveal, scene wipe), pinned capabilities (full-screen slides with progress bar), robot zoom (close-up with floating labels), journey timeline (animated line + nodes), stats slam (bounce-in), CTA convergence lines. Mobile: no pins, simple fade-in. Scroll progress dot on right edge. Kept neon-gradient-text "AI AGENTS" and all forms/trading/FAQ.
+- 2026-02-24: Silver/white Matrix theme overhaul — replaced cyan/purple/neon with silver (#c8d0dc, #e8edf5) + matrix green (#00ff41) palette. Removed robot image entirely, replaced with MatrixRain canvas (Japanese chars + hex). New terminal "System Architecture" pinned section replaces robot-zoom. Matrix-card glass effect. All GSAP ScrollTrigger animations preserved (pinned hero, capabilities slides, journey timeline, stats slam, CTA convergence). gradient-text now uses matrix-gradient-text class.
 - 2026-02-24: Added comprehensive admin dashboard with visitor tracking, location analytics, signup breakdown, daily traffic chart, top pages, referrers, and device info
 - 2026-02-11: Removed all card/debit payment options (Stripe, Whop) — crypto payments only
 - 2026-02-11: Added automated crypto payment tracking with MetaMask wallet connection and on-chain verification via public Ethereum RPC
