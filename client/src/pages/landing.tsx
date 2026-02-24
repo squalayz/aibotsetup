@@ -18,12 +18,11 @@ import robotImgSrc from "@assets/liftapp_(10)_1771462069765.png";
 const GLITCH_CHARS = "░▒▓█╔╗║═01∆Ωλ@#$%&*<>{}[]";
 const EASE_PREMIUM: [number, number, number, number] = [0.16, 1, 0.3, 1];
 const C = {
-  bg: "#050510",
-  cyan: "#00e5ff",
-  purple: "#a855f7",
-  green: "#22c55e",
+  bg: "#0a0f1e",
+  silver: "#a0aec0",
+  slate: "#64748b",
   text: "#ffffff",
-  muted: "#9ca3af",
+  muted: "#64748b",
 };
 
 function useReducedMotion() {
@@ -87,7 +86,7 @@ function NeuralCanvas() {
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < maxDist) {
             const alpha = (1 - dist / maxDist) * 0.15;
-            ctx.strokeStyle = `rgba(0, 240, 255, ${alpha})`;
+            ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
             ctx.lineWidth = 0.5;
             ctx.beginPath();
             ctx.moveTo(nodes[i].x, nodes[i].y);
@@ -98,7 +97,7 @@ function NeuralCanvas() {
       }
 
       nodes.forEach(n => {
-        ctx.fillStyle = "rgba(0, 240, 255, 0.3)";
+        ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
         ctx.beginPath();
         ctx.arc(n.x, n.y, 1.5, 0, Math.PI * 2);
         ctx.fill();
@@ -225,7 +224,7 @@ function RobotHero() {
 
         const drawEye = (ex: number, ey: number) => {
           const outerGrad = ctx.createRadialGradient(ex, ey, 0, ex, ey, 25);
-          outerGrad.addColorStop(0, "rgba(0, 240, 255, 0.06)");
+          outerGrad.addColorStop(0, "rgba(180, 210, 255, 0.06)");
           outerGrad.addColorStop(1, "transparent");
           ctx.fillStyle = outerGrad;
           ctx.beginPath();
@@ -234,10 +233,10 @@ function RobotHero() {
 
           const grad = ctx.createRadialGradient(ex, ey, 0, ex, ey, 8);
           grad.addColorStop(0, "rgba(255, 255, 255, 0.9)");
-          grad.addColorStop(0.4, "rgba(0, 240, 255, 0.7)");
+          grad.addColorStop(0.4, "rgba(180, 210, 255, 0.5)");
           grad.addColorStop(1, "transparent");
           ctx.fillStyle = grad;
-          ctx.shadowColor = C.cyan;
+          ctx.shadowColor = "rgba(180, 210, 255, 0.5)";
           ctx.shadowBlur = 15;
           ctx.beginPath();
           ctx.arc(ex, ey, 7, 0, Math.PI * 2);
@@ -250,7 +249,7 @@ function RobotHero() {
 
       ctx.shadowBlur = 0;
       energyPaths.forEach(([x1, y1, x2, y2]) => {
-        ctx.strokeStyle = "rgba(0, 240, 255, 0.06)";
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.06)";
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(x1 * w, y1 * h);
@@ -264,8 +263,8 @@ function RobotHero() {
         const p = energyPaths[dot.path];
         const dx = p[0] + (p[2] - p[0]) * dot.t;
         const dy = p[1] + (p[3] - p[1]) * dot.t;
-        ctx.fillStyle = "rgba(0, 240, 255, 0.7)";
-        ctx.shadowColor = C.cyan;
+        ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+        ctx.shadowColor = "rgba(180, 210, 255, 0.4)";
         ctx.shadowBlur = 6;
         ctx.beginPath();
         ctx.arc(dx * w, dy * h, 2, 0, Math.PI * 2);
@@ -284,7 +283,7 @@ function RobotHero() {
           p.speed = 0.3 + Math.random() * 0.5;
           p.drift = Math.random() * Math.PI * 2;
         }
-        ctx.fillStyle = `rgba(0, 240, 255, ${p.life * 0.4})`;
+        ctx.fillStyle = `rgba(255, 255, 255, ${p.life * 0.3})`;
         ctx.beginPath();
         ctx.arc(p.x * w, p.y * h, p.size, 0, Math.PI * 2);
         ctx.fill();
@@ -302,11 +301,11 @@ function RobotHero() {
           scanRef.current.active = false;
         } else {
           const sy = scanRef.current.y;
-          ctx.fillStyle = "rgba(0, 240, 255, 0.04)";
+          ctx.fillStyle = "rgba(255, 255, 255, 0.03)";
           ctx.fillRect(0, sy - 10, w, 20);
-          ctx.strokeStyle = "rgba(0, 240, 255, 0.5)";
+          ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
           ctx.lineWidth = 2;
-          ctx.shadowColor = C.cyan;
+          ctx.shadowColor = "rgba(255, 255, 255, 0.3)";
           ctx.shadowBlur = 12;
           ctx.beginPath();
           ctx.moveTo(0, sy);
@@ -321,7 +320,7 @@ function RobotHero() {
       const breathScale = 0.8 + Math.sin(elapsed * 0.0008 * Math.PI * 2) * 0.2;
       const chestR = 35 * breathScale;
       const chestGrad = ctx.createRadialGradient(chestX, chestY, 0, chestX, chestY, chestR);
-      chestGrad.addColorStop(0, "rgba(0, 240, 255, 0.15)");
+      chestGrad.addColorStop(0, "rgba(200, 220, 255, 0.1)");
       chestGrad.addColorStop(1, "transparent");
       ctx.fillStyle = chestGrad;
       ctx.beginPath();
@@ -341,7 +340,7 @@ function RobotHero() {
         } else {
           const sp = sonarRef.current.progress;
           const sr = sp * Math.max(w, h) * 0.5;
-          ctx.strokeStyle = `rgba(0, 240, 255, ${(1 - sp) * 0.15})`;
+          ctx.strokeStyle = `rgba(255, 255, 255, ${(1 - sp) * 0.1})`;
           ctx.lineWidth = 2;
           ctx.beginPath();
           ctx.arc(chestX, chestY, sr, 0, Math.PI * 2);
@@ -467,7 +466,7 @@ function DecodeText({ text, className = "", delay = 0, as: Tag = "span" }: {
   return (
     <Tag ref={ref as any} className={className}>
       {display.map((ch, i) => (
-        <span key={i} style={{ color: !resolved && ch !== text[i] ? C.cyan : undefined, transition: "color 0.1s" }}>
+        <span key={i} style={{ color: !resolved && ch !== text[i] ? 'rgba(255, 255, 255, 0.4)' : undefined, transition: "color 0.1s" }}>
           {ch}
         </span>
       ))}
@@ -493,8 +492,8 @@ function GlitchWord({ children, text, className = "" }: { children: React.ReactN
       {children}
       {glitching && text && (
         <>
-          <span className="absolute inset-0" style={{ color: C.cyan, clipPath: "inset(0 0 50% 0)", transform: "translateX(2px)" }} aria-hidden="true">{text}</span>
-          <span className="absolute inset-0" style={{ color: "#ff0040", clipPath: "inset(50% 0 0 0)", transform: "translateX(-2px)" }} aria-hidden="true">{text}</span>
+          <span className="absolute inset-0" style={{ color: "rgba(255, 255, 255, 0.6)", clipPath: "inset(0 0 50% 0)", transform: "translateX(2px)" }} aria-hidden="true">{text}</span>
+          <span className="absolute inset-0" style={{ color: "rgba(255, 255, 255, 0.3)", clipPath: "inset(50% 0 0 0)", transform: "translateX(-2px)" }} aria-hidden="true">{text}</span>
         </>
       )}
     </span>
@@ -530,7 +529,7 @@ function TypewriterText({ text, className = "", delay = 0, speed = 30 }: { text:
     <span ref={ref} className={className}>
       {reduced ? text : displayed}
       {!reduced && started && displayed.length < text.length && (
-        <span className="inline-block w-2 h-4 ml-0.5 align-middle animate-pulse" style={{ backgroundColor: C.cyan }} />
+        <span className="inline-block w-2 h-4 ml-0.5 align-middle animate-pulse" style={{ backgroundColor: '#ffffff' }} />
       )}
     </span>
   );
@@ -600,7 +599,7 @@ function FAQTypewriter({ answer }: { answer: string }) {
     <span className="font-mono text-sm text-slate-300 leading-relaxed">
       {displayed}
       {!reduced && displayed.length < answer.length && (
-        <span className="inline-block w-2 h-3.5 ml-0.5 align-middle animate-pulse" style={{ backgroundColor: C.cyan }} />
+        <span className="inline-block w-2 h-3.5 ml-0.5 align-middle animate-pulse" style={{ backgroundColor: '#ffffff' }} />
       )}
     </span>
   );
@@ -617,7 +616,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
       <div className="flex items-center justify-between gap-3 p-5">
         <span className="font-semibold text-white text-sm">{question}</span>
         <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
-          <ChevronDown className="w-4 h-4 shrink-0" style={{ color: C.cyan }} />
+          <ChevronDown className="w-4 h-4 shrink-0" style={{ color: '#ffffff' }} />
         </motion.div>
       </div>
       <AnimatePresence>
@@ -630,7 +629,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
             className="overflow-hidden"
           >
             <div className="px-5 pb-5 flex items-start gap-3">
-              <Bot className="w-4 h-4 shrink-0 mt-0.5" style={{ color: C.cyan }} />
+              <Bot className="w-4 h-4 shrink-0 mt-0.5" style={{ color: '#a0aec0' }} />
               <FAQTypewriter answer={answer} />
             </div>
           </motion.div>
@@ -725,7 +724,7 @@ function InquiryForm({ type, title, subtitle, fields, buttonText, buttonColor, a
             <select
               value={values[field.name] || ""}
               onChange={(e) => setValues({ ...values, [field.name]: e.target.value })}
-              className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-2.5 text-white text-sm outline-none focus:border-cyan-400/40"
+              className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-2.5 text-white text-sm outline-none focus:border-white/20"
               required={field.required}
               data-testid={`select-${type}-${field.name}`}
             >
@@ -759,8 +758,8 @@ function InquiryForm({ type, title, subtitle, fields, buttonText, buttonColor, a
       ))}
       <Button
         type="submit"
-        className="w-full font-bold text-black py-5"
-        style={{ background: buttonColor }}
+        className="w-full font-bold py-5"
+        style={{ background: buttonColor, color: '#0a0f1e' }}
         disabled={!values.name || !values.email || !values.phone || mutation.isPending}
         data-testid={`button-submit-${type}`}
       >
@@ -796,12 +795,12 @@ export default function Landing() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: EASE_PREMIUM }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "glass-nav" : ""}`}
-        style={{ backgroundColor: scrolled ? "rgba(5,5,16,0.92)" : "transparent" }}
+        style={{ backgroundColor: scrolled ? "rgba(10, 15, 30, 0.8)" : "transparent" }}
         data-testid="nav-main"
       >
         <div className="max-w-7xl mx-auto px-5 flex items-center justify-between gap-4 h-14 md:h-16">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-xl flex items-center justify-center">
+            <div className="w-8 h-8 bg-white/10 rounded-xl flex items-center justify-center">
               <Bot className="w-4 h-4 text-white" />
             </div>
             <span className="text-lg font-bold tracking-tight" style={{ fontFamily: "'Space Grotesk', sans-serif" }} data-testid="text-logo">
@@ -818,9 +817,9 @@ export default function Landing() {
             ].map(link => (
               <Button
                 key={link.id}
-                variant="link"
+                variant="ghost"
                 onClick={() => scrollTo(link.id)}
-                className="text-gray-400 hover:text-white transition-colors duration-300 ease-out p-0 h-auto text-sm font-medium uppercase tracking-wide"
+                className="text-[#64748b] hover:text-white transition-colors duration-300 ease-out p-0 h-auto text-sm font-medium uppercase tracking-wide"
                 data-testid={`nav-${link.id}`}
               >
                 {link.label}
@@ -853,13 +852,13 @@ export default function Landing() {
               <div
                 className="inline-flex items-center gap-2.5 mb-10"
                 style={{
-                  background: "rgba(0, 229, 255, 0.08)",
-                  border: "1px solid rgba(0, 229, 255, 0.2)",
+                  background: "rgba(255, 255, 255, 0.05)",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
                   borderRadius: "50px",
                   padding: "8px 20px",
                 }}
               >
-                <div className="w-2 h-2 rounded-full dot-pulse" style={{ backgroundColor: C.green }} />
+                <div className="w-2 h-2 rounded-full dot-pulse" style={{ backgroundColor: '#ffffff' }} />
                 <span style={{ fontSize: "12px", letterSpacing: "0.1em", fontWeight: 500, color: "#9ca3af", textTransform: "uppercase" as const }}>
                   LIVE AI AGENTS • 24/7 • ZERO BURNOUT
                 </span>
@@ -872,9 +871,7 @@ export default function Landing() {
               </motion.div>
               <br />
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.7, ease: EASE_PREMIUM }} className="inline">
-                <span className="neon-gradient-text">
-                  <DecodeText text="AI Agents" as="span" delay={0.7} className="neon-gradient-text" />
-                </span>
+                <DecodeText text="AI Agents" as="span" delay={0.7} className="text-white" />
               </motion.div>
               <br />
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.9, ease: EASE_PREMIUM }}>
@@ -893,7 +890,7 @@ export default function Landing() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 1.3, ease: EASE_PREMIUM }}
               className="max-w-[520px] mb-10 mx-auto lg:mx-0"
-              style={{ fontSize: "18px", lineHeight: 1.7, color: "#9ca3af" }}
+              style={{ fontSize: "18px", lineHeight: 1.7, color: "#a0aec0" }}
             >
               <TypewriterText
                 text="Custom AI that answers calls, books appointments, closes sales, trades crypto & stocks, posts content, and scales your business — built in under 30 minutes."
@@ -919,18 +916,18 @@ export default function Landing() {
               </Button>
 
               <Button
-                variant="link"
+                variant="ghost"
                 onClick={() => scrollTo("trading")}
-                className="hero-text-link-cyan flex items-center gap-1.5 p-0 h-auto"
+                className="hero-text-link flex items-center gap-1.5 p-0 h-auto"
                 data-testid="button-hero-trading"
               >
                 See AI Trading <ArrowRight className="w-3.5 h-3.5" />
               </Button>
 
               <Button
-                variant="link"
+                variant="ghost"
                 onClick={() => scrollTo("form-card-team")}
-                className="hero-text-link-muted flex items-center gap-1.5 p-0 h-auto"
+                className="hero-text-link flex items-center gap-1.5 p-0 h-auto"
                 data-testid="button-hero-team"
               >
                 <Users className="w-3.5 h-3.5" /> Join The Team
@@ -953,7 +950,7 @@ export default function Landing() {
                   className="flex items-center gap-2"
                   style={{ fontSize: "13px", letterSpacing: "0.08em", color: "#6b7280", textTransform: "uppercase" as const }}
                 >
-                  <Check className="w-3.5 h-3.5" style={{ color: "#22c55e" }} />
+                  <Check className="w-3.5 h-3.5" style={{ color: "#ffffff" }} />
                   {item}
                 </motion.span>
               ))}
@@ -1002,14 +999,14 @@ export default function Landing() {
               className="flex items-center gap-4 text-xs font-mono"
             >
               <span className="text-slate-500">POWERED BY</span>
-              <span className="neon-text-cyan text-[11px]">GROK • CLAUDE • GPT • LLAMA</span>
+              <span className="text-white text-[11px]">GROK • CLAUDE • GPT • LLAMA</span>
             </motion.div>
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 0.6 }}
               transition={{ duration: 0.6, delay: 0.25, ease: EASE_PREMIUM }}
               viewport={{ once: true }}
-              className="h-px w-12 bg-gradient-to-r from-transparent via-cyan-400 to-transparent"
+              className="h-px w-12 bg-gradient-to-r from-transparent via-white/20 to-transparent"
             />
             <motion.div
               initial={{ opacity: 0 }}
@@ -1028,33 +1025,33 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-6">
           <RevealSection>
             <div className="text-center mb-16">
-              <span className="px-5 py-2 rounded-full bg-purple-500/10 text-purple-400 text-xs tracking-[3px] uppercase font-mono">NEXT-GEN AI THAT ACTS</span>
+              <span className="px-5 py-2 rounded-full bg-white/5 text-[#a0aec0] text-xs tracking-[3px] uppercase font-mono">NEXT-GEN AI THAT ACTS</span>
               <h2 className="title-font text-4xl md:text-5xl lg:text-6xl font-black mt-6">
                 Your AI Doesn't Just Chat.
                 <br />
-                It <span style={{ color: C.cyan }}>Thinks</span> • <span style={{ color: C.purple }}>Decides</span> • <span style={{ color: C.green }}>Closes</span>
+                It <span className="font-semibold">Thinks</span> • <span className="font-semibold">Decides</span> • <span className="font-semibold">Closes</span>
               </h2>
             </div>
           </RevealSection>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { icon: Phone, title: "Answers Calls 24/7", desc: "Qualifies leads, books appointments, handles objections. Voice + SMS + WhatsApp.", color: C.cyan, stat: "99.8% pickup rate • 2.4s avg answer" },
-              { icon: Calendar, title: "Books Appointments", desc: "Syncs with Google/Outlook calendar. Auto reminders, reschedules, no-show follow ups.", color: C.purple, stat: "∞ automated scheduling" },
-              { icon: TrendingUp, title: "Closes Sales & Trades", desc: "AI sales agents that follow up leads, send proposals, negotiate. Plus AI Trading for stocks & crypto.", color: C.green, stat: "24/7 autonomous execution" },
-              { icon: MessageSquare, title: "Posts Content", desc: "Creates and publishes across all your social platforms on autopilot. Consistent brand voice.", color: C.cyan, stat: "Multi-platform automation" },
-              { icon: Shield, title: "Manages Workflows", desc: "Connects to your CRM, email, calendar, and 100+ tools. Zero manual work.", color: C.purple, stat: "100+ integrations" },
-              { icon: Globe, title: "Scales Your Empire", desc: "Handle unlimited customers simultaneously. No hiring, no training, no burnout.", color: C.green, stat: "Unlimited capacity" },
+              { icon: Phone, title: "Answers Calls 24/7", desc: "Qualifies leads, books appointments, handles objections. Voice + SMS + WhatsApp.", stat: "99.8% pickup rate • 2.4s avg answer" },
+              { icon: Calendar, title: "Books Appointments", desc: "Syncs with Google/Outlook calendar. Auto reminders, reschedules, no-show follow ups.", stat: "∞ automated scheduling" },
+              { icon: TrendingUp, title: "Closes Sales & Trades", desc: "AI sales agents that follow up leads, send proposals, negotiate. Plus AI Trading for stocks & crypto.", stat: "24/7 autonomous execution" },
+              { icon: MessageSquare, title: "Posts Content", desc: "Creates and publishes across all your social platforms on autopilot. Consistent brand voice.", stat: "Multi-platform automation" },
+              { icon: Shield, title: "Manages Workflows", desc: "Connects to your CRM, email, calendar, and 100+ tools. Zero manual work.", stat: "100+ integrations" },
+              { icon: Globe, title: "Scales Your Empire", desc: "Handle unlimited customers simultaneously. No hiring, no training, no burnout.", stat: "Unlimited capacity" },
             ].map((cap, i) => (
               <RevealSection key={cap.title} delay={i * 0.08}>
-                <div className="glass-card rounded-2xl p-8 group transition-all duration-300 h-full" style={{ borderColor: `${cap.color}20` }} data-testid={`card-cap-${i}`}>
-                  <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform" style={{ backgroundColor: `${cap.color}12` }}>
-                    <cap.icon className="w-7 h-7" style={{ color: cap.color }} />
+                <div className="glass-card rounded-2xl p-8 group transition-all duration-300 h-full" data-testid={`card-cap-${i}`}>
+                  <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform" style={{ backgroundColor: "rgba(255, 255, 255, 0.05)" }}>
+                    <cap.icon className="w-7 h-7 text-white" />
                   </div>
                   <h3 className="text-xl font-bold mb-3 text-white">{cap.title}</h3>
                   <p className="text-sm text-slate-400 leading-relaxed mb-6">{cap.desc}</p>
-                  <div className="h-px w-full" style={{ background: `linear-gradient(to right, transparent, ${cap.color}40, transparent)` }} />
-                  <div className="pt-4 text-[11px] font-mono" style={{ color: cap.color }}>{cap.stat}</div>
+                  <div className="h-px w-full" style={{ background: "rgba(255, 255, 255, 0.06)" }} />
+                  <div className="pt-4 text-[11px] font-mono text-[#a0aec0]">{cap.stat}</div>
                 </div>
               </RevealSection>
             ))}
@@ -1062,7 +1059,7 @@ export default function Landing() {
         </div>
       </section>
 
-      <section id="agents" className="py-24 relative" style={{ background: "linear-gradient(to bottom, rgba(5,5,16,1), rgba(10,10,30,1))" }} data-testid="section-agents">
+      <section id="agents" className="py-24 relative" style={{ background: "linear-gradient(to bottom, #0a0f1e, #0d1224)" }} data-testid="section-agents">
         <div className="max-w-7xl mx-auto px-6">
           <RevealSection>
             <div className="text-center mb-16">
@@ -1073,30 +1070,30 @@ export default function Landing() {
 
           <div className="grid md:grid-cols-3 gap-6">
             {[
-              { name: "LUNA", role: "Receptionist • Voice AI", color: C.cyan, message: "Hi! I just booked a consultation for your 2pm slot with Mr. Ramirez. He's pre-qualified and excited.", emoji: "👩‍💼" },
-              { name: "ATLAS", role: "Sales Closer • Deal Maker", color: C.purple, message: "Proposal sent and signed! $14,700 closed in 11 minutes. Next up is the $47k enterprise deal.", emoji: "🧔" },
-              { name: "TRADER-X", role: "Crypto & Stocks Leverage Trader", color: C.green, message: "14 new posts scheduled. Just opened 3x long on SOL at 142.87 — +4.2% in 47 seconds.", emoji: "📈" },
+              { name: "LUNA", role: "Receptionist • Voice AI", message: "Hi! I just booked a consultation for your 2pm slot with Mr. Ramirez. He's pre-qualified and excited.", emoji: "👩‍💼" },
+              { name: "ATLAS", role: "Sales Closer • Deal Maker", message: "Proposal sent and signed! $14,700 closed in 11 minutes. Next up is the $47k enterprise deal.", emoji: "🧔" },
+              { name: "TRADER-X", role: "Crypto & Stocks Leverage Trader", message: "14 new posts scheduled. Just opened 3x long on SOL at 142.87 — +4.2% in 47 seconds.", emoji: "📈" },
             ].map((agent, i) => (
               <RevealSection key={agent.name} delay={i * 0.1}>
                 <div className="glass-card rounded-2xl overflow-hidden" data-testid={`card-agent-${agent.name.toLowerCase()}`}>
-                  <div className="h-1.5" style={{ background: agent.color }} />
+                  <div className="h-1.5" style={{ background: 'rgba(255, 255, 255, 0.1)' }} />
                   <div className="p-7">
                     <div className="flex items-center gap-4 mb-5">
-                      <div className="w-12 h-12 rounded-xl flex items-center justify-center text-3xl" style={{ backgroundColor: `${agent.color}12` }}>
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center text-3xl" style={{ backgroundColor: "rgba(255, 255, 255, 0.05)" }}>
                         {agent.emoji}
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-lg title-font" style={{ color: agent.color }}>{agent.name}</span>
-                          <span className="text-[10px] px-2 py-0.5 bg-green-400/15 text-green-400 rounded-full flex items-center gap-1 font-mono">
-                            <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" /> ONLINE
+                          <span className="font-bold text-lg title-font text-white">{agent.name}</span>
+                          <span className="text-[10px] px-2 py-0.5 bg-white/10 text-white rounded-full flex items-center gap-1 font-mono">
+                            <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> ONLINE
                           </span>
                         </div>
-                        <div className="text-xs" style={{ color: agent.color }}>{agent.role}</div>
+                        <div className="text-xs text-[#a0aec0]">{agent.role}</div>
                       </div>
                     </div>
                     <div className="bg-black/40 rounded-xl p-4 text-sm leading-relaxed">
-                      <span style={{ color: agent.color }} className="font-mono font-bold">{agent.name}:</span>{" "}
+                      <span className="font-mono font-bold text-white">{agent.name}:</span>{" "}
                       <TypewriterText text={agent.message} delay={1 + i * 0.5} speed={18} className="text-slate-300" />
                     </div>
                   </div>
@@ -1112,14 +1109,14 @@ export default function Landing() {
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <RevealSection>
               <div>
-                <div className="uppercase text-green-400 tracking-[3px] text-xs mb-4 font-mono flex items-center gap-2">
-                  <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                <div className="uppercase text-[#a0aec0] tracking-[3px] text-xs mb-4 font-mono flex items-center gap-2">
+                  <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
                   NEW • LIVE MARKET AGENTS
                 </div>
                 <h2 className="title-font text-4xl md:text-5xl lg:text-6xl font-black leading-none mb-6">
                   AI Trading Agents That
                   <br />
-                  <span style={{ color: C.green }}>Actually Make Money</span>
+                  <span className="text-white">Actually Make Money</span>
                 </h2>
                 <p className="text-lg text-slate-300 mb-10">
                   Stocks • Crypto • Futures • Options • 100x Leverage. 24/7 autonomous execution with risk management, backtesting, and real-time sentiment analysis.
@@ -1127,14 +1124,14 @@ export default function Landing() {
 
                 <div className="space-y-6 mb-10">
                   <div className="flex items-center gap-5">
-                    <div className="text-4xl md:text-5xl font-mono font-black" style={{ color: C.green }}>+318%</div>
+                    <div className="text-4xl md:text-5xl font-mono font-black text-white">+318%</div>
                     <div>
                       <div className="font-semibold text-white">30-day avg return (backtested)</div>
                       <div className="text-xs text-slate-500">BTC/ETH/SOL portfolios</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-5">
-                    <div className="text-4xl md:text-5xl font-mono font-black" style={{ color: C.cyan }}>0.8s</div>
+                    <div className="text-4xl md:text-5xl font-mono font-black text-white">0.8s</div>
                     <div>
                       <div className="font-semibold text-white">Execution speed</div>
                       <div className="text-xs text-slate-500">Binance, Bybit, Coinbase Advanced</div>
@@ -1144,7 +1141,7 @@ export default function Landing() {
 
                 <Button
                   onClick={() => scrollTo("forms")}
-                  className="px-8 py-5 bg-gradient-to-r from-green-400 to-cyan-400 text-black font-bold text-lg rounded-2xl hover:scale-105 transition-all"
+                  className="px-8 py-5 bg-white text-[#0a0f1e] font-bold text-lg rounded-2xl hover:scale-105 transition-all"
                   data-testid="button-trading-cta"
                 >
                   <Bot className="w-5 h-5 mr-2" /> DEPLOY YOUR TRADING AGENT NOW
@@ -1157,15 +1154,15 @@ export default function Landing() {
                 <div className="bg-black/60 rounded-xl p-5 font-mono text-sm mb-6">
                   <div className="flex justify-between mb-4 items-center">
                     <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                      <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
                       <span className="text-white font-bold">TRADER-X LIVE</span>
                     </div>
-                    <div className="text-green-400 font-bold">+2.84% today</div>
+                    <div className="text-white font-bold">+2.84% today</div>
                   </div>
                   <div className="space-y-3 text-xs">
                     <div className="flex justify-between py-2 border-b border-white/5">
                       <span className="text-slate-400">Long SOL 3x @ 142.87</span>
-                      <span className="text-green-400 font-bold">+4.21%</span>
+                      <span className="text-white font-bold">+4.21%</span>
                     </div>
                     <div className="flex justify-between py-2 border-b border-white/5">
                       <span className="text-slate-400">Short ETH 5x @ 2,874</span>
@@ -1173,16 +1170,16 @@ export default function Landing() {
                     </div>
                     <div className="flex justify-between py-2 border-b border-white/5">
                       <span className="text-slate-400">Closed NVDA call @ 138</span>
-                      <span className="text-green-400 font-bold">+$1,294 profit</span>
+                      <span className="text-white font-bold">+$1,294 profit</span>
                     </div>
                     <div className="flex justify-between py-2">
                       <span className="text-slate-400">BTC swing 2x long</span>
-                      <span className="text-green-400 font-bold">+1.87%</span>
+                      <span className="text-white font-bold">+1.87%</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="h-48 bg-gradient-to-br from-green-900/20 to-transparent rounded-xl flex items-center justify-center border border-green-400/20 relative overflow-hidden">
+                <div className="h-48 bg-gradient-to-br from-white/5 to-transparent rounded-xl flex items-center justify-center border border-white/10 relative overflow-hidden">
                   <LiveChart />
                 </div>
               </div>
@@ -1191,28 +1188,28 @@ export default function Landing() {
         </div>
       </section>
 
-      <section id="build" className="py-24 border-t border-b border-cyan-500/15" data-testid="section-build">
+      <section id="build" className="py-24 border-t border-b border-white/[0.06]" data-testid="section-build">
         <div className="max-w-5xl mx-auto px-6 text-center">
           <RevealSection>
-            <div className="inline-flex items-center gap-3 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 px-6 py-3 rounded-2xl mb-8 border border-cyan-400/20">
-              <Zap className="w-6 h-6 text-cyan-400" />
-              <span className="uppercase tracking-[3px] font-bold text-cyan-400 text-sm title-font">30-Minute Magic</span>
+            <div className="inline-flex items-center gap-3 bg-white/5 px-6 py-3 rounded-2xl mb-8 border border-white/10">
+              <Zap className="w-6 h-6 text-white" />
+              <span className="uppercase tracking-[3px] font-bold text-white text-sm title-font">30-Minute Magic</span>
             </div>
 
             <h2 className="title-font text-4xl md:text-5xl lg:text-6xl font-black max-w-3xl mx-auto leading-tight">
-              From idea to live AI agent in under <span style={{ color: C.cyan }}>30 minutes</span>. No code. No waiting.
+              From idea to live AI agent in under <span className="text-white">30 minutes</span>. No code. No waiting.
             </h2>
           </RevealSection>
 
           <div className="grid md:grid-cols-3 gap-8 mt-16">
             {[
-              { num: "01", title: "Tell us your business", desc: "Describe what you need in plain English", color: C.cyan },
-              { num: "02", title: "AI builds it instantly", desc: "Custom prompts, voice, integrations", color: C.purple },
-              { num: "03", title: "Deploy & profit", desc: "Connect phone/calendar/exchanges and go live", color: C.green },
+              { num: "01", title: "Tell us your business", desc: "Describe what you need in plain English" },
+              { num: "02", title: "AI builds it instantly", desc: "Custom prompts, voice, integrations" },
+              { num: "03", title: "Deploy & profit", desc: "Connect phone/calendar/exchanges and go live" },
             ].map((step, i) => (
               <RevealSection key={step.num} delay={i * 0.15}>
                 <div className="text-left">
-                  <div className="text-6xl font-black font-mono mb-3 title-font" style={{ color: step.color }}>{step.num}</div>
+                  <div className="text-6xl font-black font-mono mb-3 title-font text-white">{step.num}</div>
                   <div className="font-bold text-white text-lg mb-2">{step.title}</div>
                   <div className="text-sm text-slate-400">{step.desc}</div>
                 </div>
@@ -1233,13 +1230,13 @@ export default function Landing() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             <RevealSection delay={0}>
-              <div className="glass-card rounded-2xl p-8 h-full border-cyan-400/20" data-testid="form-card-general">
+              <div className="glass-card rounded-2xl p-8 h-full border-white/[0.06]" data-testid="form-card-general">
                 <InquiryForm
                   type="general"
                   title="Custom AI Agent"
                   subtitle="Tell us what you need and we'll build it"
-                  accentColor={C.cyan}
-                  buttonColor="linear-gradient(90deg, #00f0ff, #0ea5e9)"
+                  accentColor="#ffffff"
+                  buttonColor="#ffffff"
                   buttonText="BUILD MY AGENT — FREE 30-MIN SETUP"
                   fields={[
                     { name: "name", label: "Your Name", icon: Users, placeholder: "John Smith", required: true },
@@ -1253,14 +1250,14 @@ export default function Landing() {
             </RevealSection>
 
             <RevealSection delay={0.1}>
-              <div className="glass-card rounded-2xl p-8 h-full border-green-400/20 relative overflow-hidden" data-testid="form-card-trading">
-                <div className="absolute top-0 right-0 px-3 py-1 bg-green-400 text-black text-[10px] font-bold uppercase tracking-wider rounded-bl-lg">New</div>
+              <div className="glass-card rounded-2xl p-8 h-full border-white/[0.06] relative overflow-hidden" data-testid="form-card-trading">
+                <div className="absolute top-0 right-0 px-3 py-1 bg-white text-[#0a0f1e] text-[10px] font-bold uppercase tracking-wider rounded-bl-lg">New</div>
                 <InquiryForm
                   type="trading"
                   title="AI Trading Agent"
                   subtitle="Autonomous trading for stocks, crypto & leverage"
-                  accentColor={C.green}
-                  buttonColor="linear-gradient(90deg, #22ff88, #10b981)"
+                  accentColor="#ffffff"
+                  buttonColor="#ffffff"
                   buttonText="DEPLOY TRADING AGENT NOW"
                   fields={[
                     { name: "name", label: "Your Name", icon: Users, placeholder: "John Smith", required: true },
@@ -1275,13 +1272,13 @@ export default function Landing() {
             </RevealSection>
 
             <RevealSection delay={0.2}>
-              <div id="form-card-team" className="glass-card rounded-2xl p-8 h-full border-purple-400/20" data-testid="form-card-team">
+              <div id="form-card-team" className="glass-card rounded-2xl p-8 h-full border-white/[0.06]" data-testid="form-card-team">
                 <InquiryForm
                   type="team"
                   title="Join Our Team"
                   subtitle="Earn 30% lifetime commission on every referral"
-                  accentColor={C.purple}
-                  buttonColor="linear-gradient(90deg, #c026d3, #a855f7)"
+                  accentColor="#ffffff"
+                  buttonColor="#ffffff"
                   buttonText="APPLY TO JOIN TEAM"
                   fields={[
                     { name: "name", label: "Your Name", icon: Users, placeholder: "John Smith", required: true },
@@ -1300,7 +1297,7 @@ export default function Landing() {
             <div className="text-center mt-10">
               <a href="sms:+17542504912" data-testid="link-contact-text">
                 <Button variant="outline" size="lg" className="border-white/10 text-slate-400 bg-white/[0.02]">
-                  <MessageSquare className="w-4 h-4 mr-2" style={{ color: C.purple }} /> Questions? Text (754) 250-4912
+                  <MessageSquare className="w-4 h-4 mr-2" style={{ color: '#a0aec0' }} /> Questions? Text (754) 250-4912
                 </Button>
               </a>
             </div>
@@ -1312,14 +1309,14 @@ export default function Landing() {
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
             {[
-              { target: 500, suffix: "+", label: "Agents Deployed", color: C.cyan },
-              { target: 50, suffix: "+", label: "Industries", color: C.purple },
-              { target: 24, suffix: "/7/365", label: "Uptime", color: C.green },
-              { target: 30, suffix: " min", label: "Setup Time", color: C.cyan },
+              { target: 500, suffix: "+", label: "Agents Deployed" },
+              { target: 50, suffix: "+", label: "Industries" },
+              { target: 24, suffix: "/7/365", label: "Uptime" },
+              { target: 30, suffix: " min", label: "Setup Time" },
             ].map((s, i) => (
               <RevealSection key={s.label} delay={i * 0.1}>
                 <div className="glass-card rounded-2xl p-6 text-center" data-testid={`card-stat-${i}`}>
-                  <div className="title-font text-3xl md:text-4xl font-black mb-2" style={{ color: s.color }}>
+                  <div className="title-font text-3xl md:text-4xl font-black mb-2 text-white">
                     <CountUp target={s.target} suffix={s.suffix} />
                   </div>
                   <p className="text-xs text-slate-500 uppercase tracking-widest">{s.label}</p>
@@ -1359,7 +1356,7 @@ export default function Landing() {
 
       <section className="py-24 px-5 relative" data-testid="section-cta">
         <div className="absolute inset-0 overflow-hidden flex items-center justify-center opacity-5 pointer-events-none">
-          <img src={robotImgSrc} alt="" className="h-[400px] object-contain" style={{ filter: `drop-shadow(0 0 60px ${C.cyan})`, mixBlendMode: "lighten" }} />
+          <img src={robotImgSrc} alt="" className="h-[400px] object-contain" style={{ filter: "drop-shadow(0 0 60px rgba(150, 180, 255, 0.3))", mixBlendMode: "lighten" }} />
         </div>
         <div className="relative z-10 max-w-[700px] mx-auto text-center">
           <RevealSection>
@@ -1368,7 +1365,7 @@ export default function Landing() {
                 <DecodeText text="Stop Losing Leads." as="span" delay={0} />
               </GlitchWord>
               <br />
-              <span className="neon-gradient-text">Put AI to Work Today.</span>
+              <span className="text-white">Put AI to Work Today.</span>
             </h2>
             <p className="text-slate-400 mb-10 max-w-[500px] mx-auto leading-relaxed text-lg">
               Custom AI agent, built and deployed in 30 minutes. No code. No waiting. No burnout.
@@ -1377,14 +1374,15 @@ export default function Landing() {
               <Button
                 size="lg"
                 onClick={() => scrollTo("forms")}
-                className="px-12 py-6 text-lg font-bold bg-gradient-to-r from-cyan-400 via-purple-500 to-green-400 text-black rounded-2xl hover:scale-105 transition-all"
+                className="px-12 py-6 text-lg font-bold bg-white text-[#0a0f1e] rounded-2xl hover:scale-105 transition-all"
+                style={{ boxShadow: "0 0 60px rgba(255, 255, 255, 0.1)" }}
                 data-testid="button-cta-final"
               >
                 <Bot className="w-5 h-5 mr-2" /> BUILD MY CUSTOM AI AGENT NOW
               </Button>
               <a href="sms:+17542504912" data-testid="link-cta-text">
                 <Button variant="outline" className="border-white/10 text-slate-400 bg-white/[0.02]">
-                  <MessageSquare className="w-4 h-4 mr-2" style={{ color: C.purple }} /> Questions? Text (754) 250-4912
+                  <MessageSquare className="w-4 h-4 mr-2" style={{ color: '#a0aec0' }} /> Questions? Text (754) 250-4912
                 </Button>
               </a>
             </div>
@@ -1396,12 +1394,12 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-7 h-7 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-lg flex items-center justify-center">
+              <div className="w-7 h-7 bg-white/10 rounded-lg flex items-center justify-center">
                 <Bot className="w-3.5 h-3.5 text-white" />
               </div>
               <span className="font-bold text-sm" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>CLAWD</span>
             </div>
-            <div className="flex gap-6 text-xs text-slate-500 flex-wrap justify-center">
+            <div className="flex gap-6 text-xs text-[#64748b] flex-wrap justify-center">
               {[
                 { label: "Home", action: () => window.scrollTo({ top: 0, behavior: "smooth" }) },
                 { label: "Capabilities", action: () => scrollTo("features") },
@@ -1415,7 +1413,7 @@ export default function Landing() {
               ))}
               <a href="sms:+17542504912" className="hover:text-white transition-colors duration-300" data-testid="link-footer-contact">Contact</a>
             </div>
-            <p className="text-xs text-slate-600" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+            <p className="text-xs text-[#64748b]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
               aibotsetup.com
             </p>
           </div>
@@ -1467,7 +1465,7 @@ function LiveChart() {
       if (points.length > maxPoints) points.shift();
 
       const grad = ctx.createLinearGradient(0, 0, 0, h);
-      grad.addColorStop(0, "rgba(34, 255, 136, 0.15)");
+      grad.addColorStop(0, "rgba(255, 255, 255, 0.15)");
       grad.addColorStop(1, "transparent");
 
       ctx.beginPath();
@@ -1489,16 +1487,16 @@ function LiveChart() {
         if (i === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       });
-      ctx.strokeStyle = C.green;
+      ctx.strokeStyle = "#ffffff";
       ctx.lineWidth = 2;
-      ctx.shadowColor = C.green;
+      ctx.shadowColor = "rgba(255, 255, 255, 0.5)";
       ctx.shadowBlur = 8;
       ctx.stroke();
       ctx.shadowBlur = 0;
 
       const lastX = w;
       const lastY = h - (points[points.length - 1] / 100) * h;
-      ctx.fillStyle = C.green;
+      ctx.fillStyle = "#ffffff";
       ctx.beginPath();
       ctx.arc(lastX, lastY, 4, 0, Math.PI * 2);
       ctx.fill();
