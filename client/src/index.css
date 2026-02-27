@@ -229,8 +229,25 @@
     @apply border-border;
   }
 
+  html {
+    background: #F5F5F7;
+  }
+
   body {
     @apply font-sans antialiased bg-background text-foreground;
+    background: #0D0D14;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: env(safe-area-inset-top, 0px);
+    background: #F5F5F7;
+    z-index: 9998;
+    pointer-events: none;
   }
 }
 

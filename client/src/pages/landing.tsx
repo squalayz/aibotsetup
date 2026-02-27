@@ -1344,7 +1344,7 @@ export default function Landing() {
         </div>
       </section>
 
-      <footer className="py-8 px-5" style={{ backgroundColor: C.bgDark, borderTop: `1px solid rgba(255,255,255,0.06)` }} data-testid="footer">
+      <footer className="py-8 px-5" style={{ backgroundColor: C.bgDark, borderTop: `1px solid rgba(255,255,255,0.06)`, paddingBottom: `calc(2rem + env(safe-area-inset-bottom, 0px))` }} data-testid="footer">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
