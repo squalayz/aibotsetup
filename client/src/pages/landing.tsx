@@ -72,15 +72,18 @@ function FloatingOrbs({ className = "", dark = false }: { className?: string; da
       };
     };
 
+    const isMob = window.matchMedia("(max-width: 767px)").matches;
+    const dpr = isMob ? 1 : Math.min(window.devicePixelRatio || 1, 2);
+
     const resize = () => {
       const rect = canvas.parentElement?.getBoundingClientRect();
       if (!rect) return;
       w = rect.width;
       h = rect.height;
-      canvas.width = w * 2;
-      canvas.height = h * 2;
-      ctx.setTransform(2, 0, 0, 2, 0, 0);
-      const count = Math.max(12, Math.floor((w * h) / 30000));
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const count = isMob ? Math.max(5, Math.floor((w * h) / 80000)) : Math.max(12, Math.floor((w * h) / 30000));
       while (orbs.length < count) orbs.push(spawnOrb());
       while (orbs.length > count) orbs.pop();
     };
@@ -737,16 +740,17 @@ export default function Landing() {
         });
       });
 
+      const isMobile = window.innerWidth < 768;
       gsap.utils.toArray<HTMLElement>(".reveal-on-scroll").forEach(el => {
-        gsap.fromTo(el, { opacity: 0, y: 50 }, {
-          opacity: 1, y: 0, duration: 0.8, ease: "power2.out",
-          scrollTrigger: { trigger: el, start: "top 85%", toggleActions: "play none none none" },
+        gsap.fromTo(el, { opacity: 0, y: isMobile ? 30 : 50 }, {
+          opacity: 1, y: 0, duration: isMobile ? 0.5 : 0.8, ease: "power2.out",
+          scrollTrigger: { trigger: el, start: isMobile ? "top 92%" : "top 85%", toggleActions: "play none none none" },
         });
       });
 
       gsap.utils.toArray<HTMLElement>(".stat-slam").forEach((el, i) => {
-        gsap.fromTo(el, { y: -80, opacity: 0, scale: 1.2 }, {
-          y: 0, opacity: 1, scale: 1, duration: 0.8, ease: "bounce.out", delay: i * 0.15,
+        gsap.fromTo(el, { y: isMobile ? -30 : -80, opacity: 0, scale: isMobile ? 1.05 : 1.2 }, {
+          y: 0, opacity: 1, scale: 1, duration: isMobile ? 0.5 : 0.8, ease: isMobile ? "power2.out" : "bounce.out", delay: i * 0.1,
           scrollTrigger: { trigger: el, start: "top 90%", toggleActions: "play none none none" },
         });
       });
@@ -821,21 +825,29 @@ export default function Landing() {
           </div>
           <Button
             onClick={() => scrollTo("forms")}
-            className="px-4 py-2 md:px-6 rounded-xl font-semibold hover:scale-105 transition-all text-xs md:text-sm whitespace-nowrap text-white"
+            className="hidden lg:flex px-4 py-2 md:px-6 rounded-xl font-semibold hover:scale-105 transition-all text-xs md:text-sm whitespace-nowrap text-white"
             style={{ background: `linear-gradient(135deg, ${C.orange}, ${C.orangeLight})`, boxShadow: `0 4px 20px rgba(211, 84, 0, 0.3)` }}
             data-testid="button-nav-cta"
           >
             <Zap className="w-4 h-4 mr-1" /> GET YOUR AGENT
           </Button>
+          <Button
+            onClick={() => scrollTo("forms")}
+            className="lg:hidden px-4 py-2 rounded-xl font-semibold text-xs whitespace-nowrap text-white"
+            style={{ background: `linear-gradient(135deg, ${C.orange}, ${C.orangeLight})` }}
+            data-testid="button-nav-cta-mobile"
+          >
+            <Zap className="w-3.5 h-3.5 mr-1" /> GET STARTED
+          </Button>
         </div>
       </nav>
 
-      <section id="hero" className="relative h-screen overflow-hidden" data-testid="section-hero">
+      <section id="hero" className="relative min-h-screen md:h-screen overflow-hidden" data-testid="section-hero">
         <div className="absolute inset-0 z-0 opacity-30">
           <FloatingOrbs />
         </div>
 
-        <div className="hero-content-wrapper absolute inset-0 flex items-center z-10 pt-20 md:pt-24">
+        <div className="hero-content-wrapper md:absolute md:inset-0 flex items-center z-10 pt-24 pb-12 md:pb-0 md:pt-24 relative">
           <div className="max-w-7xl mx-auto w-full px-5 relative">
             <div className="max-w-3xl mx-auto lg:mx-0 text-center lg:text-left">
               <div className="hero-pill inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6" style={{ opacity: 0, background: "rgba(211, 84, 0, 0.06)", border: "1px solid rgba(211, 84, 0, 0.15)" }}>
@@ -904,8 +916,8 @@ export default function Landing() {
         </div>
       </section>
 
-      <section id="capabilities" className="relative" style={{ minHeight: "100vh", backgroundColor: C.bg }} data-testid="section-capabilities">
-        <div className="absolute top-0 left-0 right-0 z-10 px-8 pt-8">
+      <section id="capabilities" className="relative" style={{ backgroundColor: C.bg }} data-testid="section-capabilities">
+        <div className="hidden md:block absolute top-0 left-0 right-0 z-10 px-8 pt-8">
           <div className="max-w-7xl mx-auto flex items-center justify-between mb-4">
             <span className="text-xs uppercase tracking-[4px] font-mono" style={{ color: C.muted }}>WHAT YOUR AI AGENT DOES</span>
             <span className="text-xs font-mono" style={{ color: C.orange }}>{String(capIndex + 1).padStart(2, "0")} / {String(CAPABILITIES.length).padStart(2, "0")}</span>
@@ -915,7 +927,7 @@ export default function Landing() {
           </div>
         </div>
 
-        <div className="relative h-screen flex items-center justify-center overflow-hidden">
+        <div className="hidden md:flex relative h-screen items-center justify-center overflow-hidden">
           {CAPABILITIES.map((cap, i) => (
             <div
               key={cap.title}
@@ -939,6 +951,28 @@ export default function Landing() {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="md:hidden py-16 px-5">
+          <div className="text-center mb-10">
+            <span className="text-xs uppercase tracking-[4px] font-mono" style={{ color: C.muted }}>WHAT YOUR AI AGENT DOES</span>
+          </div>
+          <div className="space-y-4">
+            {CAPABILITIES.map((cap, i) => (
+              <div key={cap.title} className="glass-card rounded-2xl p-6 reveal-on-scroll">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `rgba(211, 84, 0, 0.06)`, border: `1px solid rgba(211, 84, 0, 0.15)` }}>
+                    <cap.icon className="w-6 h-6" style={{ color: C.orange }} />
+                  </div>
+                  <div>
+                    <h3 className="title-font text-lg font-black" style={{ color: C.darkText }}>{cap.title}</h3>
+                    <span className="text-[10px] font-mono uppercase tracking-widest" style={{ color: C.orange }}>{cap.stat}</span>
+                  </div>
+                </div>
+                <p className="text-sm leading-relaxed" style={{ color: C.bodyText }}>{cap.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -972,8 +1006,8 @@ export default function Landing() {
         </div>
       </section>
 
-      <section id="terminal-section" className="relative min-h-screen md:min-h-0" style={{ backgroundColor: C.bgDark }} data-testid="section-terminal">
-        <div className="term-content min-h-[60vh] md:h-screen flex items-center justify-center overflow-hidden relative px-4 md:px-8">
+      <section id="terminal-section" className="relative" style={{ backgroundColor: C.bgDark }} data-testid="section-terminal">
+        <div className="term-content py-16 md:py-0 md:h-screen flex items-center justify-center overflow-hidden relative px-4 md:px-8">
           <div className="absolute inset-0 opacity-20">
             <FloatingOrbs dark />
           </div>
@@ -1062,12 +1096,12 @@ export default function Landing() {
         </div>
       </section>
 
-      <section id="trading" className="py-24 relative" style={{ backgroundColor: C.bgDark }} data-testid="section-trading">
+      <section id="trading" className="py-14 md:py-24 relative" style={{ backgroundColor: C.bgDark }} data-testid="section-trading">
         <div className="absolute inset-0 opacity-15">
           <FloatingOrbs dark />
         </div>
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="max-w-7xl mx-auto px-5 md:px-6 relative z-10">
+          <div className="grid lg:grid-cols-2 gap-10 md:gap-16 items-center">
             <div className="reveal-on-scroll">
               <div className="uppercase tracking-[3px] text-xs mb-4 font-mono flex items-center gap-2" style={{ color: C.orange }}>
                 <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: C.orange }} />
@@ -1147,8 +1181,8 @@ export default function Landing() {
         </div>
       </section>
 
-      <section id="journey" className="relative" style={{ minHeight: "100vh", backgroundColor: C.bg }} data-testid="section-journey">
-        <div className="h-screen flex flex-col justify-center px-8">
+      <section id="journey" className="relative" style={{ backgroundColor: C.bg }} data-testid="section-journey">
+        <div className="hidden md:flex h-screen flex-col justify-center px-8">
           <div className="max-w-5xl mx-auto w-full">
             <div className="text-center mb-16">
               <span className="text-xs uppercase tracking-[4px] font-mono" style={{ color: C.muted }}>HOW IT WORKS</span>
@@ -1178,17 +1212,41 @@ export default function Landing() {
             </div>
           </div>
         </div>
+
+        <div className="md:hidden py-16 px-5">
+          <div className="text-center mb-10">
+            <span className="text-xs uppercase tracking-[4px] font-mono" style={{ color: C.muted }}>HOW IT WORKS</span>
+            <h2 className="title-font text-2xl font-black mt-4" style={{ color: C.darkText }}>
+              From idea to live AI agent in <span style={{ color: C.orange }}>30 minutes</span>
+            </h2>
+          </div>
+
+          <div className="relative pl-8">
+            <div className="absolute left-3 top-0 bottom-0 w-[2px]" style={{ background: `linear-gradient(180deg, ${C.orange}, ${C.orangeLight}, transparent)` }} />
+            <div className="space-y-8">
+              {JOURNEY_STEPS.map((step, i) => (
+                <div key={i} className="relative reveal-on-scroll">
+                  <div className="absolute -left-[23px] top-1 w-4 h-4 rounded-full border-2" style={{ borderColor: C.orange, background: `rgba(211, 84, 0, 0.15)`, boxShadow: `0 0 10px rgba(211, 84, 0, 0.3)` }} />
+                  <div className="glass-card rounded-xl p-5">
+                    <div className="text-sm font-bold title-font mb-1" style={{ color: C.orange }}>{step.title}</div>
+                    <p className="text-xs leading-relaxed" style={{ color: C.bodyText }}>{step.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </section>
 
-      <section id="forms" className="py-24 relative" style={{ backgroundColor: C.bg }} data-testid="section-forms">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16 reveal-on-scroll">
-            <h2 className="title-font text-4xl md:text-5xl font-black mb-4" style={{ color: C.darkText }}>Ready to 10x Your Business?</h2>
-            <p className="text-lg" style={{ color: C.bodyText }}>Choose your path and let's build something incredible</p>
+      <section id="forms" className="py-14 md:py-24 relative" style={{ backgroundColor: C.bg }} data-testid="section-forms">
+        <div className="max-w-7xl mx-auto px-5 md:px-6">
+          <div className="text-center mb-10 md:mb-16 reveal-on-scroll">
+            <h2 className="title-font text-3xl md:text-5xl font-black mb-3 md:mb-4" style={{ color: C.darkText }}>Ready to 10x Your Business?</h2>
+            <p className="text-base md:text-lg" style={{ color: C.bodyText }}>Choose your path and let's build something incredible</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="glass-card rounded-2xl p-8 h-full reveal-on-scroll" data-testid="form-card-general">
+            <div className="glass-card rounded-2xl p-5 md:p-8 h-full reveal-on-scroll" data-testid="form-card-general">
               <InquiryForm
                 type="general"
                 title="Custom AI Agent"
@@ -1206,7 +1264,7 @@ export default function Landing() {
               />
             </div>
 
-            <div className="glass-card rounded-2xl p-8 h-full relative overflow-hidden reveal-on-scroll" style={{ border: `1px solid rgba(211, 84, 0, 0.2)` }} data-testid="form-card-trading">
+            <div className="glass-card rounded-2xl p-5 md:p-8 h-full relative overflow-hidden reveal-on-scroll" style={{ border: `1px solid rgba(211, 84, 0, 0.2)` }} data-testid="form-card-trading">
               <div className="absolute top-0 right-0 px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-bl-lg text-white" style={{ background: C.orange }}>New</div>
               <InquiryForm
                 type="trading"
@@ -1226,7 +1284,7 @@ export default function Landing() {
               />
             </div>
 
-            <div id="form-card-team" className="glass-card rounded-2xl p-8 h-full reveal-on-scroll" data-testid="form-card-team">
+            <div id="form-card-team" className="glass-card rounded-2xl p-5 md:p-8 h-full reveal-on-scroll" data-testid="form-card-team">
               <InquiryForm
                 type="team"
                 title="Join Our Team"
@@ -1318,11 +1376,11 @@ export default function Landing() {
             <Button
               size="lg"
               onClick={() => scrollTo("forms")}
-              className="px-12 py-6 text-lg font-bold rounded-2xl hover:scale-105 transition-all text-white"
+              className="px-8 md:px-12 py-5 md:py-6 text-base md:text-lg font-bold rounded-2xl hover:scale-105 transition-all text-white"
               style={{ background: `linear-gradient(135deg, ${C.orange}, ${C.orangeLight})`, boxShadow: `0 8px 40px rgba(211, 84, 0, 0.4)` }}
               data-testid="button-cta-final"
             >
-              <Bot className="w-5 h-5 mr-2" /> BUILD MY CUSTOM AI AGENT NOW
+              <Bot className="w-5 h-5 mr-2 shrink-0" /> BUILD MY AI AGENT NOW
             </Button>
             <a href="sms:+17542504912" data-testid="link-cta-text">
               <Button variant="outline" className="border-white/10 bg-white/[0.03] text-white/50">
