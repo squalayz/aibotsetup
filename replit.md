@@ -16,7 +16,7 @@ Preferred communication style: Simple, everyday language.
 - **Routing**: Wouter (lightweight client-side router)
 - **State Management**: TanStack React Query for server state
 - **UI Library**: shadcn/ui (new-york style) with Radix UI primitives
-- **Styling**: Tailwind CSS with CSS variables for theming (dark theme by default)
+- **Styling**: Tailwind CSS with CSS variables for theming. Light titanium-white (#F5F5F7) background with dark orange (#D35400) accent energy. Glassmorphism panels (.glass-card, .glass-card-dark). Dark sections for terminal, trading, CTA, and footer (#0D0D14).
 - **Animations**: GSAP with ScrollTrigger for cinematic scroll-driven animations (pinned scenes, scrubbed timelines), Framer Motion for micro-interactions (FAQ accordion, form transitions)
 - **Key Pages**:
   - `/` — Landing page with features, pricing tiers
@@ -103,6 +103,7 @@ Preferred communication style: Simple, everyday language.
 - Admin endpoints: `GET /api/admin/visitors/stats` (aggregated analytics), `GET /api/admin/visitors` (recent 200 visitors)
 
 ### Recent Changes
+- 2026-02-27: Major theme overhaul — light titanium-white (#F5F5F7) background with dark orange (#D35400) accent. Glassmorphism panels (.glass-card with frosted white, .glass-card-dark for dark sections). Dark sections for terminal, trading, CTA, footer (#0D0D14). FloatingOrbs canvas replaces MatrixRain (orange-tinted orbs). CSS variables updated for light theme. All GSAP ScrollTrigger animations preserved. Green/red kept as semantic trading colors. gradient-text-orange class replaces matrix-gradient-text.
 - 2026-02-24: Silver/white Matrix theme overhaul — replaced cyan/purple/neon with silver (#c8d0dc, #e8edf5) + matrix green (#00ff41) palette. Removed robot image entirely, replaced with MatrixRain canvas (Japanese chars + hex). New terminal "System Architecture" pinned section replaces robot-zoom. Matrix-card glass effect. All GSAP ScrollTrigger animations preserved (pinned hero, capabilities slides, journey timeline, stats slam, CTA convergence). gradient-text now uses matrix-gradient-text class.
 - 2026-02-24: Added comprehensive admin dashboard with visitor tracking, location analytics, signup breakdown, daily traffic chart, top pages, referrers, and device info
 - 2026-02-11: Removed all card/debit payment options (Stripe, Whop) — crypto payments only
