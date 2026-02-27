@@ -488,6 +488,112 @@ function CountUpOnScroll({ target, suffix = "", prefix = "" }: { target: number;
   return <span ref={ref}>{prefix}{count.toLocaleString()}{suffix}</span>;
 }
 
+function OrangeCursorTrail() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    const isMobile = window.matchMedia("(max-width: 767px)").matches;
+    if (isMobile) return;
+
+    let w = window.innerWidth;
+    let h = window.innerHeight;
+    canvas.width = w * 2;
+    canvas.height = h * 2;
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+
+    const resize = () => {
+      w = window.innerWidth;
+      h = window.innerHeight;
+      canvas.width = w * 2;
+      canvas.height = h * 2;
+      ctx.setTransform(2, 0, 0, 2, 0, 0);
+    };
+    window.addEventListener("resize", resize);
+
+    interface Trail { x: number; y: number; age: number; vx: number; vy: number; size: number; }
+    const trails: Trail[] = [];
+    let mouseX = -100, mouseY = -100;
+    let prevX = -100, prevY = -100;
+    let frame = 0;
+
+    const onMove = (e: MouseEvent) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    };
+    window.addEventListener("mousemove", onMove);
+
+    const draw = () => {
+      ctx.clearRect(0, 0, w, h);
+
+      const dx = mouseX - prevX;
+      const dy = mouseY - prevY;
+      const speed = Math.sqrt(dx * dx + dy * dy);
+
+      if (speed > 2 && mouseX > 0) {
+        const count = Math.min(Math.floor(speed / 6), 4);
+        for (let i = 0; i < count; i++) {
+          const t = i / count;
+          trails.push({
+            x: prevX + dx * t + (Math.random() - 0.5) * 8,
+            y: prevY + dy * t + (Math.random() - 0.5) * 8,
+            age: 0,
+            vx: dx * 0.05 + (Math.random() - 0.5) * 1.5,
+            vy: dy * 0.05 + (Math.random() - 0.5) * 1.5,
+            size: 2 + Math.random() * 4,
+          });
+        }
+      }
+      prevX = mouseX;
+      prevY = mouseY;
+
+      for (let i = trails.length - 1; i >= 0; i--) {
+        const p = trails[i];
+        p.age++;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vx *= 0.96;
+        p.vy *= 0.96;
+        const life = 1 - p.age / 35;
+        if (life <= 0) { trails.splice(i, 1); continue; }
+        const alpha = life * 0.6;
+        const r = p.size * life;
+        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, r * 3);
+        grad.addColorStop(0, `rgba(211, 84, 0, ${alpha})`);
+        grad.addColorStop(0.4, `rgba(230, 126, 34, ${alpha * 0.5})`);
+        grad.addColorStop(1, `rgba(243, 156, 18, 0)`);
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, r * 3, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, r * 0.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 200, 100, ${alpha * 0.8})`;
+        ctx.fill();
+      }
+
+      frame = requestAnimationFrame(draw);
+    };
+    draw();
+
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 w-full h-full pointer-events-none"
+      style={{ zIndex: 9999 }}
+    />
+  );
+}
+
 const CAPABILITIES = [
   { icon: Phone, title: "ANSWER CALLS 24/7", desc: "Qualifies leads, books appointments, handles objections. Voice + SMS + WhatsApp. Never misses a call.", stat: "99.8% pickup rate" },
   { icon: Calendar, title: "BOOK APPOINTMENTS", desc: "Syncs with Google/Outlook calendar. Auto reminders, reschedules, and no-show follow ups.", stat: "Infinite scheduling" },
@@ -660,6 +766,7 @@ export default function Landing() {
   return (
     <div ref={mainRef} className="relative min-h-screen overflow-x-hidden" style={{ backgroundColor: C.bg }}>
 
+      <OrangeCursorTrail />
       <div className="scroll-progress-track" />
       <div className="scroll-progress-dot" />
 
@@ -689,7 +796,25 @@ export default function Landing() {
               { id: "journey", label: "How It Works" },
               { id: "forms", label: "Get Started" },
             ].map(n => (
-              <button key={n.id} onClick={() => scrollTo(n.id)} className="transition-colors" style={{ color: C.muted }} data-testid={`nav-${n.id}`}>
+              <button
+                key={n.id}
+                onClick={() => scrollTo(n.id)}
+                className="transition-all duration-300 relative px-2 py-1 rounded-lg"
+                style={{ color: C.muted }}
+                onMouseEnter={(e) => {
+                  const el = e.currentTarget;
+                  el.style.color = C.orange;
+                  el.style.textShadow = `0 0 20px rgba(211, 84, 0, 0.5), 0 0 40px rgba(211, 84, 0, 0.2)`;
+                  el.style.background = `rgba(211, 84, 0, 0.06)`;
+                }}
+                onMouseLeave={(e) => {
+                  const el = e.currentTarget;
+                  el.style.color = C.muted;
+                  el.style.textShadow = "none";
+                  el.style.background = "transparent";
+                }}
+                data-testid={`nav-${n.id}`}
+              >
                 {n.label}
               </button>
             ))}
