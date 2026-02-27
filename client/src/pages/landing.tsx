@@ -697,7 +697,7 @@ export default function Landing() {
             <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${C.matrix}, ${C.silverBright})` }}>
               <Bot className="w-5 h-5 text-black" />
             </div>
-            <span className="text-xl font-black tracking-tight title-font" style={{ color: C.silverBright, textShadow: `0 0 20px rgba(0,255,65,0.3)` }} data-testid="text-logo">
+            <span className="text-base md:text-xl font-black tracking-tight title-font" style={{ color: C.silverBright, textShadow: `0 0 20px rgba(0,255,65,0.3)` }} data-testid="text-logo">
               AI BOT SETUP
             </span>
           </div>
@@ -716,7 +716,7 @@ export default function Landing() {
           </div>
           <Button
             onClick={() => scrollTo("forms")}
-            className="px-6 py-2 rounded-xl font-semibold hover:scale-105 transition-all text-sm"
+            className="px-4 py-2 md:px-6 rounded-xl font-semibold hover:scale-105 transition-all text-xs md:text-sm whitespace-nowrap"
             style={{ background: `linear-gradient(135deg, ${C.matrix}, ${C.silverBright})`, color: "#000" }}
             data-testid="button-nav-cta"
           >
@@ -734,7 +734,7 @@ export default function Landing() {
 
         <div className="noise-overlay absolute inset-0 z-20 pointer-events-none" style={{ background: "url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJuIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC44IiBudW1PY3RhdmVzPSI0IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI24pIiBvcGFjaXR5PSIwLjA1Ii8+PC9zdmc+')", mixBlendMode: "overlay" }} />
 
-        <div className="hero-content-wrapper absolute inset-0 flex items-center z-10">
+        <div className="hero-content-wrapper absolute inset-0 flex items-center z-10 pt-20 md:pt-24">
           <div className="max-w-7xl mx-auto w-full px-5 relative">
 
             <div className="max-w-3xl mx-auto lg:mx-0 text-center lg:text-left">
